@@ -1,0 +1,9 @@
+^renv$
+^renv\.lock$
+^pssalmonsurvival\.Rproj$
+^\.Rproj\.user$
+^_pkgdown\.yml$
+^data-raw$
+^slides$
+^posters$
+^vignettes/som\.Rmd$
