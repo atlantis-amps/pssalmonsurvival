@@ -7,6 +7,9 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
+    <loc>/articles/salmon_survival.html</loc>
+  </url>
+  <url>
     <loc>/articles/som.html</loc>
   </url>
   <url>
@@ -19,7 +22,19 @@
     <loc>/posters/poster.html</loc>
   </url>
   <url>
+    <loc>/reference/ensemblebiomass.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ensemblenumbersage.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/make_map.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_ensemblebiomass.html</loc>
   </url>
   <url>
     <loc>/slides/slides.html</loc>

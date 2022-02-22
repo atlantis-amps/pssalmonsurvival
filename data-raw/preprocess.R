@@ -1,8 +1,11 @@
-## Example data preprocessing script
+## Data preprocessing script
 
 # Load data
-mydata <- data.frame(a = 1, b = 2)
+ensemblebiomass <- read.csv("data-raw/ensemble_biomass.csv")
+usethis::use_data(ensemblebiomass, overwrite = TRUE)
 
-# Processing ...
 
-usethis::use_data(mydata)
+ensemblenumbersage <- read.csv("data-raw/ensemble_numbers_age.csv")
+usethis::use_data(ensemblenumbersage, overwrite = TRUE)
+usethis::use_r('ensemblenumbersage')
+makeOxygen('ensemblenumbersage')

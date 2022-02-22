@@ -7,3 +7,4 @@
 ^slides$
 ^posters$
 ^vignettes/som\.Rmd$
+^LICENSE\.md$

@@ -2,6 +2,6 @@ pandoc: 2.14.0.3
 pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
-  som: som.html
-last_built: 2022-02-17T19:45Z
+  salmon_survival: salmon_survival.html
+last_built: 2022-02-22T22:19Z
 
