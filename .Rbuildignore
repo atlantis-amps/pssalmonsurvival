@@ -8,3 +8,4 @@
 ^posters$
 ^vignettes/som\.Rmd$
 ^LICENSE\.md$
+^\.github$

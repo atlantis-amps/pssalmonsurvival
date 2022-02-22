@@ -15,11 +15,15 @@ LazyData: true
 Imports:
     broom,
     ggplot2,
+    Redmonder,
     ggspatial,
     rgdal,
     rnaturalearth,
     sf,
-    sp
+    sp,
+    magrittr,
+    ggforce,
+    dplyr
 Suggests: 
     rmarkdown,
     knitr,

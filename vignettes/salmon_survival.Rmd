@@ -16,14 +16,16 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(pssalmonsurvival)
+library(tidyverse)
 ```
 
-Model ensemble was developed with alternate parametrizations. Biomass trajectories. We only use 6 model variants, 2:5 and 7:8
+Model ensemble was developed with alternate parametrizations. Plot biomass trajectories based on simulations that run the model ensemble 30 years under constant fishing rates. We only use 6 model variants, 2:5 and 7:8
 
 ```{r}
 
 data(ensemblebiomass)
 plotmodels <- c(1,6)
+plot_ensemblebiomass(ensemblebiomass, plotmodels)
 
 ```
 
