@@ -34,17 +34,17 @@ plot_ensemblebiomass <- function(ensemblebiomass, plotmodels){
 
     print(i)
 
-    pplot <-  ggplot2::ggplot(plot.biomass, aes(x=Year,y=biomass, group = model_ver, colour = model_ver))+
+    pplot <-  ggplot2::ggplot(plot.biomass, ggplot2::aes(x=Year,y=biomass, group = model_ver, colour = model_ver))+
       ggplot2::geom_line()+
       ggplot2::labs(y= thisvariabletype, x = "Year") +
       ggplot2::scale_color_manual(values=col.pal, name = "Model version")+
       ggplot2::scale_y_continuous(limits = c(0,NA))+
       ggforce::facet_wrap_paginate(~longname, ncol = 4, nrow = 4, page = i, shrink = FALSE, scales = "free")+
       ggplot2::theme_minimal()+
-      ggplot2::theme(strip.text = element_text(size = 7),
+      ggplot2::theme(strip.text = ggplot2::element_text(size = 7),
             legend.position="bottom",
-            axis.text.x = element_text(size =c(8)),
-            axis.text.y = element_text(size =c(8)))
+            axis.text.x = ggplot2::element_text(size =c(8)),
+            axis.text.y = ggplot2::element_text(size =c(8)))
 
 
 

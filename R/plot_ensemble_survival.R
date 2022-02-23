@@ -1,4 +1,4 @@
-#' Title
+#' @title
 #'
 #' @return
 #' @export

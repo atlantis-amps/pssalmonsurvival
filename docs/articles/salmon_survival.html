@@ -104,11 +104,18 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">pssalmonsurvival</span><span class="op">)</span></code></pre></div>
-<p>Model ensemble was developed with alternate parametrizations. Biomass trajectories. We only use 6 model variants, 2:5 and 7:8</p>
+<p>Model ensemble was developed with alternate parametrizations. Plot biomass trajectories based on simulations that run the model ensemble 30 years under constant fishing rates. We only use 6 model variants, 2:5 and 7:8</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ensemblebiomass</span><span class="op">)</span>
-<span class="va">plotmodels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">6</span><span class="op">)</span></code></pre></div>
+<span class="va">plotmodels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">6</span><span class="op">)</span>
+<span class="fu"><a href="../reference/plot_ensemblebiomass.html">plot_ensemblebiomass</a></span><span class="op">(</span><span class="va">ensemblebiomass</span>, <span class="va">plotmodels</span><span class="op">)</span>
+<span class="co">#&gt; [1] 5</span>
+<span class="co">#&gt; [1] 1</span>
+<span class="co">#&gt; [1] 2</span>
+<span class="co">#&gt; [1] 3</span>
+<span class="co">#&gt; [1] 4</span>
+<span class="co">#&gt; [1] 5</span></code></pre></div>
   </main>
 </div>
 
