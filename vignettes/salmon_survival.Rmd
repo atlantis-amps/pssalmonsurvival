@@ -7,13 +7,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 ```{r setup}
 library(pssalmonsurvival)
 
@@ -23,9 +16,22 @@ Model ensemble was developed with alternate parametrizations. Plot biomass traje
 
 ```{r}
 
-data(ensemblebiomass)
-plotmodels <- c(1,6)
+data("ensemblebiomass")
+plotmodels <- c(1,6) # eliminated model versions 1 & 6
+
 plot_ensemblebiomass(ensemblebiomass, plotmodels)
+
+```
+
+
+Plot salmon survival for model ensemble, survival is defined as the proportion of age 1 salmon that survive to age 5, the cohort is lagged over time. 
+
+```{r}
+data("ensemblenumbersage")
+data("salmongroups")
+plotmodels <- c(1,6) # eliminated model versions 1 & 6
+
+plot_ensemble_survival(ensemblenumbersage, salmongroups, plotmodels)
 
 ```
 

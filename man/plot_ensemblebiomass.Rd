@@ -17,8 +17,8 @@ models.used, data frame of final models plotted
 \description{
 plot biomass of ensemble models
 
-Code to plot multiple AMPS versions
+Code to plot biomass of multiple AMPS versions
 }
 \author{
-Hem Nalini Morzaria-Luna, hmorzarialuna@gmail.com
+Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com, February 2022
 }

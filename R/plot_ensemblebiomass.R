@@ -5,9 +5,8 @@
 #' @return models.used, data frame of final models plotted
 #' @export
 #'
-#' @title Code to plot multiple AMPS versions
-#' @author Hem Nalini Morzaria-Luna, hmorzarialuna@gmail.com
-#' @date February 2022
+#' @title Code to plot biomass of multiple AMPS versions
+#' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com, February 2022
 #'
 
 plot_ensemblebiomass <- function(ensemblebiomass, plotmodels){
@@ -21,7 +20,7 @@ plot_ensemblebiomass <- function(ensemblebiomass, plotmodels){
   #library(paletteer)
   #paletteer_d("Redmonder::qMSOSlp")
 
-  col.pal <- Redmonder::redmonder.pal(8, "qMSOSlp")
+  col.pal <- Redmonder::redmonder.pal(length(levels(plot.biomass$model_ver)), "qMSOSlp")
 
 
   # Calculate the number of pages with 12 panels per page
@@ -47,12 +46,13 @@ plot_ensemblebiomass <- function(ensemblebiomass, plotmodels){
             axis.text.y = ggplot2::element_text(size =c(8)))
 
 
-
-
     thisplotname <- paste(thisvariabletype,i,"model_comparison_plot.png",sep="_")
 
     ggplot2::ggsave(thisplotname,plot = pplot, device="png",width = 21, height = 29, units = "cm")
   }
 
+  models.used <- plotmodels
+
+  return(models.used)
 }
 
