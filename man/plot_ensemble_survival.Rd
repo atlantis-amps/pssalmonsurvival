@@ -16,8 +16,6 @@ salmon.return.nums, survival over time
 }
 \description{
 plot salmon survival of ensemble models
-
-Code to plot survival of multiple AMPS versions
 }
 \author{
 Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2002

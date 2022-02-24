@@ -5,7 +5,7 @@
 #' @return salmon.return.nums, survival over time
 #' @export
 #'
-#' @title Code to plot survival of multiple AMPS versions
+#' @descriptions Code to plot survival of multiple AMPS versions
 #' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2002
 
 
@@ -56,7 +56,7 @@ plot_ensemble_survival <- function(ensemblenumbersage, salmongroups, plotmodels)
       ggplot2::scale_color_manual(values=col.pal, name = "Model version")+
       ggforce::facet_wrap_paginate(~ Long.Name, ncol = 3, nrow = 4, page = i, shrink = FALSE, labeller = 'label_value')
 
-    thisplotname <- paste("salmon_survival_plot_",i,".png",sep="_")
+    thisplotname <- paste0("salmon_survival_plot_",i,".png")
 
     ggplot2::ggsave(thisplotname,plot = survival.plot, device = "png", width = 21, height = 24, units = "cm")
 
