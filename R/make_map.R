@@ -10,20 +10,21 @@
 
 make_map <- function(file.name, get_shapefile) {
 
-  dir.create("./shapefiles") # create directory for shapefile
+
+  #dir.create("./shapefiles") # create directory for shapefile
 
   # download files from Github data repository using get_shapefile function
 
-  file.names <- c("CPG","dbf","prj","sbn","sbx","shp","shp.xml","shx") #specify file extensions to download
+  #file.names <- c("CPG","dbf","prj","sbn","sbx","shp","shp.xml","shx") #specify file extensions to download
 
-  shapefile.name <- "bgm_Puget_Sound_89b_0p0001_WGS84."
-  lapply(file.names, get_shapefile, shapefile.name) # get shapefile, download as raw
+  #shapefile.name <- "bgm_Puget_Sound_89b_0p0001_WGS84."
+  #lapply(file.names, get_shapefile, shapefile.name) # get shapefile, download as raw
 
   dsn.shp <- here::here("shapefiles", paste0(shapefile.name,"shp")) # get file location
   model.shape <- sf::st_read(dsn.shp) # read shapefile
 
-  shapefile.name <- "Puget_Sound_cities_WSG84."
-  lapply(file.names, get_shapefile, shapefile.name) # get shapefile, download as raw
+ # shapefile.name <- "Puget_Sound_cities_WSG84."
+ # lapply(file.names, get_shapefile, shapefile.name) # get shapefile, download as raw
 
   dsn.shp <- here::here("shapefiles", paste0(shapefile.name,"shp")) # get file location
   cities.shape <- sf::st_read(dsn.shp) %>%
