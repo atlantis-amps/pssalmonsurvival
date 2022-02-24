@@ -8,7 +8,7 @@
 #' @export
 #' @param shape.file which shape file to map
 
-make_map <- function(file.name, get_shapefile) {
+make_map <- function(file.name) {
 
 
   #dir.create("./shapefiles") # create directory for shapefile
@@ -17,19 +17,18 @@ make_map <- function(file.name, get_shapefile) {
 
   #file.names <- c("CPG","dbf","prj","sbn","sbx","shp","shp.xml","shx") #specify file extensions to download
 
-  #shapefile.name <- "bgm_Puget_Sound_89b_0p0001_WGS84."
+  shapefile.name <- "bgm_Puget_Sound_89b_0p0001_WGS84."
   #lapply(file.names, get_shapefile, shapefile.name) # get shapefile, download as raw
 
   dsn.shp <- here::here("shapefiles", paste0(shapefile.name,"shp")) # get file location
   model.shape <- sf::st_read(dsn.shp) # read shapefile
 
- # shapefile.name <- "Puget_Sound_cities_WSG84."
+  shapefile.name <- "Puget_Sound_cities_WSG84."
  # lapply(file.names, get_shapefile, shapefile.name) # get shapefile, download as raw
 
   dsn.shp <- here::here("shapefiles", paste0(shapefile.name,"shp")) # get file location
   cities.shape <- sf::st_read(dsn.shp) %>%
     dplyr::filter(Name!="Bellevue")# read shapefile
-
 
   world <- rnaturalearth::ne_countries(scale = "large", returnclass = "sf") # get world map
 

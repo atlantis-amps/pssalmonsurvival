@@ -18,7 +18,7 @@ Map of model extent
 
 file.name <- "amps_model_map.png"
 
-make_map(file.name, get_shapefile)
+make_map(file.name)
 ```
 
 

@@ -4,7 +4,7 @@
 \alias{make_map}
 \title{Mapping Atlantis polygons}
 \usage{
-make_map(file.name, get_shapefile)
+make_map(file.name)
 }
 \arguments{
 \item{shape.file}{which shape file to map}
