@@ -23,7 +23,8 @@ Imports:
     sp,
     magrittr,
     ggforce,
-    dplyr
+    dplyr,
+    here
 Suggests: 
     rmarkdown,
     knitr,
