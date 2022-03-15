@@ -2,6 +2,7 @@
 
 export("%>%")
 export(get_shapefile)
+export(make_forcing)
 export(make_map)
 export(plot_ensemble_survival)
 export(plot_ensemblebiomass)

@@ -15,7 +15,7 @@ LazyData: true
 Imports:
     broom,
     ggplot2,
-    Redmonder,
+    ggthemes,
     ggspatial,
     rgdal,
     rnaturalearth,
@@ -24,7 +24,12 @@ Imports:
     magrittr,
     ggforce,
     dplyr,
-    here
+    here,
+    ncdf4,
+    readr,
+    stringr
+Remotes:
+    github::ropensci/rnaturalearthhires
 Suggests: 
     rmarkdown,
     knitr,

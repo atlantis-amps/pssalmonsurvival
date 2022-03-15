@@ -14,9 +14,9 @@ library(pssalmonsurvival)
 
 ```
 
-Map of model extent
+Map of model extent in Puget Sound
 
-```{r map model ectent, echo=TRUE}
+```{r map model extent, echo=TRUE}
 
 file.name <- "amps_model_map.png"
 
@@ -44,6 +44,30 @@ data("salmongroups")
 plotmodels <- c(1,6) # eliminated model versions 1 & 6
 
 plot_ensemble_survival(ensemblenumbersage, salmongroups, plotmodels)
+
+```
+
+make forcings for model simulations
+
+```{r}
+
+sim.groups <- c("Pinniped", "California_sea_lion", "Harbor_seal", 
+                "PinkSY_Fish", "ChumFSY_Fish", 
+                "Herring_PS", "Herring_Cherry",
+                "Porpoise",
+                "Spinydog_Fish", 
+                "Pisc_Seabird","NonPisc_Seabird",
+                "Gel_Zoo", 
+                "ChinookY_Fish","ChinookSY_Fish","CohoHY_Fish","ChumHSY_Fish",
+                #chinook hatchery are repeated twice for a scenario with just Chinook
+                "ChinookY_Fish_2","ChinookSY_Fish_2")
+
+func.groups <- readr::read_csv(here::here("modelfiles","PugetSoundAtlantisFunctionalGroups.csv"))
+
+lapply(sim.groups, make_forcing, ncfile = "AMPS.nc", func.groups, num.forcing.years = 50, rate.multiplier = 0.8, bash.file = "amps_cal.sh", force.prm = "PugetSound_force.prm")
+
+
+lapply(sim.groups, make_forcing, ncfile = "AMPS.nc", func.groups, num.forcing.years = 50, rate.multiplier = 1.2, bash.file = "amps_cal.sh", force.prm = "PugetSound_force.prm")
 
 ```
 

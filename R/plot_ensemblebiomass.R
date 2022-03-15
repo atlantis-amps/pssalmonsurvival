@@ -18,9 +18,7 @@ plot_ensemblebiomass <- function(ensemblebiomass, plotmodels){
 
   thisvariabletype <- "Biomass"
   #library(paletteer)
-  #paletteer_d("Redmonder::qMSOSlp")
-
-  col.pal <- Redmonder::redmonder.pal(length(levels(plot.biomass$model_ver)), "qMSOSlp")
+  #paletteer_d("ggthemes::qMSOSlp")
 
 
   # Calculate the number of pages with 12 panels per page
@@ -36,10 +34,11 @@ plot_ensemblebiomass <- function(ensemblebiomass, plotmodels){
     pplot <-  ggplot2::ggplot(plot.biomass, ggplot2::aes(x=Year,y=biomass, group = model_ver, colour = model_ver))+
       ggplot2::geom_line()+
       ggplot2::labs(y= thisvariabletype, x = "Year") +
-      ggplot2::scale_color_manual(values=col.pal, name = "Model version")+
-      ggplot2::scale_y_continuous(limits = c(0,NA))+
+   #   ggplot2::scale_color_manual(values=col.pal, name = "Model version")+
+      ggthemes::theme_few() +
+      ggthemes::scale_colour_few(name = "Model version") +
+      ggplot2::scale_y_continuous(limits = c(0,NA)) +
       ggforce::facet_wrap_paginate(~longname, ncol = 4, nrow = 4, page = i, shrink = FALSE, scales = "free")+
-      ggplot2::theme_minimal()+
       ggplot2::theme(strip.text = ggplot2::element_text(size = 7),
             legend.position="bottom",
             axis.text.x = ggplot2::element_text(size =c(8)),
