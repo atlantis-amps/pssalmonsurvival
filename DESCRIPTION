@@ -27,7 +27,8 @@ Imports:
     here,
     ncdf4,
     readr,
-    stringr
+    stringr,
+    RNetCDF
 Remotes:
     github::ropensci/rnaturalearthhires
 Suggests: 
