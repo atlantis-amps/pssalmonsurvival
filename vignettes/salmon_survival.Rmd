@@ -51,6 +51,7 @@ make forcings for model simulations
 
 ```{r}
 
+#groups for scenarios
 sim.groups <- c("Pinniped", "California_sea_lion", "Harbor_seal", 
                 "PinkSY_Fish", "ChumFSY_Fish", 
                 "Herring_PS", "Herring_Cherry",
