@@ -5,13 +5,14 @@
 \title{make forcing files for salmon survival}
 \usage{
 make_forcing(
-  fungroupname,
+  thislistitem,
   ncfile,
   func.groups,
   num.forcing.years,
   rate.multiplier,
   bash.file,
-  force.prm
+  force.prm,
+  salmongroups
 )
 }
 \arguments{

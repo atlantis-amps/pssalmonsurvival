@@ -28,7 +28,15 @@ Imports:
     ncdf4,
     readr,
     stringr,
-    RNetCDF
+    RNetCDF,
+    scales,
+    GGally,
+    network,
+    sna,
+    RColorBrewer,
+    grDevices,
+    colorRamps,
+    colorspace
 Remotes:
     github::ropensci/rnaturalearthhires
 Suggests: 

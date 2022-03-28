@@ -7,10 +7,15 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+Package for the article
+Effect of multiple pressures on early marine survival of juvenile salmon in Puget Sound
+
+Hem Nalini Morzaria-Luna, I.C. Kaplan, C.J. Harvey, M. Schmidt, E.A. Fulton, R. Girardin, and P. MacCready
+
+
 ```{r setup}
 install.packages("rnaturalearthhires", repos = "http://packages.ropensci.org", type = "source")
 library(pssalmonsurvival)
-
 
 ```
 
@@ -21,13 +26,25 @@ Map of model extent in Puget Sound
 file.name <- "amps_model_map.png"
 
 make_map(file.name)
+
+```
+```{r}
+#Plot model food web
+
+data("ppreymatrix")
+plot.name <- "ps_foodweb.png"
+  
+plot_foodweb(ppreymatrix, plot.name)
+
+
 ```
 
-
 Model ensemble was developed with alternate parametrizations. Plot biomass trajectories based on simulations that run the model ensemble 30 years under constant fishing rates. We only use 6 model variants, 2:5 and 7:8
+Model biomass comes from 30-year runs of the base models. There are 8 model variants that differ in invertebrate growth rate and vertebrate density dependence 
 
-```{r}
+```{r plot biomass base runs, echo=FALSE}
 
+#biomass comparison between model variants, base runs
 data("ensemblebiomass")
 plotmodels <- c(1,6) # eliminated model versions 1 & 6
 
@@ -38,7 +55,8 @@ plot_ensemblebiomass(ensemblebiomass, plotmodels)
 
 Plot salmon survival for model ensemble, survival is defined as the proportion of age 1 salmon that survive to age 5, the cohort is lagged over time. 
 
-```{r}
+```{r plot survival base runs, echo=FALSE}
+#numbers at age from base runs
 data("ensemblenumbersage")
 data("salmongroups")
 plotmodels <- c(1,6) # eliminated model versions 1 & 6
@@ -47,28 +65,43 @@ plot_ensemble_survival(ensemblenumbersage, salmongroups, plotmodels)
 
 ```
 
-make forcings for model simulations
+Make forcings for model simulations, by scenario
 
-```{r}
+```{r make scenario forcings, include=FALSE}
 
-#groups for scenarios
-sim.groups <- c("Pinniped", "California_sea_lion", "Harbor_seal", 
-                "PinkSY_Fish", "ChumFSY_Fish", 
-                "Herring_PS", "Herring_Cherry",
+#groups for each scenario
+sim.groups <- list(c("Pinniped", "California_sea_lion", "Harbor_seal"), 
+                c("PinkSY_Fish", "ChumFSY_Fish"), 
+                c("Herring_PS", "Herring_Cherry"),
                 "Porpoise",
                 "Spinydog_Fish", 
-                "Pisc_Seabird","NonPisc_Seabird",
+                c("Pisc_Seabird","NonPisc_Seabird"),
                 "Gel_Zoo", 
-                "ChinookY_Fish","ChinookSY_Fish","CohoHY_Fish","ChumHSY_Fish",
+                c("ChinookY_Fish","ChinookSY_Fish","CohoHY_Fish","ChumHSY_Fish"),
                 #chinook hatchery are repeated twice for a scenario with just Chinook
-                "ChinookY_Fish_2","ChinookSY_Fish_2")
+                c("ChinookY_Fish_2","ChinookSY_Fish_2"))
 
-func.groups <- readr::read_csv(here::here("modelfiles","PugetSoundAtlantisFunctionalGroups.csv"))
+data("functionalgroups")
+data("salmongroups")
 
-lapply(sim.groups, make_forcing, ncfile = "AMPS.nc", func.groups, num.forcing.years = 50, rate.multiplier = 0.8, bash.file = "amps_cal.sh", force.prm = "PugetSound_force.prm")
+ncfile = "AMPS.nc"
+num.forcing.years = 50
+bash.file = "amps_cal.sh"
+force.prm = "PugetSound_force.prm"
+func.groups = functionalgroups
 
+#scenario 20% decrease
 
-lapply(sim.groups, make_forcing, ncfile = "AMPS.nc", func.groups, num.forcing.years = 50, rate.multiplier = 1.2, bash.file = "amps_cal.sh", force.prm = "PugetSound_force.prm")
+rate.multiplier = 0.8
+
+lapply(sim.groups, make_forcing, ncfile, func.groups, num.forcing.years, rate.multiplier, bash.file, force.prm, salmongroups)
+
+#scenario 20% increase
+
+rate.multiplier = 1.2
+
+lapply(sim.groups, make_forcing, ncfile, func.groups, num.forcing.years, rate.multiplier, bash.file, force.prm, salmongroups)
 
 ```
+
 

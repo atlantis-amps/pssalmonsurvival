@@ -7,5 +7,6 @@
 #'   \item{\code{Name}}{character; functional group model name}
 #'   \item{\code{Long.Name}}{character; functional group long name}
 #'   \item{\code{NumCohorts}}{integer; number of age classes}
+#'   \item{\code{migiobox}}{double; proportion of salmon that migrate from model polygons}
 #'}
 #' @details DETA

@@ -8,7 +8,6 @@ navbar:
     - articles
     - data
     - slides
-    - posters
     - reference
     right: github
   components:
@@ -23,18 +22,18 @@ navbar:
     articles:
       text: Supplementary
       menu:
-      - text: Supplementary
-        href: articles/som.html
+      - text: Vignette
+        href: articles/salmon_survival.html
     slides:
       text: Slides
       menu:
       - text: R Markdown slides
         href: slides/slides.html
     posters:
-      text: Posters
+      text: Salish Sea Marine Survival Project
       menu:
-      - text: Conference 2019
-        href: posters/poster.html
+      - text: Research findings
+        href: https://marinesurvivalproject.com/research-findings/
     reference:
       text: Functions & data
       href: reference/index.html

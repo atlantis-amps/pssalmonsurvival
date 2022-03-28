@@ -1,22 +1,22 @@
-Code,years_away,Name,Long Name,NumCohorts
-CHY,3,ChinookY_Fish,Chinook Hatch Yrlng,5
-CHS,4,ChinookSY_Fish,Chinook Hatch Subyrlng,5
-CSY,3,ChinookSKY_Fish,Chinook Skagit Yrlng,5
-CSS,4,ChinookSKSY_Fish,Chinook Skagit Subyrlng,5
-CSN,4,ChinookSSY_Fish,Chinook Snohomish Subyrlng,5
-CDS,4,ChinookDSY_Fish,Chinook Duwamish Subyrlng,5
-CNY,3,ChinookNY_Fish,Chinook Nisqually Yrlng,5
-CNS,4,ChinookNSY_Fish,Chinook Nisqually Subyrlng,5
-CHC,4,ChinookHY_Fish,Chinook Hood Canal Subyrlng,5
-CYE,3,ChinookOY_Fish,Chinook other Yrlng,5
-CKS,4,ChinookOSY_Fish,Chinook other Subyrlng,5
-COH,2,CohoHY_Fish,Coho Hatch Yrlng,3
-COS,2,CohoSY_Fish,Coho Skagit Yrlng,3
-COD,2,CohoDSY_Fish,Coho Deep South Yrlng,3
-COY,2,CohoOY_Fish,Coho other Yrlng,3
-CMS,4,ChumHSY_Fish,Chum Hatch Subyrlng,5
-CMF,4,ChumFSY_Fish,Chum Fall Subyrlng,5
-CMH,4,ChumHCSY_Fish,Chum Hood Canal Subyrlng,5
-PIS,2,PinkSY_Fish,Pink Salmon Subyrlng,3
-SAL,3,OtherSal_Fish,Other salmonids,8
-SAF,4,SGeorgia_Fish,Str. Georgia salmonids,5
+Code,years_away,Name,Long Name,NumCohorts,migiobox
+CHY,3,ChinookY_Fish,Chinook Hatch Yearling,5,0.69
+CHS,4,ChinookSY_Fish,Chinook Hatch Subyearling,5,0.79
+CSY,3,ChinookSKY_Fish,Chinook Skagit Yearling,5,0.86
+CSS,4,ChinookSKSY_Fish,Chinook Skagit Subyearling,5,0.86
+CSN,4,ChinookSSY_Fish,Chinook Snohomish Subyearling,5,0.86
+CDS,4,ChinookDSY_Fish,Chinook Duwamish Subyearling,5,0.74
+CNY,3,ChinookNY_Fish,Chinook Nisqually Yearling,5,0.73
+CNS,4,ChinookNSY_Fish,Chinook Nisqually Subyearling,5,0.73
+CHC,4,ChinookHY_Fish,Chinook Hood Canal Subyearling,5,0.7
+CYE,3,ChinookOY_Fish,Chinook other Yearling,5,0.69
+CKS,4,ChinookOSY_Fish,Chinook other Subyearling,5,0.79
+COH,2,CohoHY_Fish,Coho Hatch Yearling,3,0.947
+COS,2,CohoSY_Fish,Coho Skagit Yearling,3,0.957
+COD,2,CohoDSY_Fish,Coho Deep South Yearling,3,0.885
+COY,2,CohoOY_Fish,Coho other Yearling,3,0.947
+CMS,4,ChumHSY_Fish,Chum Hatch Subyearling,5,1
+CMF,4,ChumFSY_Fish,Chum Fall Subyearling,5,1
+CMH,4,ChumHCSY_Fish,Chum Hood Canal summer run Subyearling,5,1
+PIS,2,PinkSY_Fish,Pink Salmon Subyearling,3,1
+SAL,3,OtherSal_Fish,Other salmonids,8,1
+SAF,4,SGeorgia_Fish,Strait of Georgia salmonids,5,0.79

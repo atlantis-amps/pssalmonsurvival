@@ -15,8 +15,6 @@ plot_ensemblebiomass(ensemblebiomass, plotmodels)
 models.used, data frame of final models plotted
 }
 \description{
-plot biomass of ensemble models
-
 Code to plot biomass of multiple AMPS versions
 }
 \author{

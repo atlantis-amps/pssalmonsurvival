@@ -47,22 +47,16 @@
     <a class="dropdown-item" href="../manuscript/manuscript.pdf">Manuscript PDF</a>
   </div>
 </li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-supplementary">Supplementary</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-supplementary">
-    <a class="dropdown-item" href="../articles/som.html">Supplementary</a>
+    <a class="dropdown-item" href="../articles/salmon_survival.html">Vignette</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-slides">Slides</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-slides">
     <a class="dropdown-item" href="../slides/slides.html">R Markdown slides</a>
-  </div>
-</li>
-<li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-posters">Posters</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-posters">
-    <a class="dropdown-item" href="../posters/poster.html">Conference 2019</a>
   </div>
 </li>
 <li class="nav-item">
@@ -102,20 +96,82 @@
 
     
     
+<p>Package for the article Effect of multiple pressures on early marine survival of juvenile salmon in Puget Sound</p>
+<p>Hem Nalini Morzaria-Luna, I.C. Kaplan, C.J. Harvey, M. Schmidt, E.A. Fulton, R. Girardin, and P. MacCready</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rnaturalearthhires"</span>, repos <span class="op">=</span> <span class="st">"http://packages.ropensci.org"</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Installing package into '/tmp/RtmpxwBwV6/temp_libpath19d31ea6cbe4'</span>
+<span class="co">## (as 'lib' is unspecified)</span></code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">pssalmonsurvival</span><span class="op">)</span></code></pre></div>
-<p>Model ensemble was developed with alternate parametrizations. Plot biomass trajectories based on simulations that run the model ensemble 30 years under constant fishing rates. We only use 6 model variants, 2:5 and 7:8</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ensemblebiomass</span><span class="op">)</span>
-<span class="va">plotmodels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">6</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plot_ensemblebiomass.html">plot_ensemblebiomass</a></span><span class="op">(</span><span class="va">ensemblebiomass</span>, <span class="va">plotmodels</span><span class="op">)</span>
-<span class="co">#&gt; [1] 5</span>
-<span class="co">#&gt; [1] 1</span>
-<span class="co">#&gt; [1] 2</span>
-<span class="co">#&gt; [1] 3</span>
-<span class="co">#&gt; [1] 4</span>
-<span class="co">#&gt; [1] 5</span></code></pre></div>
+<p>Map of model extent in Puget Sound</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">file.name</span> <span class="op">&lt;-</span> <span class="st">"amps_model_map.png"</span>
+
+<span class="fu"><a href="../reference/make_map.html">make_map</a></span><span class="op">(</span><span class="va">file.name</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Reading layer `bgm_Puget_Sound_89b_0p0001_WGS84' from data source </span>
+<span class="co">##   `/home/atlantis/pssalmonsurvival/shapefiles/bgm_Puget_Sound_89b_0p0001_WGS84.shp' </span>
+<span class="co">##   using driver `ESRI Shapefile'</span>
+<span class="co">## Simple feature collection with 89 features and 10 fields</span>
+<span class="co">## Geometry type: POLYGON</span>
+<span class="co">## Dimension:     XY</span>
+<span class="co">## Bounding box:  xmin: -123.8533 ymin: 47.0343 xmax: -122.1955 ymax: 49.08208</span>
+<span class="co">## Geodetic CRS:  WGS 84</span>
+<span class="co">## Reading layer `Puget_Sound_cities_WSG84' from data source </span>
+<span class="co">##   `/home/atlantis/pssalmonsurvival/shapefiles/Puget_Sound_cities_WSG84.shp' </span>
+<span class="co">##   using driver `ESRI Shapefile'</span>
+<span class="co">## Simple feature collection with 5 features and 8 fields</span>
+<span class="co">## Geometry type: POINT</span>
+<span class="co">## Dimension:     XY</span>
+<span class="co">## Bounding box:  xmin: -122.9007 ymin: 47.03787 xmax: -122.2021 ymax: 48.75955</span>
+<span class="co">## Geodetic CRS:  WGS 84</span></code></pre>
+<p><img src="salmon_survival_files/figure-html/map%20model%20extent-1.png" width="700"></p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">#Plot model food web</span>
+
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ppreymatrix"</span><span class="op">)</span>
+<span class="va">plot.name</span> <span class="op">&lt;-</span> <span class="st">"ps_foodweb.png"</span>
+  
+<span class="fu"><a href="../reference/plot_foodweb.html">plot_foodweb</a></span><span class="op">(</span><span class="va">ppreymatrix</span>, <span class="va">plot.name</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Registered S3 method overwritten by 'GGally':</span>
+<span class="co">##   method from   </span>
+<span class="co">##   +.gg   ggplot2</span></code></pre>
+<pre><code><span class="co">## Scale for 'colour' is already present. Adding another scale for 'colour',</span>
+<span class="co">## which will replace the existing scale.</span></code></pre>
+<p><img src="salmon_survival_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
+<p>Model ensemble was developed with alternate parametrizations. Plot biomass trajectories based on simulations that run the model ensemble 30 years under constant fishing rates. We only use 6 model variants, 2:5 and 7:8 Model biomass comes from 30-year runs of the base models. There are 8 model variants that differ in invertebrate growth rate and vertebrate density dependence</p>
+<pre><code><span class="co">## [1] 5</span>
+<span class="co">## [1] 1</span></code></pre>
+<pre><code><span class="co">## [1] 2</span></code></pre>
+<pre><code><span class="co">## [1] 3</span></code></pre>
+<pre><code><span class="co">## [1] 4</span></code></pre>
+<pre><code><span class="co">## [1] 5</span></code></pre>
+<pre><code><span class="co">## [[1]]</span></code></pre>
+<p><img src="salmon_survival_files/figure-html/plot%20biomass%20base%20runs-1.png" width="700"></p>
+<pre><code><span class="co">## </span>
+<span class="co">## [[2]]</span></code></pre>
+<p><img src="salmon_survival_files/figure-html/plot%20biomass%20base%20runs-2.png" width="700"></p>
+<pre><code><span class="co">## </span>
+<span class="co">## [[3]]</span></code></pre>
+<p><img src="salmon_survival_files/figure-html/plot%20biomass%20base%20runs-3.png" width="700"></p>
+<pre><code><span class="co">## </span>
+<span class="co">## [[4]]</span></code></pre>
+<p><img src="salmon_survival_files/figure-html/plot%20biomass%20base%20runs-4.png" width="700"></p>
+<pre><code><span class="co">## </span>
+<span class="co">## [[5]]</span></code></pre>
+<p><img src="salmon_survival_files/figure-html/plot%20biomass%20base%20runs-5.png" width="700"></p>
+<p>Plot salmon survival for model ensemble, survival is defined as the proportion of age 1 salmon that survive to age 5, the cohort is lagged over time.</p>
+<pre><code><span class="co">## [1] 2</span></code></pre>
+<pre><code><span class="co">## Warning: Removed 6 row(s) containing missing values (geom_path).</span>
+<span class="co">## Removed 6 row(s) containing missing values (geom_path).</span></code></pre>
+<pre><code><span class="co">## [[1]]</span></code></pre>
+<pre><code><span class="co">## Warning: Removed 6 row(s) containing missing values (geom_path).</span></code></pre>
+<p><img src="salmon_survival_files/figure-html/plot%20survival%20base%20runs-1.png" width="700"></p>
+<pre><code><span class="co">## </span>
+<span class="co">## [[2]]</span></code></pre>
+<pre><code><span class="co">## Warning: Removed 6 row(s) containing missing values (geom_path).</span></code></pre>
+<p><img src="salmon_survival_files/figure-html/plot%20survival%20base%20runs-2.png" width="700"></p>
+<p>Make forcings for model simulations, by scenario</p>
   </main>
 </div>
 

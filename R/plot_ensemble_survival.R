@@ -5,7 +5,7 @@
 #' @return salmon.return.nums, survival over time
 #' @export
 #'
-#' @descriptions Code to plot survival of multiple AMPS versions
+#' @description Code to plot survival of multiple AMPS versions
 #' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2002
 
 
@@ -45,6 +45,9 @@ plot_ensemble_survival <- function(ensemblenumbersage, salmongroups, plotmodels)
 #  col.pal <- Redmonder::redmonder.pal(length(levels(salmon.return.nums$model_ver)), "qMSOSlp")
 
   print(n_pages)
+
+  plot.list <- list()
+
   for (i in seq_len(n_pages)) {
 
     survival.plot <- salmon.return.nums %>%
@@ -59,12 +62,14 @@ plot_ensemble_survival <- function(ensemblenumbersage, salmongroups, plotmodels)
       ggforce::facet_wrap_paginate(~ Long.Name, ncol = 3, nrow = 4, page = i, shrink = FALSE, labeller = 'label_value')+
       ggplot2::labs(y="Survival")
 
+    plot.list[[i]] <- survival.plot
+
     thisplotname <- paste0("salmon_survival_plot_",i,".png")
 
-    ggplot2::ggsave(here::here(thisplotname),plot = survival.plot, device = "png", width = 21, height = 24, units = "cm")
+    ggplot2::ggsave(thisplotname,plot = survival.plot, device = "png", width = 21, height = 24, units = "cm")
 
   }
 
 
-  return(salmon.return.nums)
+  return(plot.list)
 }

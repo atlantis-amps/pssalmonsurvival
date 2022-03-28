@@ -10,103 +10,148 @@
 #' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2002
 
 make_forcing <-
-  function(fungroupname,
+  function(thislistitem,
            ncfile,
            func.groups,
            num.forcing.years,
            rate.multiplier,
            bash.file,
-           force.prm) {
+           force.prm,
+           salmongroups) {
+    #salmon names
+    salmon.names <- salmongroups %>%
+      dplyr::pull(Name)
+
 
     #rate multiplier name
     rate.name <- stringr::str_replace(rate.multiplier, "[.]", "_")
 
-    #new forcing file name
-    force.prm.name <-
-      paste0("PugetSound_force_", fungroupname, "_", rate.name, ".prm")
+    length.name <- length(thislistitem)
 
-    #include together marine mammals for predation scenario
-
-    if (fungroupname %in% c("Pinniped", "California_sea_lion", "Harbor_seal")) {
+    #if item is a single name create forcing file name
+    if (length.name == 1) {
       force.prm.name <-
-        paste0("PugetSound_force_mammal_predation_", rate.name, ".prm")
+        paste0("PugetSound_force_", thislistitem, "_", rate.name, ".prm")
+
+    } else if (length.name > 1) {
+      if (thislistitem == c("Pinniped", "California_sea_lion", "Harbor_seal")) {
+        #new forcing file name
+        #include together marine mammals for predation scenario
+        force.prm.name <-
+          paste0("PugetSound_force_mammal_predation_",
+                 rate.name,
+                 ".prm")
+      }
+      if (thislistitem == c("Pisc_Seabird", "NonPisc_Seabird")) {
+        #include seabirds in predation scenario
+        force.prm.name <-
+          paste0("PugetSound_force_seabirds_predation_",
+                 rate.name,
+                 ".prm")
+      }
+      if (thislistitem == c("Herring_PS", "Herring_Cherry")) {
+        #include herring groups in herring trajectory
+        force.prm.name <-
+          paste0("PugetSound_force_herring_trend_", rate.name, ".prm")
+      }
+      if (thislistitem == c("PinkSY_Fish", "ChumFSY_Fish")) {
+        #include pink and chum in salmon competition
+        force.prm.name <-
+          paste0("PugetSound_force_salmon_competition_",
+                 rate.name,
+                 ".prm")
+      }
+      if (thislistitem == c("ChinookY_Fish",
+                            "ChinookSY_Fish",
+                            "CohoHY_Fish",
+                            "ChumHSY_Fish")) {
+        #include hatchery salmon in hatchery competition
+        force.prm.name <-
+          paste0("PugetSound_force_hatchery_competition_",
+                 rate.name,
+                 ".prm")
+      }
+      if (thislistitem == c("ChinookY_Fish_2", "ChinookSY_Fish_2")) {
+        force.prm.name <-
+          paste0("PugetSound_force_chinookhatchery_competition_",
+                 rate.name,
+                 ".prm")
+
+        thislistitem <- stringr::str_replace(thislistitem, "_2", "")
+
+      }
+
     }
-
-    #include seabirds in predation scenario
-    if (fungroupname %in% c("Pisc_Seabird", "NonPisc_Seabird")) {
-      force.prm.name <-
-        paste0("PugetSound_force_seabirds_predation", rate.name, ".prm")
-    }
-
-    #include herring groups in herring trajectory
-    if (fungroupname %in% c("Herring_PS", "Herring_Cherry")) {
-      force.prm.name <-
-        paste0("PugetSound_force_herring_trend_", rate.name, ".prm")
-    }
-
-    #include pink and chum in salmon competition
-    if (fungroupname %in% c("PinkSY_Fish", "ChumFSY_Fish")) {
-
-      force.prm.name <-
-        paste0("PugetSound_force_salmon_competition_",
-               rate.name,
-               ".prm")
-    }
-
-    #include hatchery salmon in hatchery competition
-    if (fungroupname %in% c("ChinookY_Fish","ChinookSY_Fish","CohoHY_Fish","ChumHSY_Fish")) {
-
-      force.prm.name <-
-        paste0("PugetSound_force_hatchery_competition_",
-               rate.name,
-               ".prm")
-        }
-
-    if (fungroupname %in% c("ChinookY_Fish_2","ChinookSY_Fish_2")) {
-
-      force.prm.name <-
-        paste0("PugetSound_force_chinookhatchery_competition_",
-               rate.name,
-               ".prm")
-
-        fungroupname <- stringr::str_replace(fungroupname,"_2","")
-
-    }
-
-#get functional group name
-this.group <- func.groups %>%
-  dplyr::filter(name == fungroupname)
-#number of cohorts, one nc forcing file per cohort
-no.cohorts <- this.group$NumCohorts
-
-if (this.group$isVertebrate == 1) {
-  #if the group is vertebrate there is one Nums forcing file per cohort
-  cdf.variable <-
-    paste(fungroupname, 1:no.cohorts, "_Nums", sep = "")
-  print(cdf.variable)
-
-} else if (this.group$isVertebrate == 0) {
-  #invertebrates are biomass pools with only one forcing file
-  cdf.variable <- paste0(this.group$name, "_N")
-  print(cdf.variable)
-}
-
-
-
     #name new directory
     new.dir <-
       stringr::str_replace(force.prm.name, "[.]prm", "")
     #create new directory
     dir.create(here::here("modelfiles", new.dir))
 
-
     #open original nc file
     nc <- ncdf4::nc_open(here::here("modelfiles", ncfile))
     #list names in forcing file
     attribute.names <- attributes(nc$var)$names
 
+    cdf.variable.names <- list()
+
+    for (everyitem in 1:length(thislistitem)) {
+      print("creating variable names")
+
+      fungroupname <- thislistitem[everyitem]
+      print(fungroupname)
+
+      #get functional group name
+      this.group <- func.groups %>%
+        dplyr::filter(name == fungroupname)
+      print(this.group)
+      #number of cohorts, one nc forcing file per cohort
+      no.cohorts <- this.group$NumCohorts
+
+      #this applies to all vertebrates
+      cdf.variable <-
+        paste0(fungroupname, 1:no.cohorts, "_Nums")
+
+
+      if (fungroupname %in% salmon.names) {
+        first.cohort <- 1
+        this.migration <- salmongroups %>%
+          dplyr::filter(Name == fungroupname)
+        print(this.migration)
+
+        if (this.migration$migiobox == 1) {
+          model.groups <-
+            c(first.cohort,
+              (this.migration$years_away + 1):this.migration$NumCohorts)
+
+          cdf.variable <-
+            paste0(fungroupname, model.groups, "_Nums")
+
+        }
+      }
+
+      if (this.group$isVertebrate == 0) {
+        #invertebrates are biomass pools with only one forcing file
+        cdf.variable <- paste0(this.group$name, "_N")
+
+      }
+
+      print(cdf.variable)
+
+      cdf.variable.names[[everyitem]] <- cdf.variable
+
+    }
+
+
+    cdf.names.sc <- cdf.variable.names %>%
+      unlist()
+
+    print("age classes")
+    print(cdf.names.sc)
+
     #loop over age classes to create a new nc forcing file for each
-    for (eachageclass in cdf.variable) {
+    for (eachageclass in cdf.names.sc) {
+      print("creating forcing files")
       print(eachageclass)
       #get age class from original nc file
       orig.ncvar <- ncdf4::ncvar_get(nc, eachageclass)
@@ -184,10 +229,16 @@ if (this.group$isVertebrate == 1) {
       #close new forcing file
       ncdf4::nc_close(new.nc.forcing)
 
-      new.nc <- RNetCDF::open.nc(here::here("modelfiles", new.dir, new.nc.forcing.name), write = TRUE)
+      new.nc <-
+        RNetCDF::open.nc(here::here("modelfiles", new.dir, new.nc.forcing.name),
+                         write = TRUE)
 
       RNetCDF::att.put.nc(new.nc, eachageclass, "valid_min", "NC_DOUBLE", 0)
-      RNetCDF::att.put.nc(new.nc, eachageclass, "valid_max", "NC_DOUBLE", 10000000000000)
+      RNetCDF::att.put.nc(new.nc,
+                          eachageclass,
+                          "valid_max",
+                          "NC_DOUBLE",
+                          10000000000000)
       RNetCDF::close.nc(new.nc)
       setwd(here::here("modelfiles", new.dir))
       #dump nc file into cdf
@@ -197,9 +248,10 @@ if (this.group$isVertebrate == 1) {
       setwd(here::here())
     }
 
+
+
     #close the original nc file
     ncdf4::nc_close(nc)
-
 
     #copy bash file
     file.copy(
@@ -223,11 +275,43 @@ if (this.group$isVertebrate == 1) {
       append = TRUE
     )
 
-    #copy new prm forcing file
-    file.copy(
-      from = here::here("modelfiles", force.prm),
-      to = here::here("modelfiles", new.dir, force.prm.name)
-    )
+
+    force.txt <-
+      read.delim(here::here("modelfiles", force.prm), header = FALSE)
+
+    if (grepl("force_hatchery_competition", force.prm.name)) {
+      force.txt <-  force.txt %>%
+        dplyr::mutate(
+          V1 = dplyr::if_else(
+            V1 == "Recruitment_time_series HatcheryBASE2011v4.ts",
+            "# Recruitment_time_series HatcheryBASE2011v4.ts",
+            V1
+          )
+        )
+
+    }
+    if (grepl("force_chinookhatchery_competition", force.prm.name)) {
+      force.txt <-  force.txt %>%
+        dplyr::mutate(
+          V1 = dplyr::if_else(
+            V1 == "Recruitment_time_series HatcheryBASE2011v4.ts",
+            "Recruitment_time_series HatcheryBASE2011noCH.ts",
+            V1
+          )
+        )
+
+    }
+
+
+    for (eachrow in 1:nrow(force.txt)) {
+      cat(
+        (force.txt[eachrow,]),
+        sep = "\n",
+        file = here::here("modelfiles", new.dir, force.prm.name),
+        append = TRUE
+      )
+    }
+
 
     #add number of tracers and tracer names
     cat(
@@ -241,17 +325,17 @@ if (this.group$isVertebrate == 1) {
       append = TRUE
     )
     cat(
-      paste0("nforceTracers ", no.cohorts, "\n"),
+      paste0("nforceTracers ", length(cdf.names.sc), "\n"),
       file = here::here("modelfiles", new.dir, force.prm.name),
       append = TRUE
     )
     cat(
-      paste0("tracerNames ", no.cohorts, "\n"),
+      paste0("tracerNames ", length(cdf.names.sc), "\n"),
       file = here::here("modelfiles", new.dir, force.prm.name),
       append = TRUE
     )
     cat(
-      cdf.variable,
+      (cdf.names.sc),
       sep = "\n",
       file = here::here("modelfiles", new.dir, force.prm.name),
       append = TRUE
@@ -263,7 +347,7 @@ if (this.group$isVertebrate == 1) {
     )
 
     #add list of variables to prm forcing file
-    for (eachvariable in cdf.variable) {
+    for (eachvariable in cdf.names.sc) {
       cat(
         paste0(eachvariable, "_nFiles 1"),
         sep = "\n",
@@ -293,6 +377,4 @@ if (this.group$isVertebrate == 1) {
       )
 
     }
-
-
   }

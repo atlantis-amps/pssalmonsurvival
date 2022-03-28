@@ -5,7 +5,7 @@
 #' @return models.used, data frame of final models plotted
 #' @export
 #'
-#' @title Code to plot biomass of multiple AMPS versions
+#' @description Code to plot biomass of multiple AMPS versions
 #' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com, February 2022
 #'
 
@@ -27,11 +27,14 @@ plot_ensemblebiomass <- function(ensemblebiomass, plotmodels){
   )
 
   print(n_pages)
+
+  plot.list <- list()
+
   for (i in seq_len(n_pages)) {
 
     print(i)
 
-    pplot <-  ggplot2::ggplot(plot.biomass, ggplot2::aes(x=Year,y=biomass, group = model_ver, colour = model_ver))+
+    biomass.plot <-  ggplot2::ggplot(plot.biomass, ggplot2::aes(x=Year,y=biomass, group = model_ver, colour = model_ver))+
       ggplot2::geom_line()+
       ggplot2::labs(y= thisvariabletype, x = "Year") +
    #   ggplot2::scale_color_manual(values=col.pal, name = "Model version")+
@@ -44,14 +47,14 @@ plot_ensemblebiomass <- function(ensemblebiomass, plotmodels){
             axis.text.x = ggplot2::element_text(size =c(8)),
             axis.text.y = ggplot2::element_text(size =c(8)))
 
+    plot.list[[i]] <- biomass.plot
+
 
     thisplotname <- paste(thisvariabletype,i,"model_comparison_plot.png",sep="_")
 
-    ggplot2::ggsave(thisplotname,plot = pplot, device="png",width = 21, height = 29, units = "cm")
+    ggplot2::ggsave(thisplotname, plot = biomass.plot, device="png",width = 21, height = 29, units = "cm")
   }
 
-  models.used <- plotmodels
-
-  return(models.used)
+  return(plot.list)
 }
 

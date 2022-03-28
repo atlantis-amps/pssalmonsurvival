@@ -13,16 +13,13 @@
     <loc>/articles/salmon_survival.html</loc>
   </url>
   <url>
-    <loc>/articles/som.html</loc>
-  </url>
-  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
     <loc>/index.html</loc>
   </url>
   <url>
-    <loc>/posters/poster.html</loc>
+    <loc>/news/index.html</loc>
   </url>
   <url>
     <loc>/reference/ensemblebiomass.html</loc>
@@ -31,7 +28,16 @@
     <loc>/reference/ensemblenumbersage.html</loc>
   </url>
   <url>
+    <loc>/reference/functionalgroups.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_shapefile.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/make_forcing.html</loc>
   </url>
   <url>
     <loc>/reference/make_map.html</loc>
@@ -40,9 +46,15 @@
     <loc>/reference/pipe.html</loc>
   </url>
   <url>
+    <loc>/reference/plot_ensemble_survival.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_ensemblebiomass.html</loc>
   </url>
   <url>
-    <loc>/slides/slides.html</loc>
+    <loc>/reference/plot_foodweb.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ppreymatrix.html</loc>
   </url>
 </urlset>
