@@ -17,6 +17,7 @@ Imports:
     ggplot2,
     ggthemes,
     ggspatial,
+    ggsci,
     rgdal,
     rnaturalearth,
     sf,
