@@ -19,10 +19,16 @@
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/news/index.html</loc>
+  </url>
+  <url>
     <loc>/reference/ensemblebiomass.html</loc>
   </url>
   <url>
     <loc>/reference/ensemblenumbersage.html</loc>
+  </url>
+  <url>
+    <loc>/reference/functionalgroups.html</loc>
   </url>
   <url>
     <loc>/reference/get_shapefile.html</loc>
@@ -44,5 +50,11 @@
   </url>
   <url>
     <loc>/reference/plot_ensemblebiomass.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_foodweb.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ppreymatrix.html</loc>
   </url>
 </urlset>
