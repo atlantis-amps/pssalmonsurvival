@@ -28,6 +28,7 @@ file.name <- "amps_model_map.png"
 make_map(file.name)
 
 ```
+
 ```{r}
 #Plot model food web
 
@@ -104,4 +105,16 @@ lapply(sim.groups, make_forcing, ncfile, func.groups, num.forcing.years, rate.mu
 
 ```
 
+
+Plot salmon survival for scenarios, survival is defined as the proportion of age 1 salmon that survive to age 5, the cohort is lagged over time. 
+
+```{r plot survival base runs, echo=FALSE}
+#numbers at age from base runs
+data("ensemblenumbersagescenarios")
+data("salmongroups")
+plotmodels <- c(1,6) # eliminated model versions 1 & 6
+
+plot_ensemble_survival(ensemblenumbersagescenarios, salmongroups, plotmodels)
+
+```
 
