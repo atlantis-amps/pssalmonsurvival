@@ -4,7 +4,7 @@
 \alias{plot_ensemble_survival}
 \title{plot salmon survival of ensemble models}
 \usage{
-plot_ensemble_survival(ensemblenumbersage, salmongroups, plotmodels)
+plot_ensemble_survival(ensemblenumbersage, salmongroups)
 }
 \arguments{
 \item{ensemblenumbersage, }{a data frame}

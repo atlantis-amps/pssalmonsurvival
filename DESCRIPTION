@@ -37,7 +37,10 @@ Imports:
     RColorBrewer,
     grDevices,
     colorRamps,
-    colorspace
+    colorspace,
+    tidyr,
+    Hmisc,
+    forcats
 Remotes:
     github::ropensci/rnaturalearthhires
 Suggests: 

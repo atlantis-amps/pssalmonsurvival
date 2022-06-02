@@ -29,6 +29,8 @@ make_map(file.name)
 
 ```
 
+Plot food web
+
 ```{r}
 #Plot model food web
 
@@ -49,7 +51,7 @@ Model biomass comes from 30-year runs of the base models. There are 8 model vari
 data("ensemblebiomass")
 plotmodels <- c(1,6) # eliminated model versions 1 & 6
 
-plot_ensemblebiomass(ensemblebiomass, plotmodels)
+plot_ensemblebiomass(ensemblebiomass)
 
 ```
 
@@ -62,7 +64,7 @@ data("ensemblenumbersage")
 data("salmongroups")
 plotmodels <- c(1,6) # eliminated model versions 1 & 6
 
-plot_ensemble_survival(ensemblenumbersage, salmongroups, plotmodels)
+plot_ensemble_survival(ensemblenumbersage, salmongroups)
 
 ```
 
@@ -99,22 +101,36 @@ lapply(sim.groups, make_forcing, ncfile, func.groups, num.forcing.years, rate.mu
 
 #scenario 20% increase
 
+rate.multiplier = 1
+
+lapply(sim.groups, make_forcing, ncfile, func.groups, num.forcing.years, rate.multiplier, bash.file, force.prm, salmongroups)
+
 rate.multiplier = 1.2
 
 lapply(sim.groups, make_forcing, ncfile, func.groups, num.forcing.years, rate.multiplier, bash.file, force.prm, salmongroups)
 
+
 ```
 
 
-Plot salmon survival for scenarios, survival is defined as the proportion of age 1 salmon that survive to age 5, the cohort is lagged over time. 
+Plot salmon survival for scenario results, survival is defined as the proportion of age 1 salmon that survive to age 5, the cohort is lagged over time. 
 
-```{r plot survival base runs, echo=FALSE}
+```{r plot survival scenarios, echo=FALSE}
+
+#base case survival for each model variant created above
+
+base.survival <- readr::read_csv("base_survival.csv") %>% 
+  tidyr::drop_na() %>%
+  dplyr::mutate(max_year = max(year_no)) %>% 
+  dplyr::filter(year_no<=(max_year-3)) %>% 
+  dplyr::filter(year_no==max(year_no))
+
 #numbers at age from base runs
 data("ensemblenumbersagescenarios")
 data("salmongroups")
-plotmodels <- c(1,6) # eliminated model versions 1 & 6
+#plotmodels <- c(1,6) # eliminated model versions 1 & 6
 
-plot_ensemble_survival(ensemblenumbersagescenarios, salmongroups, plotmodels)
+plot_ensemble_survival_scenarios(ensemblenumbersagescenarios, salmongroups, plotmodels, base.survival)
 
 ```
 

@@ -11,14 +11,14 @@
 
 
 
-plot_ensemble_survival <- function(ensemblenumbersage, salmongroups, plotmodels){
+plot_ensemble_survival <- function(ensemblenumbersage, salmongroups){
 
   salmon.max.nums <- ensemblenumbersage %>%
     dplyr::group_by(model_ver, Code, age, year_no) %>%
     dplyr::summarise(max_nums = max(nums)) %>%
     dplyr::left_join(salmongroups, by="Code") %>%
-    dplyr::ungroup() %>%
-    dplyr::filter(!model_ver%in% plotmodels)
+    dplyr::ungroup() # %>%
+    #dplyr::filter(!model_ver%in% plotmodels)
 
   salmon.juv.nums <- salmon.max.nums %>%
     dplyr::filter(age == 1) %>%
@@ -34,7 +34,7 @@ plot_ensemble_survival <- function(ensemblenumbersage, salmongroups, plotmodels)
     dplyr::mutate(model_ver = as.factor(model_ver)) %>%
     dplyr::mutate(Year = year_sim - 2010)
 
-  write_csv(salmon.return.nums,"base_survival.csv")
+  readr::write_csv(salmon.return.nums,"base_survival.csv")
 
   max_year  <- max(salmon.return.nums$year_no)
 
@@ -67,7 +67,7 @@ plot_ensemble_survival <- function(ensemblenumbersage, salmongroups, plotmodels)
 
     thisplotname <- paste0("salmon_survival_plot_",i,".png")
 
-    ggplot2::ggsave(here(thisplotname),plot = survival.plot, device = "png", width = 21, height = 24, units = "cm")
+    ggplot2::ggsave(thisplotname,plot = survival.plot, device = "png", width = 21, height = 24, units = "cm")
 
   }
 

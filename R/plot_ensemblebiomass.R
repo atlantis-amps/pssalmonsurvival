@@ -9,11 +9,11 @@
 #' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com, February 2022
 #'
 
-plot_ensemblebiomass <- function(ensemblebiomass, plotmodels){
+plot_ensemblebiomass <- function(ensemblebiomass){ #, plotmodels
 
   plot.biomass <- ensemblebiomass %>%
     dplyr::filter(longname!="Carrion") %>%
-    dplyr::filter(!model_ver%in% plotmodels) %>%
+  #  dplyr::filter(!model_ver%in% plotmodels) %>%
     dplyr::mutate(model_ver = as.factor(model_ver))
 
   thisvariabletype <- "Biomass"

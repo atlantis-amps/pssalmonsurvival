@@ -22,10 +22,16 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/posters/poster.html</loc>
+  </url>
+  <url>
     <loc>/reference/ensemblebiomass.html</loc>
   </url>
   <url>
     <loc>/reference/ensemblenumbersage.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ensemblenumbersagescenarios.html</loc>
   </url>
   <url>
     <loc>/reference/functionalgroups.html</loc>
@@ -49,6 +55,9 @@
     <loc>/reference/plot_ensemble_survival.html</loc>
   </url>
   <url>
+    <loc>/reference/plot_ensemble_survival_scenarios.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_ensemblebiomass.html</loc>
   </url>
   <url>
@@ -56,5 +65,8 @@
   </url>
   <url>
     <loc>/reference/ppreymatrix.html</loc>
+  </url>
+  <url>
+    <loc>/slides/slides.html</loc>
   </url>
 </urlset>
