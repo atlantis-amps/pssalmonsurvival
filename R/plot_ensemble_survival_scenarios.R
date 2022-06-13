@@ -18,7 +18,11 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
     dplyr::left_join(salmongroups, by="Code") %>%
     dplyr::ungroup() %>%
   #  dplyr::filter(!model_ver%in% plotmodels) %>%
-    dplyr::mutate(model_ver = as.double(model_ver))
+    dplyr::mutate(model_ver = as.double(model_ver)) %>%
+    dplyr::mutate(scenario_name = dplyr::if_else(scenario_name=="salmon competition","wild pink and chum salmon competition",
+                                                 dplyr::if_else(scenario_name=="mammal predation","pinniped predation",
+                                                                dplyr::if_else(scenario_name=="seabirds predation","seabird predation", scenario_name)))) %>%
+    dplyr::mutate(scenario_var = dplyr::if_else(scenario_var=="0_8", "0.8","1.2"))
 
   salmon.juv.nums <- salmon.max.nums %>%
     dplyr::filter(age == 1) %>%
@@ -58,12 +62,12 @@ salmon.lollipop.data <- salmon.rel.survival %>%
                 long_name = dplyr::if_else(long_name=="Chum Hood Canal summer run SY", "Chum Hood Canal SY",
                                            dplyr::if_else(long_name=="Strait of Georgia salmonids", "St. of Georgia salmonids", long_name))) %>%
   dplyr::mutate(scenario_name = Hmisc::capitalize(scenario_name)) %>%
-  dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery Chinook competition", "Hatchery competition", "Salmon competition", "Gelatinous zooplankton increase", "Herring decrease", "Mammal predation",
-                                                             "Porpoise predation", "Seabirds predation" , "Spiny dogfish predation"))
+  dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease", "Pinniped predation",
+                                                             "Porpoise predation", "Seabird predation" , "Spiny dogfish predation"))
 
 
-bottom.up.sc <- c("Hatchery Chinook competition", "Hatchery competition", "Salmon competition", "Gelatinous zooplankton increase", "Herring decrease")
-top.down.sc <- c("Mammal predation", "Porpoise predation", "Seabirds predation" , "Spiny dogfish predation")
+bottom.up.sc <- c("Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease")
+top.down.sc <- c("Pinniped predation", "Porpoise predation", "Seabird predation" , "Spiny dogfish predation")
 
 scenario.list <- list("Bottom up hypotheses" = bottom.up.sc, "Top down hypotheses" = top.down.sc)
 
@@ -75,21 +79,23 @@ for(eachscenario in 1:length(scenario.list)){
   thisname <- names(thislist)
 
   col.pal <- c("#ffbe0b","#0a9396")
+  col.fill <- c("#ffbe0b","#0a9396", "#3fd2c7", "#99ddff", "#00458b", "#549896", "#83bb90", "#f1dd88", "#f7a482", "#81aa2c", "#f293b1", "#ed5181")
 
-  ggsci::pal_aaas(8)
+ low.survival <- c("Chinook Hood Canal SY", "Chinook Nisqually SY")
 
-  col.pal <- c("")
-
-  range.plot <-  salmon.lollipop.data %>%
+    range.plot <-  salmon.lollipop.data %>%
     dplyr::filter(scenario_name %in% thesescenarios) %>%
+    dplyr::filter(!long_name %in% low.survival) %>%
     droplevels() %>%
     ggplot2::ggplot() +
     ggplot2::geom_segment(ggplot2::aes(x=min_model, xend=max_model, y=scenario_name, yend=scenario_name, color = scenario_var), size = 5, alpha = 0.1) +
-    ggplot2::scale_color_manual(values = col.pal, name = "Change in key group abundance") +
-    #ggplot2::geom_point(ggplot2::aes(y = scenario_name, x = rel_survival, fill = model_ver, shape = scenario_var)) +
-    ggplot2::geom_jitter(ggplot2::aes(y = scenario_name, x = rel_survival, fill = model_ver, shape = scenario_var), width = 0.25, height = 0.25) +
-    ggplot2::scale_shape_manual(values = c(21,24)) +
-    ggsci::scale_fill_d3("category20") +
+  #  ggplot2::scale_color_manual(values = col.fill, name = "Change in key group abundance") +
+   # ggplot2::geom_point(ggplot2::aes(y = scenario_name, x = rel_survival, fill = model_ver, color = model_ver, shape = scenario_var)) +
+    ggplot2::geom_jitter(ggplot2::aes(y = scenario_name, x = rel_survival, shape = scenario_var, color = model_ver, fill = model_ver), width = 0.25, height = 0.25, size = 1.5) +
+    ggplot2::scale_shape_manual(values = c(21,24), name = "Change in key group abundance") +
+    ggplot2::scale_fill_manual(values = col.fill, name = "Model version") +
+    ggplot2::scale_color_manual(values = col.fill, name = "Model version") +
+#    ggsci::scale_fill_d3("category20", name = "Model version") +
     ggplot2::facet_wrap(ggplot2::vars(long_name), scales = "free_y") +
     ggplot2::coord_flip() +
     ggplot2::geom_vline(xintercept = 0) +
@@ -98,13 +104,19 @@ for(eachscenario in 1:length(scenario.list)){
     ggplot2::labs(title = thisname) +
     ggthemes::theme_base() +
     ggplot2::theme(legend.position="bottom") +
-    ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90, vjust=0.5))
+    ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90, vjust=0.5)) +
+    ggplot2::guides(fill = "none")
+
 
 
   if(thisname == "Top down hypotheses"){
 
     # A data frame with labels for each facet
-    f_labels <- data.frame(long_name = unique(salmon.lollipop.data$long_name), label = c("", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", "Green is \n scenario overlap", "Points are \n model variants", ""))
+    f_labels <- salmon.lollipop.data %>%
+      dplyr::filter(!long_name %in% low.survival) %>%
+      droplevels() %>%
+      dplyr::distinct(long_name) %>%
+      data.frame(long_name =., label = c("", "", "", "","", "", "","", "", "","", "", "","", "", "", "Green is \n scenario overlap", "Points are \n model variants", ""))
 
     range.plot.txt <- range.plot +
       ggplot2::geom_text(x = -2, y = 2.5, ggplot2::aes(label = label), data = f_labels)
@@ -114,7 +126,11 @@ for(eachscenario in 1:length(scenario.list)){
 
   if(thisname == "Bottom up hypotheses") {
 
-    f_labels <- data.frame(long_name = unique(salmon.lollipop.data$long_name), label = c("", "", "","", "", "","", "", "","", "", "","", "", "","Green is \n scenario overlap", "", "", "", "", "Points are \n model variants"))
+    f_labels <- salmon.lollipop.data %>%
+      dplyr::filter(!long_name %in% low.survival) %>%
+      droplevels() %>%
+      dplyr::distinct(long_name) %>%
+      data.frame(long_name =., label = c("", "", "", "","", "", "","", "", "","", "", "","", "", "", "Green is \n scenario overlap", "Points are \n model variants", ""))
 
     range.plot.txt <-range.plot +
       ggplot2::geom_text(x = -30, y = 2, ggplot2::aes(label = label), data = f_labels)

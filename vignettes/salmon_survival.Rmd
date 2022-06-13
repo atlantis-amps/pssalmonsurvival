@@ -134,3 +134,11 @@ plot_ensemble_survival_scenarios(ensemblenumbersagescenarios, salmongroups, plot
 
 ```
 
+```{r plot survival trajectories scenarios}
+data("ensemblenumbersagescenarios")
+data("salmongroups")
+
+plot_ensemble_survival(ensemblenumbersagescenarios, salmongroups)
+
+```
+
