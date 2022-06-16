@@ -14,7 +14,7 @@
 plot_ensemble_survival <- function(ensemblenumbersage, salmongroups){
 
   salmon.max.nums <- ensemblenumbersage %>%
-    dplyr::group_by(model_ver, Code, age, year_no) %>%
+    dplyr::group_by(scenario_name, model_ver, Code, age, year_no) %>%
     dplyr::summarise(max_nums = max(nums)) %>%
     dplyr::left_join(salmongroups, by="Code") %>%
     dplyr::ungroup() # %>%
@@ -29,9 +29,10 @@ plot_ensemble_survival <- function(ensemblenumbersage, salmongroups){
     dplyr::mutate(cohort_yr = year_no - age) %>%
     dplyr::select(-years_away) %>%
     dplyr::rename(age_return = age, return_nums=max_nums, year_sim = year_no, year_no= cohort_yr) %>%
-    dplyr::left_join(salmon.juv.nums, by=c("model_ver","Code","year_no","Long.Name","NumCohorts","Name")) %>%
+    dplyr::left_join(salmon.juv.nums, by=c("scenario_name","model_ver","Code","year_no","Long.Name","NumCohorts","Name")) %>%
     dplyr::mutate(survival = return_nums/juv_nums) %>%
     dplyr::mutate(model_ver = as.factor(model_ver)) %>%
+    dplyr::mutate(scenario_name = as.factor(scenario_name)) %>%
     dplyr::mutate(Year = year_sim - 2010)
 
   readr::write_csv(salmon.return.nums,"base_survival.csv")
@@ -49,6 +50,8 @@ plot_ensemble_survival <- function(ensemblenumbersage, salmongroups){
 
   plot.list <- list()
 
+  col.pal <- paletteer::paletteer_d("rcartocolor::Vivid", n = 10)
+
   for (i in seq_len(n_pages)) {
 
     survival.plot <- salmon.return.nums %>%
@@ -59,8 +62,8 @@ plot_ensemble_survival <- function(ensemblenumbersage, salmongroups){
       ggplot2::geom_line() +
       ggplot2::ylim(0,1) +
       ggthemes::theme_few() +
-      ggthemes::scale_colour_few(name = "Model version") +
-      ggforce::facet_wrap_paginate(~ Long.Name, ncol = 3, nrow = 4, page = i, shrink = FALSE, labeller = 'label_value')+
+      ggplot2::scale_colour_manual(values= col.pal, name = "Model version") +
+      ggforce::facet_wrap_paginate(Long.Name ~ scenario_name, ncol = 3, nrow = 4, page = i, shrink = FALSE, labeller = 'label_value')+
       ggplot2::labs(y="Survival")
 
     plot.list[[i]] <- survival.plot

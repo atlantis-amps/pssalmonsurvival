@@ -4,7 +4,7 @@
 \alias{plot_ensemblebiomass}
 \title{plot biomass of ensemble models}
 \usage{
-plot_ensemblebiomass(ensemblebiomass, plotmodels)
+plot_ensemblebiomass(ensemblebiomass)
 }
 \arguments{
 \item{ensemblebiomass, }{a data frame}

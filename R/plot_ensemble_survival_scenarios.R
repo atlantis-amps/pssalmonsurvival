@@ -10,7 +10,7 @@
 
 
 
-plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmongroups, plotmodels, basesurvival){
+plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmongroups, plotmodels, base.survival){
 
   salmon.max.nums <- ensemblenumbersagescenarios %>%
     dplyr::group_by(scenario_name, scenario_var, model_ver, Code, age, year_no) %>%
@@ -44,10 +44,10 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
 
   readr::write_csv(salmon.return.nums, "survival_rates.csv")
 
-salmon.rel.survival <- basesurvival %>%
-    dplyr::select("model_ver","Code","Long.Name","survival") %>%
+salmon.rel.survival <- base.survival %>%
+    dplyr::select("scenario_name","model_ver","Code","Long.Name","survival") %>%
     dplyr::rename(base_survival = survival) %>%
-    dplyr::left_join(salmon.return.nums, by = c("model_ver","Code","Long.Name")) %>%
+    dplyr::left_join(salmon.return.nums, by = c("scenario_name","model_ver","Code","Long.Name")) %>%
     dplyr::mutate(rel_survival = (((survival / base_survival)-1) * 100))
 
 salmon.lollipop.data <- salmon.rel.survival %>%
@@ -62,12 +62,15 @@ salmon.lollipop.data <- salmon.rel.survival %>%
                 long_name = dplyr::if_else(long_name=="Chum Hood Canal summer run SY", "Chum Hood Canal SY",
                                            dplyr::if_else(long_name=="Strait of Georgia salmonids", "St. of Georgia salmonids", long_name))) %>%
   dplyr::mutate(scenario_name = Hmisc::capitalize(scenario_name)) %>%
-  dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease", "Pinniped predation",
+  dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease",
                                                              "Porpoise predation", "Seabird predation" , "Spiny dogfish predation"))
+# dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease", "Pinniped predation",
+#                                                    "Porpoise predation", "Seabird predation" , "Spiny dogfish predation"))
 
 
-bottom.up.sc <- c("Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease")
-top.down.sc <- c("Pinniped predation", "Porpoise predation", "Seabird predation" , "Spiny dogfish predation")
+bottom.up.sc <- c("Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease")
+#bottom.up.sc <- c("Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease")
+top.down.sc <- c( "Porpoise predation", "Seabird predation" , "Spiny dogfish predation")
 
 scenario.list <- list("Bottom up hypotheses" = bottom.up.sc, "Top down hypotheses" = top.down.sc)
 
@@ -91,7 +94,7 @@ for(eachscenario in 1:length(scenario.list)){
     ggplot2::geom_segment(ggplot2::aes(x=min_model, xend=max_model, y=scenario_name, yend=scenario_name, color = scenario_var), size = 5, alpha = 0.1) +
   #  ggplot2::scale_color_manual(values = col.fill, name = "Change in key group abundance") +
    # ggplot2::geom_point(ggplot2::aes(y = scenario_name, x = rel_survival, fill = model_ver, color = model_ver, shape = scenario_var)) +
-    ggplot2::geom_jitter(ggplot2::aes(y = scenario_name, x = rel_survival, shape = scenario_var, color = model_ver, fill = model_ver), width = 0.25, height = 0.25, size = 1.5) +
+    ggplot2::geom_jitter(ggplot2::aes(y = scenario_name, x = rel_survival, shape = scenario_var, fill = model_ver), width = 0.25, height = 0.25, size = 1.5) +
     ggplot2::scale_shape_manual(values = c(21,24), name = "Change in key group abundance") +
     ggplot2::scale_fill_manual(values = col.fill, name = "Model version") +
     ggplot2::scale_color_manual(values = col.fill, name = "Model version") +
@@ -106,6 +109,23 @@ for(eachscenario in 1:length(scenario.list)){
     ggplot2::theme(legend.position="bottom") +
     ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90, vjust=0.5)) +
     ggplot2::guides(fill = "none")
+
+
+    salmon.lollipop.data %>%
+      dplyr::filter(scenario_name %in% thesescenarios) %>%
+      dplyr::filter(!long_name %in% low.survival) %>%
+      droplevels() %>%
+      ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = scenario_name, fill = scenario_var)) +
+      geom_violin(trim = FALSE) +
+      geom_boxplot(ggplot2::aes(fill = scenario_var), width=0.1)+
+      ggforce::facet_wrap_paginate(. ~ long_name, ncol = 3, nrow = 4, page = i, shrink = FALSE, labeller = 'label_value', scales = "free_y") +
+      geom_dotplot(binaxis='y', stackdir='center',
+                   position=position_dodge(1))
+
+      ggplot2::geom_jitter(ggplot2::aes(fill = model_ver), width = 0.25, height = 0.25, size = 1.5)
+    +
+      geom_dotplot(binaxis='y', stackdir='center', dotsize=1, binwidth = 0.01) +
+
 
 
 

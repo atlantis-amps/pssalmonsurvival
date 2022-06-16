@@ -40,9 +40,11 @@ Imports:
     colorspace,
     tidyr,
     Hmisc,
-    forcats
+    forcats,
+    ecotraj
 Remotes:
     github::ropensci/rnaturalearthhires
+    devtools::EmilHvitfeldt/paletteer
 Suggests: 
     rmarkdown,
     knitr,
