@@ -22,7 +22,7 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
     dplyr::mutate(scenario_name = dplyr::if_else(scenario_name=="salmon competition","wild pink and chum salmon competition",
                                                  dplyr::if_else(scenario_name=="mammal predation","pinniped predation",
                                                                 dplyr::if_else(scenario_name=="seabirds predation","seabird predation", scenario_name)))) %>%
-    dplyr::mutate(scenario_var = dplyr::if_else(scenario_var=="0_8", "0.8","1.2"))
+    dplyr::mutate(scenario_var = dplyr::if_else(scenario_var=="0_8", "-20%","+20%"))
 
   salmon.juv.nums <- salmon.max.nums %>%
     dplyr::filter(age == 1) %>%
@@ -38,16 +38,19 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
     dplyr::mutate(Year = year_sim - 2010) %>%
     tidyr::drop_na() %>%
     dplyr::mutate(max_year = max(year_no)) %>%
-    dplyr::filter(year_no<=(max_year-3)) %>%
+    dplyr::mutate(ret_year = max_year-3)
+
+  salmon.return.nums.yr <- salmon.return.nums %>%
+    dplyr::filter(year_no<=ret_year) %>%
     dplyr::filter(year_no==max(year_no)) %>%
     dplyr::select("scenario_name","scenario_var","model_ver","Code","Long.Name","survival")
 
-  readr::write_csv(salmon.return.nums, "survival_rates.csv")
+  readr::write_csv(salmon.return.nums.yr, "survival_rates.csv")
 
 salmon.rel.survival <- base.survival %>%
     dplyr::select("scenario_name","model_ver","Code","Long.Name","survival") %>%
     dplyr::rename(base_survival = survival) %>%
-    dplyr::left_join(salmon.return.nums, by = c("scenario_name","model_ver","Code","Long.Name")) %>%
+    dplyr::left_join(salmon.return.nums.yr, by = c("scenario_name","model_ver","Code","Long.Name")) %>%
     dplyr::mutate(rel_survival = (((survival / base_survival)-1) * 100))
 
 salmon.lollipop.data <- salmon.rel.survival %>%
@@ -62,15 +65,13 @@ salmon.lollipop.data <- salmon.rel.survival %>%
                 long_name = dplyr::if_else(long_name=="Chum Hood Canal summer run SY", "Chum Hood Canal SY",
                                            dplyr::if_else(long_name=="Strait of Georgia salmonids", "St. of Georgia salmonids", long_name))) %>%
   dplyr::mutate(scenario_name = Hmisc::capitalize(scenario_name)) %>%
-  dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease",
-                                                             "Porpoise predation", "Seabird predation" , "Spiny dogfish predation"))
-# dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease", "Pinniped predation",
-#                                                    "Porpoise predation", "Seabird predation" , "Spiny dogfish predation"))
+  dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease", "Pinniped predation",
+                                                    "Porpoise predation", "Seabird predation" , "Spiny dogfish predation"))
 
 
-bottom.up.sc <- c("Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease")
-#bottom.up.sc <- c("Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease")
-top.down.sc <- c( "Porpoise predation", "Seabird predation" , "Spiny dogfish predation")
+#bottom.up.sc <- c("Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease")
+bottom.up.sc <- c("Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease")
+top.down.sc <- c("Pinniped predation", "Porpoise predation", "Seabird predation" , "Spiny dogfish predation")
 
 scenario.list <- list("Bottom up hypotheses" = bottom.up.sc, "Top down hypotheses" = top.down.sc)
 
@@ -84,87 +85,150 @@ for(eachscenario in 1:length(scenario.list)){
   col.pal <- c("#ffbe0b","#0a9396")
   col.fill <- c("#ffbe0b","#0a9396", "#3fd2c7", "#99ddff", "#00458b", "#549896", "#83bb90", "#f1dd88", "#f7a482", "#81aa2c", "#f293b1", "#ed5181")
 
- low.survival <- c("Chinook Hood Canal SY", "Chinook Nisqually SY")
 
-    range.plot <-  salmon.lollipop.data %>%
+  plot.data <- salmon.lollipop.data %>%
     dplyr::filter(scenario_name %in% thesescenarios) %>%
-    dplyr::filter(!long_name %in% low.survival) %>%
-    droplevels() %>%
+    dplyr::filter(rel_survival < 50) %>%
+    droplevels()
+
+  # Calculate the number of pages with 12 panels per page
+  n_pages <- plot.data %>%
+    dplyr::distinct(long_name) %>%
+    nrow(.)/9
+  pages.num <- ceiling(n_pages)
+
+  #  col.pal <- Redmonder::redmonder.pal(length(levels(salmon.return.nums$model_ver)), "qMSOSlp")
+
+  max.violin <- plot.data %>%
+    dplyr::pull(rel_survival) %>%
+    max() %>%
+    ceiling()
+
+  min.violin <- plot.data %>%
+    dplyr::pull(rel_survival) %>%
+    min() %>%
+    floor()
+
+  for (i in seq_len(pages.num)) {
+
+
+    range.plot <-  plot.data %>%
     ggplot2::ggplot() +
     ggplot2::geom_segment(ggplot2::aes(x=min_model, xend=max_model, y=scenario_name, yend=scenario_name, color = scenario_var), size = 5, alpha = 0.1) +
   #  ggplot2::scale_color_manual(values = col.fill, name = "Change in key group abundance") +
    # ggplot2::geom_point(ggplot2::aes(y = scenario_name, x = rel_survival, fill = model_ver, color = model_ver, shape = scenario_var)) +
     ggplot2::geom_jitter(ggplot2::aes(y = scenario_name, x = rel_survival, shape = scenario_var, fill = model_ver), width = 0.25, height = 0.25, size = 1.5) +
     ggplot2::scale_shape_manual(values = c(21,24), name = "Change in key group abundance") +
-    ggplot2::scale_fill_manual(values = col.fill, name = "Model version") +
-    ggplot2::scale_color_manual(values = col.fill, name = "Model version") +
+    ggplot2::scale_fill_manual(values = col.fill, guide="none") +
+    ggplot2::scale_color_manual(values = col.fill, guide="none") +
 #    ggsci::scale_fill_d3("category20", name = "Model version") +
-    ggplot2::facet_wrap(ggplot2::vars(long_name), scales = "free_y") +
+    #ggplot2::facet_wrap(ggplot2::vars(long_name), scales = "free_y") +
+    ggforce::facet_wrap_paginate(. ~ long_name, ncol = 3, nrow = 3, page = i, shrink = FALSE, labeller = 'label_value') +
     ggplot2::coord_flip() +
     ggplot2::geom_vline(xintercept = 0) +
-    ggplot2::xlab("Percent change in survival relative to base case") +
+    ggplot2::xlab("% change in survival rel. to base case") +
     ggplot2::ylab("Scenario") +
     ggplot2::labs(title = thisname) +
     ggthemes::theme_base() +
     ggplot2::theme(legend.position="bottom") +
     ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90, vjust=0.5)) +
-    ggplot2::guides(fill = "none")
+    ggplot2::guides(fill = "none") +
+    ggplot2::xlim(min.violin, max.violin)
 
 
-    salmon.lollipop.data %>%
-      dplyr::filter(scenario_name %in% thesescenarios) %>%
-      dplyr::filter(!long_name %in% low.survival) %>%
-      droplevels() %>%
+    # if(thisname == "Top down hypotheses"){
+    #
+    #   # A data frame with labels for each facet
+    #   f_labels <- salmon.lollipop.data %>%
+    #     dplyr::filter(rel_survival < 50) %>%
+    #     droplevels() %>%
+    #     dplyr::distinct(long_name) %>%
+    #     data.frame(long_name =., label = c("", "", "", "", "", "", "", "","", "", "","", "", "","", "", "", "Green is \n scenario overlap", "Points are \n model variants", ""))
+    #
+    #   range.plot.txt <- range.plot +
+    #     ggplot2::geom_text(x = -2, y = 2.5, ggplot2::aes(label = label), data = f_labels)
+    #
+    # }
+    #
+    #
+    # if(thisname == "Bottom up hypotheses") {
+    #
+    #   f_labels <- salmon.lollipop.data %>%
+    #     dplyr::filter(rel_survival < 50) %>%
+    #     droplevels() %>%
+    #     dplyr::distinct(long_name) %>%
+    #     data.frame(long_name =., label = c("", "", "","", "", "", "", "","", "", "","", "", "","", "", "", "Green is \n scenario overlap", "Points are \n model variants", ""))
+    #
+    #   range.plot.txt <-range.plot +
+    #     ggplot2::geom_text(x = -30, y = 2, ggplot2::aes(label = label), data = f_labels)
+    #
+    #
+    # }
+
+
+  ggplot2::ggsave(paste0(thisname,"_",i,"_survival.png"),plot = range.plot, device = "png", width = 40, height = 35, units = "cm", dpi = 400)
+
+
+   violin.plot <- plot.data %>%
       ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = scenario_name, fill = scenario_var)) +
-      geom_violin(trim = FALSE) +
-      geom_boxplot(ggplot2::aes(fill = scenario_var), width=0.1)+
-      ggforce::facet_wrap_paginate(. ~ long_name, ncol = 3, nrow = 4, page = i, shrink = FALSE, labeller = 'label_value', scales = "free_y") +
-      geom_dotplot(binaxis='y', stackdir='center',
-                   position=position_dodge(1))
-
-      ggplot2::geom_jitter(ggplot2::aes(fill = model_ver), width = 0.25, height = 0.25, size = 1.5)
-    +
-      geom_dotplot(binaxis='y', stackdir='center', dotsize=1, binwidth = 0.01) +
-
-
-
-
-  if(thisname == "Top down hypotheses"){
-
-    # A data frame with labels for each facet
-    f_labels <- salmon.lollipop.data %>%
-      dplyr::filter(!long_name %in% low.survival) %>%
-      droplevels() %>%
-      dplyr::distinct(long_name) %>%
-      data.frame(long_name =., label = c("", "", "", "","", "", "","", "", "","", "", "","", "", "", "Green is \n scenario overlap", "Points are \n model variants", ""))
-
-    range.plot.txt <- range.plot +
-      ggplot2::geom_text(x = -2, y = 2.5, ggplot2::aes(label = label), data = f_labels)
-
-  }
+      ggplot2::geom_violin(trim = FALSE, position=ggplot2::position_dodge(),draw_quantiles=c(0.5)) +
+      ggforce::facet_wrap_paginate(. ~ long_name, ncol = 3, nrow = 3, page = i, shrink = FALSE, labeller = 'label_value', scales = "free_y") +
+      ggplot2::geom_boxplot(ggplot2::aes(fill = scenario_var), width=0.1, color="black",position = ggplot2::position_dodge(width =0.9)) +
+      ggplot2::scale_fill_manual(values = col.pal, name = "Change in key group abundance") +
+      ggplot2::ylab("% change in survival rel. to base case") +
+      ggplot2::xlab("Scenario") +
+      ggplot2::labs(title = thisname) +
+      ggplot2::geom_hline(yintercept = 0) +
+      ggthemes::theme_base() +
+      ggplot2::theme(legend.position="bottom") +
+      ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90, vjust=0.5)) +
+      ggplot2::ylim(min.violin, max.violin)
 
 
-  if(thisname == "Bottom up hypotheses") {
-
-    f_labels <- salmon.lollipop.data %>%
-      dplyr::filter(!long_name %in% low.survival) %>%
-      droplevels() %>%
-      dplyr::distinct(long_name) %>%
-      data.frame(long_name =., label = c("", "", "", "","", "", "","", "", "","", "", "","", "", "", "Green is \n scenario overlap", "Points are \n model variants", ""))
-
-    range.plot.txt <-range.plot +
-      ggplot2::geom_text(x = -30, y = 2, ggplot2::aes(label = label), data = f_labels)
+   ggplot2::ggsave(paste0(thisname,"_",i,"_violin_survival.png"),plot = violin.plot, device = "png", width = 40, height = 35, units = "cm", dpi = 400)
 
 
-  }
+   violin.plot.scale <- plot.data %>%
+     ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = scenario_name, fill = scenario_var)) +
+     ggplot2::geom_violin(trim = FALSE, position= ggplot2::position_dodge(),draw_quantiles=c(0.5)) +
+     ggplot2::geom_hline(yintercept = 0) +
+     ggforce::facet_wrap_paginate(. ~ long_name, ncol = 3, nrow = 3, page = i, shrink = FALSE, labeller = 'label_value', scales = "free_y") +
+     ggplot2::geom_boxplot(ggplot2::aes(fill = scenario_var), width=0.1, color="black", position =  ggplot2::position_dodge(width =0.9)) +
+     ggplot2::scale_fill_manual(values = col.pal, name = "Change in key group abundance") +
+     ggplot2::ylab("% change in survival rel. to base case") +
+     ggplot2::xlab("Scenario") +
+     ggplot2::labs(title = thisname) +
+     ggthemes::theme_base() +
+     ggplot2::theme(legend.position="bottom") +
+     ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90, vjust=0.5)) #+
+   # ylim(min.violin, max.violin)
 
 
-  ggplot2::ggsave(paste0(thisname,"_survival.png"),plot = range.plot.txt, device = "png", width = 40, height = 35, units = "cm", dpi = 400)
+   ggplot2::ggsave(paste0(thisname,"_",i,"_violin_survival_scale.png"),plot = violin.plot.scale, device = "png", width = 40, height = 35, units = "cm", dpi = 400)
+
+
+   box.plot.scale <- plot.data %>%
+     ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = scenario_name, fill = scenario_var)) +
+     ggplot2::geom_boxplot() +
+     ggplot2::geom_hline(yintercept = 0) +
+     ggforce::facet_wrap_paginate(. ~ long_name, ncol = 3, nrow = 3, page = i, shrink = FALSE, labeller = 'label_value', scales = "free_y") +
+     ggplot2::scale_fill_manual(values = col.pal, name = "Change in key group abundance") +
+     ggplot2::ylab("% change in survival rel. to base case") +
+     ggplot2::xlab("Scenario") +
+     ggplot2::labs(title = thisname) +
+     ggthemes::theme_base() +
+     ggplot2::theme(legend.position="bottom") +
+     ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90, vjust=0.5)) +
+     ggplot2::ylim(min.violin, max.violin)
+
+
+   ggplot2::ggsave(paste0(thisname,"_",i,"_boxplot_survival_scale.png"),plot = box.plot.scale, device = "png", width = 40, height = 35, units = "cm", dpi = 400)
 
 }
 
 
-
+}
+}
 
 
 # salmon.rel.survival %>%
@@ -245,4 +309,4 @@ for(eachscenario in 1:length(scenario.list)){
 #
 #
 #   return(plot.list)
-}
+

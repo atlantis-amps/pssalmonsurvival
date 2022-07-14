@@ -41,7 +41,8 @@ Imports:
     tidyr,
     Hmisc,
     forcats,
-    ecotraj
+    ecotraj,
+    ggnewscale
 Remotes:
     github::ropensci/rnaturalearthhires
     devtools::EmilHvitfeldt/paletteer
