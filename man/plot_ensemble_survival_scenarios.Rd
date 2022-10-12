@@ -8,7 +8,8 @@ plot_ensemble_survival_scenarios(
   ensemblenumbersagescenarios,
   salmongroups,
   plotmodels,
-  base.survival
+  base.survival,
+  salmonbybasin
 )
 }
 \arguments{

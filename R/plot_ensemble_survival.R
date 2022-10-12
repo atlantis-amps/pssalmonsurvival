@@ -42,9 +42,11 @@ plot_ensemble_survival <- function(ensemblenumbersage, salmongroups){
                                                  dplyr::if_else(scenario_name=="hatchery competition","hatchery comp.",
                                                         dplyr::if_else(scenario_name=="hatchery Chinook competition","hatchery Chinook comp.",
                                                             dplyr::if_else(scenario_name=="mammal predation","pinniped predation",
-                                                                 dplyr::if_else(scenario_name=="seabirds predation","seabird predation", scenario_name)))))) %>%
+                                                                 dplyr::if_else(scenario_name=="seabirds predation","seabird predation",
+                                                                                dplyr::if_else(scenario_name="gelatinous zooplankton increase","gelatinous zooplankton abundance",
+                                                                                               dplyr::if_else(scenario_name=="herring decrease","herring abundance",scenario_name)))))))) %>%
     dplyr::mutate(scenario_name = Hmisc::capitalize(scenario_name)) %>%
-    dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery Chinook comp.", "Hatchery comp.", "Wild pink & chum salmon comp.", "Gelatinous zooplankton increase", "Herring decrease", "Pinniped predation",
+    dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery Chinook comp.", "Hatchery comp.", "Wild pink & chum salmon comp.", "Gelatinous zooplankton abundance", "Herring abundance", "Pinniped predation",
                                                        "Porpoise predation", "Seabird predation" , "Spiny dogfish predation")) %>%
     dplyr::mutate(Long.Name = as.factor(Long.Name), Year = as.factor(Year), scenario_name = as.factor(scenario_name)) %>%
     droplevels() %>%
@@ -52,12 +54,13 @@ plot_ensemble_survival <- function(ensemblenumbersage, salmongroups){
 
 
 
-  readr::write_csv(salmon.return.nums,"base_survival.csv")
+  readr::write_csv(salmon.return.nums, here::here("modelfiles","base_survival.csv"))
 
 
   # Calculate the number of pages with 12 panels per page
 
-  sc.cases <- salmon.return.nums %>% distinct(Long.Name, scenario_name)
+  sc.cases <- salmon.return.nums %>%
+    dplyr::distinct(Long.Name, scenario_name)
 
   n_pages <- ceiling(
     nrow(salmongroups)/ 4
@@ -75,10 +78,10 @@ col.pal <- c("darkorange","darkorange3","darkorange4","darksalmon","coral2","dar
   for (i in seq_len(n_pages)) {
 
     survival.plot <- salmon.plot.data %>%
-      filter(!survival>1) %>%
+      dplyr::filter(!survival>1) %>%
       ggplot2::ggplot(ggplot2::aes(x = Year, y = survival, color = scenario_name))+
       ggplot2::geom_boxplot(outlier.size = 0.5, outlier.alpha = 0.6, alpha = 0.6) +
-      ggplot2::ylim(0,1) +
+      #ggplot2::ylim(0,1) +
       #ggnewscale::new_scale_color() +
       #ggplot2::geom_line(ggplot2::aes(group= scenario_name, colour=scenario_name)) +
       ggthemes::theme_few() +

@@ -3,7 +3,7 @@
 #' @param eachfilename, a string
 #' @export
 #'
-#' @descriptions Code to plot survival of multiple AMPS versions
+#' @description Code to plot survival of multiple AMPS versions
 #' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2002
 
 

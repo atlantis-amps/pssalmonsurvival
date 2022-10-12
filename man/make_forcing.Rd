@@ -24,7 +24,9 @@ make_forcing(
 salmon.return.nums, survival over time
 }
 \description{
-make forcing files for salmon survival
+Code to modify AMPS nc file to create forcing files for sensitivity simulations
+
+function to create forcing files, force prm and bash file
 }
 \author{
 Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2002

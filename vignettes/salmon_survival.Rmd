@@ -56,7 +56,7 @@ plot_ensemblebiomass(ensemblebiomass)
 ```
 
 
-Plot salmon survival for model ensemble, survival is defined as the proportion of age 1 salmon that survive to age 5, the cohort is lagged over time. 
+Plot salmon survival for model ensemble for base scenarios, survival is defined as the proportion of age 1 salmon that survive to age 5, the cohort is lagged over time. 
 
 ```{r plot survival base runs, echo=FALSE}
 #numbers at age from base runs
@@ -115,11 +115,11 @@ lapply(sim.groups, make_forcing, ncfile, func.groups, num.forcing.years, rate.mu
 
 Plot salmon survival for scenario results, survival is defined as the proportion of age 1 salmon that survive to age 5, the cohort is lagged over time. 
 
-```{r plot survival scenarios, echo=FALSE}
+```{r plot survival scenarios, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
 
 #base case survival for each model variant created above
 
-base.survival <- readr::read_csv("base_survival.csv") %>% 
+base.survival <- readr::read_csv(here::here("modelfiles","base_survival.csv")) %>% 
   tidyr::drop_na() %>%
   dplyr::mutate(max_year = max(year_no)) %>% 
   dplyr::filter(year_no<=(max_year-3)) %>% 
@@ -131,18 +131,73 @@ base.survival <- readr::read_csv("base_survival.csv") %>%
 #numbers at age from base runs
 data("ensemblenumbersagescenarios")
 data("salmongroups")
+data("salmonbybasin")
 #plotmodels <- c(1,6) # eliminated model versions 1 & 6
 
-plot_ensemble_survival_scenarios(ensemblenumbersagescenarios, salmongroups, plotmodels, base.survival)
+plot_ensemble_survival_scenarios(ensemblenumbersagescenarios, salmongroups, plotmodels, base.survival, salmonbybasin)
 
 
 ```
 
-```{r plot survival trajectories scenarios}
+```{r plot survival timeseries scenarios}
 data("ensemblenumbersagescenarios")
 data("salmongroups")
 
+survival.rates <- readr::read_csv(here::here("modelfiles","survival_rates.csv"))
+
+
 plot_ensemble_survival_scenarios_timeseries(ensemblenumbersagescenarios, salmongroups)
+
+```
+
+```{r plot trajectories}
+data("ensemblenumbersagescenarios")
+data("salmongroups")
+
+
+make_trajectories(ensemblenumbersagescenarios, salmongroups)
+
+```
+
+Extract base survival for cumulative impact scenarios
+
+```{r}
+#numbers at age from base runs
+data("ensemblenumberscum")
+data("salmongroups")
+#plotmodels <- c(1,6) # eliminated model versions 1 & 6
+
+extract_base_cum_survival(ensemblenumberscum, salmongroups)
+
+
+```
+
+
+Plot cumulative impact scenarios
+```{r plot cumulative impacts}
+
+sc.name <- c("Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton abundance", "Herring abundance","Pinniped predation", "Porpoise predation", "Seabird predation" , "Spiny dogfish predation")
+salmon.effect <- c(rep("Negative", 9))
+tibble()
+
+
+
+base.cum.survival <- readr::read_csv(here::here("modelfiles","base_cum_survival.csv")) %>% 
+  tidyr::drop_na() %>%
+  dplyr::mutate(max_year = max(year_no)) %>% 
+  dplyr::filter(year_no<=(max_year-3)) %>% 
+  dplyr::filter(year_no==max(year_no)) 
+     
+
+#numbers at age from base runs
+data("ensemblenumberscum")
+data("salmongroups")
+data("salmonbybasin")
+#plotmodels <- c(1,6) # eliminated model versions 1 & 6
+
+plot_ensemble_cum_survival_scenarios(ensemblenumbersagescenarios, salmongroups, base.cum.survival, salmonbybasin)
+
+
 
 ```
 

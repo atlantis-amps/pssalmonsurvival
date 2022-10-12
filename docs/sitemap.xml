@@ -25,13 +25,25 @@
     <loc>/posters/poster.html</loc>
   </url>
   <url>
+    <loc>/reference/dataname.html</loc>
+  </url>
+  <url>
     <loc>/reference/ensemblebiomass.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ensemblebiomasscum.html</loc>
   </url>
   <url>
     <loc>/reference/ensemblenumbersage.html</loc>
   </url>
   <url>
     <loc>/reference/ensemblenumbersagescenarios.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ensemblenumberscum.html</loc>
+  </url>
+  <url>
+    <loc>/reference/extract_base_cum_survival.html</loc>
   </url>
   <url>
     <loc>/reference/functionalgroups.html</loc>
@@ -49,6 +61,9 @@
     <loc>/reference/make_map.html</loc>
   </url>
   <url>
+    <loc>/reference/make_trajectories.html</loc>
+  </url>
+  <url>
     <loc>/reference/pipe.html</loc>
   </url>
   <url>
@@ -58,6 +73,9 @@
     <loc>/reference/plot_ensemble_survival_scenarios.html</loc>
   </url>
   <url>
+    <loc>/reference/plot_ensemble_survival_scenarios_timeseries.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_ensemblebiomass.html</loc>
   </url>
   <url>
@@ -65,6 +83,9 @@
   </url>
   <url>
     <loc>/reference/ppreymatrix.html</loc>
+  </url>
+  <url>
+    <loc>/reference/salmonbybasin.html</loc>
   </url>
   <url>
     <loc>/slides/slides.html</loc>
