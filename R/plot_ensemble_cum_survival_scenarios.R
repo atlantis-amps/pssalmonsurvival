@@ -10,7 +10,7 @@
 
 
 
-plot_ensemble_cum_survival_scenarios <- function(ensemblenumberscum, salmongroups, base.cum.survival, salmonbybasin){
+plot_ensemble_cum_survival_scenarios <- function(ensemblenumberscum, salmongroups, base.cum.survival, salmonbybasin, scenario.effect){
 
   salmon.max.nums <- ensemblenumberscum %>%
     dplyr::group_by(scenario_name, scenario_var, model_ver, Code, age, year_no) %>%
@@ -76,7 +76,11 @@ salmon.lollipop.data <- salmon.rel.survival %>%
                 longname = dplyr::if_else(longname=="Chum Hood Canal summer run SY", "Chum Hood Canal SY",
                                            dplyr::if_else(longname=="Strait of Georgia salmonids", "St. of Georgia salmonids", longname))) %>%
   dplyr::mutate(scenario_name = Hmisc::capitalize(scenario_name)) %>%
-  dplyr::left_join(salmon.basin, by=c("Code"))
+  dplyr::left_join(salmon.basin, by=c("Code")) %>%
+  dplyr::left_join(scenario.effect, by = c("scenario_name","scenario_var"))
+
+readr::write_csv(salmon.lollipop.data, here::here("modelfiles","ensemble_cum_survival.csv"))
+
 
   thisscenario <- salmon.lollipop.data %>%
     dplyr::distinct(scenario_name) %>%
@@ -114,7 +118,7 @@ salmon.lollipop.data <- salmon.rel.survival %>%
       ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = longname, fill = basin)) +
       ggplot2::geom_boxplot() +
       ggplot2::geom_hline(yintercept = 0) +
-      ggplot2::facet_wrap(. ~ scenario_var, scales = "free_y") +
+      ggplot2::facet_wrap(. ~ salmon_effect, scales = "free_y") +
       ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") +
       ggplot2::labs(title = "Cumulative scenario", y = "% change in survival rel. to base case", x = "Functional group", face = "bold") +
       ggthemes::theme_base() +

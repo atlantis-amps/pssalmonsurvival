@@ -10,7 +10,7 @@
 
 
 
-plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmongroups, plotmodels, base.survival, salmonbybasin){
+plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmongroups, plotmodels, base.survival, salmonbybasin, scenario.effect){
 
   salmon.max.nums <- ensemblenumbersagescenarios %>%
     dplyr::group_by(scenario_name, scenario_var, model_ver, Code, age, year_no) %>%
@@ -19,10 +19,11 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
     dplyr::ungroup() %>%
   #  dplyr::filter(!model_ver%in% plotmodels) %>%
     dplyr::mutate(model_ver = as.double(model_ver)) %>%
-    dplyr::mutate(scenario_name = dplyr::if_else(scenario_name=="salmon competition","wild pink and chum salmon competition",
+    dplyr::mutate(scenario_name = tolower(scenario_name)) %>%
+    dplyr::mutate(scenario_name = dplyr::if_else(scenario_name=="salmon competition","wild pink & chum salmon competition",
                                                  dplyr::if_else(scenario_name=="mammal predation","pinniped predation",
                                                                 dplyr::if_else(scenario_name=="seabirds predation","seabird predation",
-                                                                               dplyr::if_else(scenario_name="gelatinous zooplankton increase","gelatinous zooplankton abundance",
+                                                                               dplyr::if_else(scenario_name=="gelatinous zooplankton increase","gelatinous zooplankton abundance",
                                                                                               dplyr::if_else(scenario_name=="herring decrease","herring abundance",scenario_name)))))) %>%
     dplyr::mutate(scenario_var = dplyr::if_else(scenario_var=="0_8", "-20%","+20%"))
 
@@ -43,11 +44,13 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
     dplyr::mutate(ret_year = max_year-3)
 
 
-
-  salmon.return.nums.yr <- salmon.return.nums %>%
+salmon.return.nums.yr <- salmon.return.nums %>%
     dplyr::filter(year_no<=ret_year) %>%
     dplyr::filter(year_no==max(year_no)) %>%
-    dplyr::select("scenario_name","scenario_var","model_ver","Code","Long.Name","survival")
+    dplyr::select("scenario_name","scenario_var","model_ver","Code","Long.Name","survival") %>%
+    dplyr::mutate(scenario_name = Hmisc::capitalize(scenario_name)) %>%
+    dplyr::mutate(scenario_name = dplyr::if_else(scenario_name=="Hatchery chinook competition", "Hatchery Chinook competition", scenario_name))
+
 
 salmon.rel.survival <- base.survival %>%
     dplyr::select("scenario_name","model_ver","Code","Long.Name","survival") %>%
@@ -75,14 +78,15 @@ salmon.lollipop.data <- salmon.rel.survival %>%
   dplyr::mutate(longname = gsub("Subyearling", "SY", longname), longname = gsub("Yearling","Y", longname),
                 longname = dplyr::if_else(longname=="Chum Hood Canal summer run SY", "Chum Hood Canal SY",
                                            dplyr::if_else(longname=="Strait of Georgia salmonids", "St. of Georgia salmonids", longname))) %>%
-  dplyr::mutate(scenario_name = Hmisc::capitalize(scenario_name)) %>%
-  dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton abundance", "Herring abundance", "Pinniped predation",
-                                                    "Porpoise predation", "Seabird predation" , "Spiny dogfish predation")) %>%
-  dplyr::left_join(salmon.basin, by=c("Code"))
+  dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery Chinook competition", "Hatchery competition", "Wild pink & chum salmon competition", "Gelatinous zooplankton abundance", "Herring abundance", "Pinniped predation",
+                                                     "Porpoise predation", "Seabird predation" , "Spiny dogfish predation")) %>%
+  dplyr::left_join(salmon.basin, by=c("Code")) %>%
+  dplyr::left_join(scenario.effect, by = c("scenario_name","scenario_var"))
 
+readr::write_csv(salmon.lollipop.data, here::here("modelfiles","ensemble_survival.csv"))
 
 #bottom.up.sc <- c("Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton increase", "Herring decrease")
-bottom.up.sc <- c("Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton abundance", "Herring abundance")
+bottom.up.sc <- c("Hatchery Chinook competition", "Hatchery competition", "Wild pink & chum salmon competition", "Gelatinous zooplankton abundance", "Herring abundance")
 top.down.sc <- c("Pinniped predation", "Porpoise predation", "Seabird predation" , "Spiny dogfish predation")
 
 scenario.list <- list("Bottom up hypotheses" = bottom.up.sc, "Top down hypotheses" = top.down.sc)
@@ -223,40 +227,61 @@ for(eachscenario in 1:length(scenario.list)){
     dplyr::pull(scenario_var) %>%
     as.character()
 
-  for(eachlevel in 1:length(scenario.level)) {
+  salmon.impacts <- c("Positive impacts on salmon","Negative impacts on salmon")
+  sc.multipliers <- c("Positive","Negative")
 
-    thislevel <- scenario.level[eachlevel]
+
+  for(eachscenariovar in 1:length(sc.multipliers)) {
+
+    sl.impact <- salmon.impacts[eachscenariovar]
+    this.multiplier <- sc.multipliers[eachscenariovar]
+
 
     range.change <- plot.data %>%
       dplyr::filter(Code %in% c("CMH","CNY","CNS")) %>%
-      dplyr::filter(scenario_var==thislevel) %>%
+      dplyr::filter(salmon_effect==this.multiplier) %>%
       dplyr::pull(rel_survival) %>%
       range() %>% as.character
 
-    file.range <- file(paste(thislevel, eachscenario, "change_range.txt", sep="_"))
+    file.range <- file(paste(this.multiplier, eachscenario, "change_range.txt", sep="_"))
 
-    cat(paste(thislevel,eachscenario,range.change), file=paste(thislevel, eachscenario, "change_range.txt", sep="_"), sep="\n", append = TRUE)
+    cat(paste(this.multiplier,eachscenario,range.change), file=paste(this.multiplier, eachscenario, "change_range.txt", sep="_"), sep="\n", append = TRUE)
 
 
     col.fill <- c("#ffbe0b","#ed5181", "#3fd2c7", "#00458b", "#f7a482", "#83bb90", "#f1dd88", "#81aa2c", "#f293b1")
 
     these.rows <- ceiling(length(thesescenarios) / 2)
 
+    text.label <- plot.data %>%
+      dplyr::filter(salmon_effect==this.multiplier) %>%
+      dplyr::distinct(scenario_name, scenario_var) %>%
+      dplyr::mutate(longname = "Pink Salmon SY", basin = "Puget Sound")
+
     box.plot.scale.basin <- plot.data %>%
-      dplyr::filter(scenario_var==thislevel) %>%
+      dplyr::filter(salmon_effect==this.multiplier) %>%
       ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = longname, fill = basin)) +
       ggplot2::geom_boxplot() +
       ggplot2::geom_hline(yintercept = 0) +
       ggforce::facet_wrap_paginate(. ~ scenario_name, ncol = 2, nrow = these.rows, page = 1, shrink = FALSE, labeller = 'label_value', scales = "free_y") +
       ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") +
-      ggplot2::labs(title = thisname, y = "% change in survival rel. to base case", x = "Functional group", face = "bold", subtitle = thislevel) +
+      ggplot2::labs(title = thisname, y = "% change in survival rel. to base case", x = "Functional group", face = "bold", subtitle = sl.impact) +
       ggthemes::theme_base() +
       ggplot2::theme(legend.position="bottom") +
       ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90, vjust=0.5, hjust=0.95)) +
-      ggplot2::ylim(min.violin, max.violin)
+      ggplot2::ylim(min.violin, max.violin) +
+      ggplot2::geom_text(
+        data    = text.label,
+        mapping =  ggplot2::aes(x = -Inf, y = -Inf, label = scenario_var),
+        hjust   = -0.1,
+        vjust   = -1
+      )
 
 
-    ggplot2::ggsave(paste0(thislevel, "_,", thisname,"_",i,"_boxplot_survival_basin_scale_.png"), plot = box.plot.scale.basin, device = "png", width = 40, height = 35, units = "cm", dpi = 600)
+  text.label <- plot.data %>%
+      dplyr::filter(salmon_effect==this.multiplier) %>%
+      dplyr::distinct(scenario_name, scenario_var)
+
+    ggplot2::ggsave(paste0(this.multiplier, "_,", thisname,"_",i,"_boxplot_survival_basin_scale_.png"), plot = box.plot.scale.basin, device = "png", width = 40, height = 35, units = "cm", dpi = 600)
 
   }
 

@@ -14,10 +14,11 @@ make_trajectories <- function(ensemblenumbersagescenarios, salmongroups){
     dplyr::summarise(max_nums = max(nums)) %>%
     dplyr::left_join(salmongroups, by="Code") %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(scenario_name = dplyr::if_else(scenario_name=="salmon competition","wild pink and chum salmon competition",
+    dplyr::mutate(scenario_name = tolower(scenario_name)) %>%
+    dplyr::mutate(scenario_name = dplyr::if_else(scenario_name=="salmon competition","wild pink & chum salmon competition",
                                                  dplyr::if_else(scenario_name=="mammal predation","pinniped predation",
                                                                 dplyr::if_else(scenario_name=="seabirds predation","seabird predation",
-                                                                               dplyr::if_else(scenario_name="gelatinous zooplankton increase","gelatinous zooplankton abundance",
+                                                                               dplyr::if_else(scenario_name=="gelatinous zooplankton increase","gelatinous zooplankton abundance",
                                                                                               dplyr::if_else(scenario_name=="herring decrease","herring abundance",scenario_name)))))) %>%
     dplyr::mutate(scenario_var = dplyr::if_else(scenario_var=="0_8", "-20%","+20%"))
 
@@ -40,7 +41,8 @@ make_trajectories <- function(ensemblenumbersagescenarios, salmongroups){
     dplyr::mutate(max_year = max(year_no)) %>%
     dplyr::mutate(ret_year = max_year-3) %>%
     dplyr::mutate(scenario_name = Hmisc::capitalize(scenario_name)) %>%
-    dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery Chinook competition", "Hatchery competition", "Wild pink and chum salmon competition", "Gelatinous zooplankton abundance", "Herring abundance", "Pinniped predation",
+    dplyr::mutate(scenario_name = dplyr::if_else(scenario_name=="Hatchery chinook competition", "Hatchery Chinook competition", scenario_name)) %>%
+    dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery Chinook competition", "Hatchery competition", "Wild pink & chum salmon competition", "Gelatinous zooplankton abundance", "Herring abundance", "Pinniped predation",
                                                        "Porpoise predation", "Seabird predation" , "Spiny dogfish predation"))
 
 
