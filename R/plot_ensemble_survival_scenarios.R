@@ -44,6 +44,7 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
     dplyr::mutate(max_year = max(year_no)) %>%
     dplyr::mutate(ret_year = max_year-3)
 
+
 salmon.return.nums.yr <- salmon.return.nums %>%
     dplyr::filter(year_no<=ret_year) %>%
     dplyr::filter(year_no==max(year_no)) %>%
@@ -57,6 +58,15 @@ salmon.rel.survival <- base.survival %>%
     dplyr::left_join(salmon.return.nums.yr, by = c("scenario_name","model_ver","Code","Long.Name")) %>%
     dplyr::mutate(rel_survival = (survival - base_survival))
 
+
+salmon.return.nums %>%
+  dplyr::filter(year_no<=ret_year) %>%
+  dplyr::filter(year_no==max(year_no)) %>%
+  readr::write_csv(., here::here("modelfiles","survival_rates.csv"))
+
+
+salmon.basin <- salmonbybasin %>%
+  dplyr::select(Code, basin, geo_order, salmon_genus)
 
 salmon.return.nums %>%
   dplyr::filter(year_no<=ret_year) %>%
@@ -101,7 +111,6 @@ for(eachscenario in 1:length(scenario.list)){
   col.fill <- c("-20%"= '#ffbe0b',"+20%"='#0a9396')
 
   salmon.order <- salmon.lollipop.data %>%
-    # dplyr::filter(salmon_genus != "Chum")
     dplyr::distinct(longname,basin, geo_order, salmon_genus) %>%
     dplyr::arrange(salmon_genus, geo_order) %>%
     dplyr::pull(longname)
@@ -148,7 +157,7 @@ for(eachscenario in 1:length(scenario.list)){
     ggplot2::scale_color_manual(values = col.fill, guide="none") +
 #    ggsci::scale_fill_d3("category20", name = "Model version") +
     #ggplot2::facet_wrap(ggplot2::vars(long_name), scales = "free_y") +
-    ggforce::facet_wrap_paginate(. ~ longname, ncol = 4, nrow = 2, page = i, shrink = FALSE, labeller = 'label_value') +
+    ggforce::facet_wrap_paginate(. ~ longname, ncol = 3, nrow = 3, page = i, shrink = FALSE, labeller = 'label_value') +
     ggplot2::coord_flip() +
     ggplot2::geom_vline(xintercept = 0) +
     ggplot2::xlab("% change in survival (scenario-base)") +

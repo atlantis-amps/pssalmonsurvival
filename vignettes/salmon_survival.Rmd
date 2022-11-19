@@ -51,7 +51,11 @@ Plot salmon time series
 salmon.abundance <- readxl::read_xlsx(here::here("modelfiles","Salmon_timeline_Losee.xlsx"), sheet = 1) %>% 
  # dplyr::rename("Salmon" = `Salmon Sum`) %>% 
   dplyr::select(-`Salmon Sum`,-Steelhead) %>% 
+<<<<<<< HEAD
   tidyr::pivot_longer(cols=Chinook:Sockeye,names_to = "salmon_group",values_to = "biomass_mt")
+=======
+  pivot_longer(cols=Chinook:Sockeye,names_to = "salmon_group",values_to = "biomass_mt")
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 
 plot_salmon_abundance(salmon.abundance)
 
@@ -147,7 +151,11 @@ base.survival <- readr::read_csv(here::here("modelfiles","base_survival.csv")) %
 #create table with expected effects by scenario
 sc.name <- rep(c("Pinniped predation", "Porpoise predation", "Seabird predation", "Spiny dogfish predation", "Hatchery Chinook competition", "Hatchery competition", "Wild pink & chum salmon competition", "Gelatinous zooplankton abundance", "Herring abundance"),2)
 scenario.var <- c(rep("+20%", 9), rep("-20%", 9))
+<<<<<<< HEAD
 salmon.effect <- c(rep("Negative impacts on salmon", 8), rep("Positive impacts on salmon",1), rep("Positive impacts on salmon", 8), rep("Negative impacts on salmon",1))
+=======
+salmon.effect <- c(rep("Negative", 8), rep("Positive",1), rep("Positive", 8), rep("Negative",1))
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 scenario.effect <- dplyr::tibble(scenario_name=sc.name, scenario_var = scenario.var, salmon_effect = salmon.effect)
 
 
@@ -158,10 +166,33 @@ data("salmonbybasin")
 #plotmodels <- c(1,6) # eliminated model versions 1 & 6
 
 plot_ensemble_survival_scenarios(ensemblenumbersagescenarios, salmongroups, plotmodels, base.survival, salmonbybasin, scenario.effect)
+<<<<<<< HEAD
+=======
 
 
 ```
 
+Plot survival as time series
+
+```{r plot survival timeseries scenarios}
+data("ensemblenumbersagescenarios")
+data("salmongroups")
+
+survival.rates <- readr::read_csv(here::here("modelfiles","survival_rates.csv"))
+
+#create table with expected effects by scenario
+sc.name <- rep(c("Pinniped predation", "Porpoise predation", "Seabird predation", "Spiny dogfish predation", "Hatchery Chinook competition", "Hatchery competition", "Wild pink & chum salmon competition", "Gelatinous zooplankton abundance", "Herring abundance"),2)
+scenario.var <- c(rep("+20%", 9), rep("-20%", 9))
+salmon.effect <- c(rep("Negative", 8), rep("Positive",1), rep("Positive", 8), rep("Negative",1))
+scenario.effect <- dplyr::tibble(scenario_name=sc.name, scenario_var = scenario.var, salmon_effect = salmon.effect)
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
+
+
+plot_ensemble_survival_scenarios_timeseries(ensemblenumbersagescenarios, salmongroups, scenario.effect)
+
+```
+
+<<<<<<< HEAD
 Plot survival as time series
 
 ```{r plot survival timeseries scenarios}
@@ -186,6 +217,12 @@ plot_ensemble_survival_scenarios_timeseries(ensemblenumbersagescenarios, salmong
 data("ensemblenumbersagescenarios")
 data("salmongroups")
 
+=======
+```{r plot trajectories}
+data("ensemblenumbersagescenarios")
+data("salmongroups")
+
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 
 make_trajectories(ensemblenumbersagescenarios, salmongroups)
 
@@ -216,9 +253,15 @@ base.cum.survival <- readr::read_csv(here::here("modelfiles","base_cum_survival.
      
 
 #create table with expected effects by scenario
+<<<<<<< HEAD
 sc.name <- c(rep(c("Bottom-up & Top-down"),2),rep(c("Bottom-up"),2), rep(c("Top-down"),2))
 scenario.var <- c(rep(c("+20%", "-20%"),3))
 salmon.effect <- c(rep(c("Negative impacts on salmon", "Positive impacts on salmon"), 3))
+=======
+sc.name <- rep(c("Cumulative effects"),2)
+scenario.var <- c("+20%", "-20%")
+salmon.effect <- c("Negative impacts on salmon", "Positive impacts on salmon")
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 scenario.effect <- dplyr::tibble(scenario_name=sc.name, scenario_var = scenario.var, salmon_effect = salmon.effect)
 
 
@@ -228,7 +271,12 @@ data("salmongroups")
 data("salmonbybasin")
 #plotmodels <- c(1,6) # eliminated model versions 1 & 6
 
+<<<<<<< HEAD
 plot_ensemble_cum_survival_scenarios(ensemblenumberscum, salmongroups, base.cum.survival, salmonbybasin, scenario.effect)
+=======
+plot_ensemble_cum_survival_scenarios(ensemblenumbersagescenarios, salmongroups, base.cum.survival, salmonbybasin, scenario.effect)
+
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 
 
 ```
@@ -239,8 +287,11 @@ Plot interaction effect
 
 ensemble.survival <- readr::read_csv(here::here("modelfiles","ensemble_survival.csv")) 
 ensemble.cum.survival <- readr::read_csv(here::here("modelfiles","ensemble_cum_survival.csv")) 
+<<<<<<< HEAD
 
 data("scenariocategories")
+=======
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 
 plot_interaction_effect(ensemble.survival, ensemble.cum.survival, scenariocategories)
 ```

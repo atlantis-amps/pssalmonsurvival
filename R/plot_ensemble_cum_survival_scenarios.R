@@ -6,7 +6,11 @@
 #' @export
 #'
 #' @description Code to plot survival of multiple AMPS versions
+<<<<<<< HEAD
 #' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2022
+=======
+#' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2002
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 
 
 
@@ -19,12 +23,19 @@ plot_ensemble_cum_survival_scenarios <- function(ensemblenumberscum, salmongroup
     dplyr::ungroup() %>%
     dplyr::mutate(model_ver = as.double(model_ver)) %>%
     dplyr::filter(scenario_var != 1) %>%
+<<<<<<< HEAD
     dplyr::mutate(scenario_var = dplyr::if_else(scenario_var=="0_8", "-20%","+20%")) %>%
     dplyr::mutate(scenario_name = dplyr::if_else(scenario_name=="bottom top","Bottom-up & Top-down",
                                                  dplyr::if_else(scenario_name=="bottom up","Bottom-up",
                                                                 dplyr::if_else(scenario_name=="top down","Top-down", scenario_name))))
 
 print(str(salmon.max.nums))
+=======
+    dplyr::filter(scenario_name == "bottom top") %>%
+    dplyr::mutate(scenario_var = dplyr::if_else(scenario_var=="0_8", "-20%","+20%")) %>%
+    dplyr::mutate(scenario_name = dplyr::if_else(scenario_name=="bottom top","Cumulative effects", scenario_name))
+
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
   salmon.juv.nums <- salmon.max.nums %>%
     dplyr::filter(age == 1) %>%
     dplyr::rename(juv_nums = max_nums)
@@ -35,8 +46,12 @@ print(str(salmon.max.nums))
     dplyr::select(-years_away) %>%
     dplyr::rename(age_return = age, return_nums=max_nums, year_sim = year_no, year_no= cohort_yr) %>%
     dplyr::left_join(salmon.juv.nums, by=c("scenario_name","scenario_var","migiobox","model_ver","Code","year_no","Long.Name","NumCohorts","Name")) %>%
+<<<<<<< HEAD
     dplyr::mutate(survival = (return_nums/juv_nums)*100) %>%
     dplyr::mutate(survival = dplyr::if_else(survival>100, 100, survival)) %>%
+=======
+    dplyr::mutate(survival = return_nums/juv_nums) %>%
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
     dplyr::mutate(Year = year_sim - 2010) %>%
     tidyr::drop_na() %>%
     dplyr::mutate(max_year = max(year_no)) %>%
@@ -57,7 +72,11 @@ salmon.rel.survival <- base.cum.survival %>%
   dplyr::select("scenario_name","model_ver","Code","Long.Name","survival") %>%
   dplyr::rename(base_survival = survival) %>%
   dplyr::left_join(salmon.return.nums.yr, by = c("scenario_name","model_ver","Code","Long.Name")) %>%
+<<<<<<< HEAD
   dplyr::mutate(rel_survival = (survival - base_survival))
+=======
+  dplyr::mutate(rel_survival = (((survival / base_survival)-1) * 100))
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 
 salmon.return.nums %>%
   dplyr::filter(year_no<=ret_year) %>%
@@ -78,6 +97,10 @@ salmon.lollipop.data <- salmon.rel.survival %>%
   dplyr::mutate(longname = gsub("Subyearling", "SY", longname), longname = gsub("Yearling","Y", longname),
                 longname = dplyr::if_else(longname=="Chum Hood Canal summer run SY", "Chum Hood Canal SY",
                                            dplyr::if_else(longname=="Strait of Georgia salmonids", "St. of Georgia salmonids", longname))) %>%
+<<<<<<< HEAD
+=======
+  dplyr::mutate(scenario_name = Hmisc::capitalize(scenario_name)) %>%
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
   dplyr::left_join(salmon.basin, by=c("Code")) %>%
   dplyr::left_join(scenario.effect, by = c("scenario_name","scenario_var"))
 
@@ -89,7 +112,11 @@ readr::write_csv(salmon.lollipop.data, here::here("modelfiles","ensemble_cum_sur
     dplyr::pull(scenario_name)
 
   col.pal <- c("#ffbe0b","#0a9396")
+<<<<<<< HEAD
   col.fill <- c("Puget Sound"='#7EADAA',"Strait of Georgia"='#2F5A54',"Whidbey" ='#F3A800',"Central Puget Sound"= '#DE7A00',"South Puget Sound" = '#0B77E8',"Hood Canal" = '#032F5C')
+=======
+  col.fill <- c("#ffbe0b","#0a9396", "#3fd2c7", "#99ddff", "#00458b", "#549896", "#83bb90", "#f1dd88", "#f7a482", "#81aa2c", "#f293b1", "#ed5181")
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 
   salmon.order <- salmon.lollipop.data %>%
     dplyr::distinct(longname, basin, geo_order, salmon_genus) %>%
@@ -97,12 +124,21 @@ readr::write_csv(salmon.lollipop.data, here::here("modelfiles","ensemble_cum_sur
     dplyr::pull(longname)
 
   plot.data <- salmon.lollipop.data %>%
+<<<<<<< HEAD
     droplevels() %>%
     dplyr::mutate(basin = forcats::fct_relevel(as.factor(basin), "Puget Sound", "Strait of Georgia", "Whidbey", "Central Puget Sound", "South Puget Sound", "Hood Canal")) %>%
     dplyr::mutate(longname = forcats::fct_relevel(as.factor(longname), salmon.order)) %>%
     dplyr::mutate(salmon_genus = forcats::fct_relevel(as.factor(salmon_genus),"Chinook","Chum","Coho","Pink","Sockeye")) %>%
     dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Bottom-up", "Top-down","Bottom-up & Top-down")) %>%
     dplyr::mutate(salmon_effect = as.factor (salmon_effect))
+=======
+    dplyr::filter(rel_survival < 50) %>%
+    droplevels() %>%
+    dplyr::mutate(basin = forcats::fct_relevel(as.factor(basin), "Puget Sound", "Strait of Georgia", "Whidbey", "Central Puget Sound", "South Puget Sound", "Hood Canal")) %>%
+    dplyr::mutate(longname = forcats::fct_relevel(as.factor(longname),salmon.order)) %>%
+    dplyr::mutate(salmon_genus = forcats::fct_relevel(as.factor(salmon_genus),"Chinook","Chum","Coho","Pink","Sockeye"))
+
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 
  max.violin <- plot.data %>%
     dplyr::pull(rel_survival) %>%
@@ -114,23 +150,38 @@ readr::write_csv(salmon.lollipop.data, here::here("modelfiles","ensemble_cum_sur
     min() %>%
     floor(.)
 
+<<<<<<< HEAD
   col.fill <- c("Puget Sound"='#7EADAA',"Strait of Georgia"='#2F5A54',"Whidbey" ='#F3A800',"Central Puget Sound"= '#DE7A00',"South Puget Sound" = '#0B77E8',"Hood Canal" = '#032F5C')
+=======
+    col.fill <- c("#ffbe0b","#ed5181", "#3fd2c7", "#00458b", "#f7a482", "#83bb90", "#f1dd88", "#81aa2c", "#f293b1")
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 
     box.plot.scale.basin <- plot.data %>%
       ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = longname, fill = basin)) +
       ggplot2::geom_boxplot() +
       ggplot2::geom_hline(yintercept = 0) +
+<<<<<<< HEAD
       ggplot2::facet_wrap(scenario_name ~ salmon_effect, scales = "free_y", ncol = 2, nrow = 3) +
       ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") +
       ggplot2::labs(title = "Cumulative scenario", y = "% change in survival (scenario-base)", x = "Functional group", face = "bold") +
+=======
+      ggplot2::facet_wrap(. ~ salmon_effect, scales = "free_y") +
+      ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") +
+      ggplot2::labs(title = "Cumulative scenario", y = "% change in survival rel. to base case", x = "Functional group", face = "bold") +
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
       ggthemes::theme_base() +
       ggplot2::theme(legend.position="bottom") +
       ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90, vjust=0.5, hjust=0.95)) +
       ggplot2::ylim(min.violin, max.violin)
 
+<<<<<<< HEAD
     ggplot2::ggsave("boxplot_cum_survival_basin_scale.png", plot = box.plot.scale.basin, device = "png", width = 30, height = 40, units = "cm", dpi = 600)
 
 return(box.plot.scale.basin)
+=======
+    ggplot2::ggsave("boxplot_cum_survival_basin_scale.png", plot = box.plot.scale.basin, device = "png", width = 40, height = 35, units = "cm", dpi = 600)
+
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 
   }
 

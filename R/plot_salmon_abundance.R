@@ -2,6 +2,10 @@
 #' @param salmon.abundance, a data frame
 #'
 #' @return salmon.plot
+#' @param salmonabundance, a data frame
+#' @param func.groups, a data frame of salmon groups in the model
+#'
+#' @return salmon_cum_return_nums.csv, survival over time
 #' @export
 #'
 #' @description Code to plot survival of multiple AMPS versions
@@ -29,4 +33,5 @@ pal.col <- wesanderson::wes_palette("Cavalcanti1",5)
   ggplot2::ggsave("reconstructed_salmon.png",salmon.plot, width = 8, height = 6, device='png')
 
   return(salmon.plot)
+
 }

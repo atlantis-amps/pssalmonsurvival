@@ -74,7 +74,10 @@ plot_ensemble_survival <- function(ensemblenumbersage, salmongroups){
   plot.list <- list()
 
 #  col.pal <- paletteer::paletteer_d("rcartocolor::Vivid", n = 10)
-col.pal <- c("darkorange","darkorange3","darkorange4","darksalmon","coral2","darkseagreen1","darkseagreen4","darkolivegreen2","darkolivegreen4")
+  col.pal <- c("Gelatinous zooplankton abundance"='#B2CD5D', "Hatchery Chinook competition"='#9CC439',
+               "Hatchery competition"='#86C117',"Herring abundance"='#699412',"Wild pink & chum salmon competition"='#51750E',
+               "Pinniped predation"='#9E64AA', "Porpoise predation"='#8B4997', "Seabird predation"='#89308C' ,
+               "Spiny dogfish predation"='#67256C')
 
   for (i in seq_len(n_pages)) {
 

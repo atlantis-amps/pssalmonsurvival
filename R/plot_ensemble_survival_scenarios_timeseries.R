@@ -82,7 +82,7 @@ plot.salmon.data <- salmon.return.nums %>%
     thesescenarios <- thislist %>% unlist()
     thisname <- names(thislist)
 
-     plot.data <- salmon.return.nums %>%
+    plot.data <- salmon.return.nums %>%
       dplyr::mutate(Long.Name = as.factor(Long.Name)) %>%
       tidyr::drop_na() %>%
       dplyr::filter(year_no<=ret_year) %>%
@@ -102,7 +102,7 @@ plot.salmon.data <- salmon.return.nums %>%
     print(n_pages)
 
     sc.multipliers <- c("Negative impacts on salmon", "Positive impacts on salmon")
-    salmon.impacts <- c("Positive impacts on salmon","Negative impacts on salmon")
+    salmon.impacts <- c("Negative impacts on salmon", "Positive impacts on salmon")
 
 
     for(eachscenariovar in 1:length(sc.multipliers)) {

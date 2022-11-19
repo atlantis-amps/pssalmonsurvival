@@ -3,5 +3,9 @@ pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   salmon_survival: salmon_survival.html
+<<<<<<< HEAD
 last_built: 2022-11-18T22:25Z
+=======
+last_built: 2022-10-11T18:20Z
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 

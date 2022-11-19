@@ -8,8 +8,12 @@ plot_ensemble_cum_survival_scenarios(
   ensemblenumberscum,
   salmongroups,
   base.cum.survival,
+<<<<<<< HEAD
   salmonbybasin,
   scenario.effect
+=======
+  salmonbybasin
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 )
 }
 \arguments{
@@ -24,5 +28,9 @@ salmon_cum_return_nums.csv, survival over time
 Code to plot survival of multiple AMPS versions
 }
 \author{
+<<<<<<< HEAD
 Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2022
+=======
+Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2002
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 }

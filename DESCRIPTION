@@ -43,7 +43,11 @@ Imports:
     forcats,
     ecotraj,
     ggnewscale,
+<<<<<<< HEAD
     paletteer,
+=======
+    paleteer,
+>>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
     wesanderson
 Remotes:
     github::ropensci/rnaturalearthhires
