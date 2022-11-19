@@ -9,12 +9,8 @@ plot_ensemble_survival_scenarios(
   salmongroups,
   plotmodels,
   base.survival,
-<<<<<<< HEAD
   salmonbybasin,
   scenario.effect
-=======
-  salmonbybasin
->>>>>>> 37705088a20ffc0bb50ba947c8b469abc28e4eb5
 )
 }
 \arguments{
