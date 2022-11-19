@@ -6,7 +6,8 @@
 \usage{
 plot_ensemble_survival_scenarios_timeseries(
   ensemblenumbersagescenarios,
-  salmongroups
+  salmongroups,
+  scenario.effect
 )
 }
 \arguments{

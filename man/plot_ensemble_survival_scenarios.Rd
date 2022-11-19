@@ -8,7 +8,9 @@ plot_ensemble_survival_scenarios(
   ensemblenumbersagescenarios,
   salmongroups,
   plotmodels,
-  base.survival
+  base.survival,
+  salmonbybasin,
+  scenario.effect
 )
 }
 \arguments{
@@ -23,5 +25,5 @@ salmon.return.nums, survival over time
 Code to plot survival of multiple AMPS versions
 }
 \author{
-Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2002
+Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2022
 }

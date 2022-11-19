@@ -5,8 +5,8 @@
 #' @return salmon.return.nums, survival over time
 #' @export
 #'
-#' @descriptions Code to modify AMPS nc file to create forcing files for sensitivity simulations
-#' @descriptions function to create forcing files, force prm and bash file
+#' @description Code to modify AMPS nc file to create forcing files for sensitivity simulations
+#' @description function to create forcing files, force prm and bash file
 #' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2002
 
 make_forcing <-

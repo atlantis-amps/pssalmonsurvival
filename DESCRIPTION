@@ -42,7 +42,9 @@ Imports:
     Hmisc,
     forcats,
     ecotraj,
-    ggnewscale
+    ggnewscale,
+    paletteer,
+    wesanderson
 Remotes:
     github::ropensci/rnaturalearthhires
     devtools::EmilHvitfeldt/paletteer

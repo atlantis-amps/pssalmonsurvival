@@ -26,6 +26,7 @@
 
 
 plot_foodweb <- function(ppreymatrix, plot.name) {
+
   ps.matrix <-
     ppreymatrix %>% dplyr::select(-Predator) %>% as.matrix()
   colnames(ps.matrix) <- NULL
@@ -89,7 +90,8 @@ plot_foodweb <- function(ppreymatrix, plot.name) {
       size = 6,
       edge.alpha = 0.5
     ) +
-    ggsci::scale_color_simpsons()
+    ggsci::scale_color_simpsons(name="Guild")
+
 
   ggplot2::ggsave(
     plot.name,

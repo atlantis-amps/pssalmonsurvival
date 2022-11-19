@@ -12,7 +12,7 @@ get_shapefile(eachfilename, shapefile.name)
 \item{shapefile.name, }{a string}
 }
 \description{
-download shapefiles
+Code to plot survival of multiple AMPS versions
 }
 \author{
 Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2002

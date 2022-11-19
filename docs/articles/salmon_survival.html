@@ -100,13 +100,16 @@
 <p>Hem Nalini Morzaria-Luna, I.C. Kaplan, C.J. Harvey, M. Schmidt, E.A. Fulton, R. Girardin, and P. MacCready</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rnaturalearthhires"</span>, repos <span class="op">=</span> <span class="st">"http://packages.ropensci.org"</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Installing package into '/tmp/RtmpaCIT1M/temp_libpath1a96525ef782a'</span>
+<pre><code><span class="co">## Installing package into '/tmp/RtmpjWAPtK/temp_libpath437f820a19723'</span>
 <span class="co">## (as 'lib' is unspecified)</span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">pssalmonsurvival</span><span class="op">)</span></code></pre></div>
 <p>Map of model extent in Puget Sound</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">file.name</span> <span class="op">&lt;-</span> <span class="st">"amps_model_map.png"</span>
+<code class="sourceCode R"><span class="co">#https://www.ngdc.noaa.gov/mgg/shorelines/ A Global Self-consistent, Hierarchical, High-resolution Geography Database</span>
+<span class="co">#system("wget https://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/latest/gshhg-shp-2.3.7.zip")</span>
+
+<span class="va">file.name</span> <span class="op">&lt;-</span> <span class="st">"amps_model_map.png"</span>
 
 <span class="fu"><a href="../reference/make_map.html">make_map</a></span><span class="op">(</span><span class="va">file.name</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Reading layer `bgm_Puget_Sound_89b_0p0001_WGS84' from data source </span>
@@ -124,6 +127,14 @@
 <span class="co">## Geometry type: POINT</span>
 <span class="co">## Dimension:     XY</span>
 <span class="co">## Bounding box:  xmin: -122.9007 ymin: 47.03787 xmax: -122.2021 ymax: 48.75955</span>
+<span class="co">## Geodetic CRS:  WGS 84</span>
+<span class="co">## Reading layer `GSHHS_f_L1' from data source </span>
+<span class="co">##   `/home/atlantis/pssalmonsurvival/shapefiles/GSHHS_shp/f/GSHHS_f_L1.shp' </span>
+<span class="co">##   using driver `ESRI Shapefile'</span>
+<span class="co">## Simple feature collection with 179837 features and 6 fields</span>
+<span class="co">## Geometry type: POLYGON</span>
+<span class="co">## Dimension:     XY</span>
+<span class="co">## Bounding box:  xmin: -180 ymin: -68.92453 xmax: 180 ymax: 83.63339</span>
 <span class="co">## Geodetic CRS:  WGS 84</span></code></pre>
 <p><img src="salmon_survival_files/figure-html/map%20model%20extent-1.png" width="700"></p>
 <p>Plot food web</p>
@@ -140,6 +151,17 @@
 <pre><code><span class="co">## Scale for 'colour' is already present. Adding another scale for 'colour',</span>
 <span class="co">## which will replace the existing scale.</span></code></pre>
 <p><img src="salmon_survival_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
+<p>Plot salmon time series</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">salmon.abundance</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"modelfiles"</span>,<span class="st">"Salmon_timeline_Losee.xlsx"</span><span class="op">)</span>, sheet <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+ <span class="co"># dplyr::rename("Salmon" = `Salmon Sum`) %&gt;% </span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">`Salmon Sum`</span>,<span class="op">-</span><span class="va">Steelhead</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols<span class="op">=</span><span class="va">Chinook</span><span class="op">:</span><span class="va">Sockeye</span>,names_to <span class="op">=</span> <span class="st">"salmon_group"</span>,values_to <span class="op">=</span> <span class="st">"biomass_mt"</span><span class="op">)</span>
+
+<span class="fu"><a href="../reference/plot_salmon_abundance.html">plot_salmon_abundance</a></span><span class="op">(</span><span class="va">salmon.abundance</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span>
+<span class="co">## "none")` instead.</span></code></pre>
+<p><img src="salmon_survival_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p>Model ensemble was developed with alternate parametrizations. Plot biomass trajectories based on simulations that run the model ensemble 30 years under constant fishing rates. We only use 6 model variants, 2:5 and 7:8 Model biomass comes from 30-year runs of the base models. There are 8 model variants that differ in invertebrate growth rate and vertebrate density dependence</p>
 <pre><code><span class="co">## [1] 5</span>
 <span class="co">## [1] 1</span></code></pre>
@@ -161,27 +183,131 @@
 <pre><code><span class="co">## </span>
 <span class="co">## [[5]]</span></code></pre>
 <p><img src="salmon_survival_files/figure-html/plot%20biomass%20base%20runs-5.png" width="700"></p>
-<p>Plot salmon survival for model ensemble, survival is defined as the proportion of age 1 salmon that survive to age 5, the cohort is lagged over time.</p>
-<pre><code><span class="co">## [1] 2</span></code></pre>
-<pre><code><span class="co">## Warning: Removed 8 row(s) containing missing values (geom_path).</span>
-<span class="co">## Removed 8 row(s) containing missing values (geom_path).</span></code></pre>
-<pre><code><span class="co">## [[1]]</span></code></pre>
-<pre><code><span class="co">## Warning: Removed 8 row(s) containing missing values (geom_path).</span></code></pre>
-<p><img src="salmon_survival_files/figure-html/plot%20survival%20base%20runs-1.png" width="700"></p>
-<pre><code><span class="co">## </span>
-<span class="co">## [[2]]</span></code></pre>
-<pre><code><span class="co">## Warning: Removed 8 row(s) containing missing values (geom_path).</span></code></pre>
-<p><img src="salmon_survival_files/figure-html/plot%20survival%20base%20runs-2.png" width="700"></p>
+<p>Plot salmon survival for model ensemble for base scenarios, survival is defined as the proportion of age 1 salmon that survive to age 5, the cohort is lagged over time. Also summarises base scenario which get used later to estimate relative survival.</p>
+<pre><code><span class="co">## [1] 6</span></code></pre>
+<pre><code><span class="co">## list()</span></code></pre>
 <p>Make forcings for model simulations, by scenario</p>
 <p>Plot salmon survival for scenario results, survival is defined as the proportion of age 1 salmon that survive to age 5, the cohort is lagged over time.</p>
-<pre><code><span class="co">## <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">5208</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">16</span></span>
+<p>Plot survival as time series</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ensemblenumbersagescenarios"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"salmongroups"</span><span class="op">)</span>
+
+<span class="va">survival.rates</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"modelfiles"</span>,<span class="st">"survival_rates.csv"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">3003</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">19</span></span>
 <span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span>
 <span class="co">## <span style="font-weight: bold;">Delimiter:</span> ","</span>
-<span class="co">## <span style="color: #BB0000;">chr</span>  (3): Code, Name, Long.Name</span>
-<span class="co">## <span style="color: #00BB00;">dbl</span> (13): model_ver, age_return, year_sim, return_nums, NumCohorts, migiobox...</span>
+<span class="co">## <span style="color: #BB0000;">chr</span>  (5): scenario_name, scenario_var, Code, Name, Long.Name</span>
+<span class="co">## <span style="color: #00BB00;">dbl</span> (14): model_ver, age_return, year_sim, return_nums, NumCohorts, migiobox...</span>
 <span class="co">## </span>
 <span class="co">## <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span>
 <span class="co">## <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></code></pre>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">#create table with expected effects by scenario</span>
+<span class="va">sc.name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Pinniped predation"</span>, <span class="st">"Porpoise predation"</span>, <span class="st">"Seabird predation"</span>, <span class="st">"Spiny dogfish predation"</span>, <span class="st">"Hatchery Chinook competition"</span>, <span class="st">"Hatchery competition"</span>, <span class="st">"Wild pink &amp; chum salmon competition"</span>, <span class="st">"Gelatinous zooplankton abundance"</span>, <span class="st">"Herring abundance"</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>
+<span class="va">scenario.var</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"+20%"</span>, <span class="fl">9</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"-20%"</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span>
+<span class="va">salmon.effect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Negative impacts on salmon"</span>, <span class="fl">8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Positive impacts on salmon"</span>,<span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Positive impacts on salmon"</span>, <span class="fl">8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Negative impacts on salmon"</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+<span class="va">scenario.effect</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>scenario_name<span class="op">=</span><span class="va">sc.name</span>, scenario_var <span class="op">=</span> <span class="va">scenario.var</span>, salmon_effect <span class="op">=</span> <span class="va">salmon.effect</span><span class="op">)</span>
+
+
+<span class="fu"><a href="../reference/plot_ensemble_survival_scenarios_timeseries.html">plot_ensemble_survival_scenarios_timeseries</a></span><span class="op">(</span><span class="va">ensemblenumbersagescenarios</span>, <span class="va">salmongroups</span>, <span class="va">scenario.effect</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 3</span></code></pre>
+<pre><code><span class="co">## [1] 3</span></code></pre>
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 16,275 × 23</span></span>
+<span class="co">##    model_ver Code  age_return year_sim scenario_name    scenario_var return_nums</span>
+<span class="co">##    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">## <span style="color: #BCBCBC;"> 1</span> 1         CDS            5     <span style="text-decoration: underline;">2</span>016 Pinniped predat… -20%             <span style="text-decoration: underline;">108</span>952.</span>
+<span class="co">## <span style="color: #BCBCBC;"> 2</span> 1         CDS            5     <span style="text-decoration: underline;">2</span>016 Porpoise predat… -20%             <span style="text-decoration: underline;">108</span>968.</span>
+<span class="co">## <span style="color: #BCBCBC;"> 3</span> 1         CDS            5     <span style="text-decoration: underline;">2</span>016 Seabird predati… -20%             <span style="text-decoration: underline;">108</span>967.</span>
+<span class="co">## <span style="color: #BCBCBC;"> 4</span> 1         CDS            5     <span style="text-decoration: underline;">2</span>016 Spiny dogfish p… -20%             <span style="text-decoration: underline;">108</span>968.</span>
+<span class="co">## <span style="color: #BCBCBC;"> 5</span> 1         CDS            5     <span style="text-decoration: underline;">2</span>017 Pinniped predat… -20%              <span style="text-decoration: underline;">66</span>620.</span>
+<span class="co">## <span style="color: #BCBCBC;"> 6</span> 1         CDS            5     <span style="text-decoration: underline;">2</span>017 Porpoise predat… -20%              <span style="text-decoration: underline;">66</span>628.</span>
+<span class="co">## <span style="color: #BCBCBC;"> 7</span> 1         CDS            5     <span style="text-decoration: underline;">2</span>017 Seabird predati… -20%              <span style="text-decoration: underline;">66</span>627.</span>
+<span class="co">## <span style="color: #BCBCBC;"> 8</span> 1         CDS            5     <span style="text-decoration: underline;">2</span>017 Spiny dogfish p… -20%              <span style="text-decoration: underline;">66</span>628.</span>
+<span class="co">## <span style="color: #BCBCBC;"> 9</span> 1         CDS            5     <span style="text-decoration: underline;">2</span>018 Pinniped predat… -20%              <span style="text-decoration: underline;">21</span>296.</span>
+<span class="co">## <span style="color: #BCBCBC;">10</span> 1         CDS            5     <span style="text-decoration: underline;">2</span>018 Porpoise predat… -20%              <span style="text-decoration: underline;">21</span>301.</span>
+<span class="co">## <span style="color: #949494;"># … with 16,265 more rows, and 16 more variables: Name &lt;chr&gt;, Long.Name &lt;fct&gt;,</span></span>
+<span class="co">## <span style="color: #949494;">#   NumCohorts &lt;int&gt;, migiobox &lt;dbl&gt;, year_no &lt;int&gt;, age &lt;int&gt;, juv_nums &lt;dbl&gt;,</span></span>
+<span class="co">## <span style="color: #949494;">#   years_away &lt;int&gt;, survival &lt;dbl&gt;, Year &lt;fct&gt;, max_year &lt;int&gt;,</span></span>
+<span class="co">## <span style="color: #949494;">#   ret_year &lt;dbl&gt;, max_model &lt;dbl&gt;, min_model &lt;dbl&gt;, mean_model &lt;dbl&gt;,</span></span>
+<span class="co">## <span style="color: #949494;">#   salmon_effect &lt;chr&gt;</span></span></code></pre>
+<p>Extract base survival for cumulative impact scenarios</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">#numbers at age from base runs</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ensemblenumberscum"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"salmongroups"</span><span class="op">)</span>
+<span class="co">#plotmodels &lt;- c(1,6) # eliminated model versions 1 &amp; 6</span>
+
+<span class="fu"><a href="../reference/extract_base_cum_survival.html">extract_base_cum_survival</a></span><span class="op">(</span><span class="va">ensemblenumberscum</span>, <span class="va">salmongroups</span><span class="op">)</span></code></pre></div>
+<p>Plot cumulative impact scenarios relative survival</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">base.cum.survival</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"modelfiles"</span>,<span class="st">"base_cum_survival.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html" class="external-link">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>max_year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">year_no</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year_no</span><span class="op">&lt;=</span><span class="op">(</span><span class="va">max_year</span><span class="op">-</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year_no</span><span class="op">==</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">year_no</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
+<pre><code><span class="co">## <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">12600</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">18</span></span>
+<span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span>
+<span class="co">## <span style="font-weight: bold;">Delimiter:</span> ","</span>
+<span class="co">## <span style="color: #BB0000;">chr</span>  (4): scenario_name, Code, Name, Long.Name</span>
+<span class="co">## <span style="color: #00BB00;">dbl</span> (14): scenario_var, model_ver, age_return, year_sim, return_nums, NumCoh...</span>
+<span class="co">## </span>
+<span class="co">## <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span>
+<span class="co">## <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></code></pre>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">#create table with expected effects by scenario</span>
+<span class="va">sc.name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Bottom-up &amp; Top-down"</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Bottom-up"</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Top-down"</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="va">scenario.var</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+20%"</span>, <span class="st">"-20%"</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>
+<span class="va">salmon.effect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Negative impacts on salmon"</span>, <span class="st">"Positive impacts on salmon"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>
+<span class="va">scenario.effect</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>scenario_name<span class="op">=</span><span class="va">sc.name</span>, scenario_var <span class="op">=</span> <span class="va">scenario.var</span>, salmon_effect <span class="op">=</span> <span class="va">salmon.effect</span><span class="op">)</span>
+
+
+<span class="co">#numbers at age from base runs</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ensemblenumberscum"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"salmongroups"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"salmonbybasin"</span><span class="op">)</span>
+<span class="co">#plotmodels &lt;- c(1,6) # eliminated model versions 1 &amp; 6</span>
+
+<span class="fu"><a href="../reference/plot_ensemble_cum_survival_scenarios.html">plot_ensemble_cum_survival_scenarios</a></span><span class="op">(</span><span class="va">ensemblenumberscum</span>, <span class="va">salmongroups</span>, <span class="va">base.cum.survival</span>, <span class="va">salmonbybasin</span>, <span class="va">scenario.effect</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## tibble [145,824 × 12] (S3: tbl_df/tbl/data.frame)</span>
+<span class="co">##  $ scenario_name: chr [1:145824] "Bottom-up &amp; Top-down" "Bottom-up &amp; Top-down" "Bottom-up &amp; Top-down" "Bottom-up &amp; Top-down" ...</span>
+<span class="co">##  $ scenario_var : chr [1:145824] "-20%" "-20%" "-20%" "-20%" ...</span>
+<span class="co">##  $ model_ver    : num [1:145824] 1 1 1 1 1 1 1 1 1 1 ...</span>
+<span class="co">##  $ Code         : chr [1:145824] "CDS" "CDS" "CDS" "CDS" ...</span>
+<span class="co">##  $ age          : int [1:145824] 1 1 1 1 1 1 1 1 1 1 ...</span>
+<span class="co">##  $ year_no      : int [1:145824] 2011 2012 2013 2014 2015 2016 2017 2018 2019 2020 ...</span>
+<span class="co">##  $ max_nums     : num [1:145824] 102102 233403 196313 145763 126690 ...</span>
+<span class="co">##  $ years_away   : int [1:145824] 4 4 4 4 4 4 4 4 4 4 ...</span>
+<span class="co">##  $ Name         : chr [1:145824] "ChinookDSY_Fish" "ChinookDSY_Fish" "ChinookDSY_Fish" "ChinookDSY_Fish" ...</span>
+<span class="co">##  $ Long.Name    : chr [1:145824] "Chinook Duwamish Subyearling" "Chinook Duwamish Subyearling" "Chinook Duwamish Subyearling" "Chinook Duwamish Subyearling" ...</span>
+<span class="co">##  $ NumCohorts   : int [1:145824] 5 5 5 5 5 5 5 5 5 5 ...</span>
+<span class="co">##  $ migiobox     : num [1:145824] 0.74 0.74 0.74 0.74 0.74 0.74 0.74 0.74 0.74 0.74 ...</span>
+<span class="co">## NULL</span></code></pre>
+<p>Plot interaction effect</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ensemble.survival</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"modelfiles"</span>,<span class="st">"ensemble_survival.csv"</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
+<pre><code><span class="co">## <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">3003</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">19</span></span>
+<span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span>
+<span class="co">## <span style="font-weight: bold;">Delimiter:</span> ","</span>
+<span class="co">## <span style="color: #BB0000;">chr</span>  (8): scenario_name, Code, Long.Name, scenario_var, longname, basin, sal...</span>
+<span class="co">## <span style="color: #00BB00;">dbl</span> (11): model_ver, base_survival, juv_nums.x, return_nums.x, survival, juv...</span>
+<span class="co">## </span>
+<span class="co">## <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span>
+<span class="co">## <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></code></pre>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ensemble.cum.survival</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"modelfiles"</span>,<span class="st">"ensemble_cum_survival.csv"</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
+<pre><code><span class="co">## <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">1008</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">15</span></span>
+<span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span>
+<span class="co">## <span style="font-weight: bold;">Delimiter:</span> ","</span>
+<span class="co">## <span style="color: #BB0000;">chr</span> (8): scenario_name, Code, Long.Name, scenario_var, longname, basin, salm...</span>
+<span class="co">## <span style="color: #00BB00;">dbl</span> (7): model_ver, base_survival, survival, rel_survival, max_model, min_mo...</span>
+<span class="co">## </span>
+<span class="co">## <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span>
+<span class="co">## <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></code></pre>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"scenariocategories"</span><span class="op">)</span>
+
+<span class="fu"><a href="../reference/plot_interaction_effect.html">plot_interaction_effect</a></span><span class="op">(</span><span class="va">ensemble.survival</span>, <span class="va">ensemble.cum.survival</span>, <span class="va">scenariocategories</span><span class="op">)</span></code></pre></div>
   </main>
 </div>
 
