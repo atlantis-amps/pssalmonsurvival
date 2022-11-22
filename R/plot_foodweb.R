@@ -11,7 +11,6 @@
 #' @export
 #' @description Code to create Atlantis food web from prey matrix that show linkages with 0 & 1
 #' @description reads square matrix of predators (rows) consuming prey (columns)
-
 #' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com, February 2022
 #' @example
 #' example using random graph, useful to see the format needed

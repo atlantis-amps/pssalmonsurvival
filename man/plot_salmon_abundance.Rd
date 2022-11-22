@@ -8,9 +8,15 @@ plot_salmon_abundance(salmon.abundance)
 }
 \arguments{
 \item{salmon.abundance, }{a data frame}
+
+\item{salmonabundance, }{a data frame}
+
+\item{func.groups, }{a data frame of salmon groups in the model}
 }
 \value{
 salmon.plot
+
+salmon_cum_return_nums.csv, survival over time
 }
 \description{
 Code to plot survival of multiple AMPS versions

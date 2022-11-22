@@ -99,11 +99,13 @@ readr::write_csv(salmon.lollipop.data, here::here("modelfiles","ensemble_surviva
 bottom.up.sc <- c("Hatchery Chinook competition", "Hatchery competition", "Wild pink & chum salmon competition", "Gelatinous zooplankton abundance", "Herring abundance")
 top.down.sc <- c("Pinniped predation", "Porpoise predation", "Seabird predation" , "Spiny dogfish predation")
 
-scenario.list <- list("Bottom up hypotheses" = bottom.up.sc, "Top down hypotheses" = top.down.sc)
+scenario.list <- list("Bottom-up hypotheses" = bottom.up.sc, "Top-down hypotheses" = top.down.sc)
 
 for(eachscenario in 1:length(scenario.list)){
 
   thislist <- scenario.list[eachscenario]
+
+  print(thislist)
 
   thesescenarios <- thislist %>% unlist()
   thisname <- names(thislist)
@@ -145,6 +147,7 @@ for(eachscenario in 1:length(scenario.list)){
 
   for (i in seq_len(pages.num)) {
 
+    print("creating range plot")
 
     range.plot <-  plot.data %>%
     ggplot2::ggplot() +
@@ -173,6 +176,7 @@ for(eachscenario in 1:length(scenario.list)){
 
   ggplot2::ggsave(paste0(thisname,"_",i,"_survival.png"),plot = range.plot, device = "png", width = 40, height = 35, units = "cm", dpi = 400)
 
+  print("creating violin plot")
 
    violin.plot <- plot.data %>%
       ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = scenario_name, fill = scenario_var)) +
@@ -192,6 +196,7 @@ for(eachscenario in 1:length(scenario.list)){
 
    ggplot2::ggsave(paste0(thisname,"_",i,"_violin_survival.png"),plot = violin.plot, device = "png", width = 40, height = 35, units = "cm", dpi = 400)
 
+print("creating violin plot scale")
 
    violin.plot.scale <- plot.data %>%
      ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = scenario_name, fill = scenario_var)) +
@@ -211,6 +216,7 @@ for(eachscenario in 1:length(scenario.list)){
 
    ggplot2::ggsave(paste0(thisname,"_",i,"_violin_survival_scale.png"),plot = violin.plot.scale, device = "png", width = 40, height = 35, units = "cm", dpi = 400)
 
+print("creating box plot scale")
 
    box.plot.scale <- plot.data %>%
      ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = scenario_name, fill = scenario_var)) +
@@ -230,30 +236,12 @@ for(eachscenario in 1:length(scenario.list)){
 }
 
 
-  scenario.level <- plot.data %>%
-    dplyr::distinct(scenario_var) %>%
-    dplyr::pull(scenario_var) %>%
-    as.character()
 
-  salmon.impacts <- c("Positive impacts on salmon","Negative impacts on salmon")
-  sc.multipliers <- c("Positive impacts on salmon","Negative impacts on salmon")
+  print("creating plots for scenario effects on salmon")
 
+#  for(eachscenariovar in 1:length(salmon.impacts)) {
 
-  for(eachscenariovar in 1:length(sc.multipliers)) {
-
-    sl.impact <- salmon.impacts[eachscenariovar]
-    this.multiplier <- sc.multipliers[eachscenariovar]
-
-
-    range.change <- plot.data %>%
-      dplyr::filter(Code %in% c("CMH","CNY","CNS")) %>%
-      dplyr::filter(salmon_effect==this.multiplier) %>%
-      dplyr::pull(rel_survival) %>%
-      range() %>% as.character
-
-    file.range <- file(paste(this.multiplier, eachscenario, "change_range.txt", sep="_"))
-
-    cat(paste(this.multiplier,eachscenario,range.change), file=paste(this.multiplier, eachscenario, "change_range.txt", sep="_"), sep="\n", append = TRUE)
+    print(eachscenariovar)
 
 
     col.fill <- c("Puget Sound"='#7EADAA',"Strait of Georgia"='#2F5A54',"Whidbey" ='#F3A800',"Central Puget Sound"= '#DE7A00',"South Puget Sound" = '#0B77E8',"Hood Canal" = '#032F5C')
@@ -261,36 +249,39 @@ for(eachscenario in 1:length(scenario.list)){
 
     these.rows <- ceiling(length(thesescenarios) / 2)
 
-    text.label <- plot.data %>%
-      dplyr::filter(salmon_effect==this.multiplier) %>%
-      dplyr::distinct(scenario_name, scenario_var) %>%
-      dplyr::mutate(longname = "Pink Salmon SY", basin = "Puget Sound")
+
+
+    col.fill <- c("Positive impacts on salmon" = "#D8B70A", "Negative impacts on salmon" = "#02401B")
 
     box.plot.scale.basin <- plot.data %>%
-      dplyr::filter(salmon_effect==this.multiplier) %>%
-      ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = longname, fill = basin)) +
+    #  dplyr::filter(salmon_effect==this.multiplier) %>%
+      ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = longname, fill = salmon_effect)) +
       ggplot2::geom_boxplot() +
       ggplot2::geom_hline(yintercept = 0) +
       ggplot2::facet_wrap(. ~ scenario_name, ncol = 2, nrow = these.rows, scales = "free_y") +
-      ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") +
-      ggplot2::labs(title = thisname, y = "% change in survival (scenario-base)", x = "Functional group", face = "bold", subtitle = sl.impact) +
+      ggplot2::scale_fill_manual(values = col.fill, name = "Salmon effect") +
+      ggplot2::labs(title = thisname, y = "% change in survival (scenario-base)", x = "Functional group", face = "bold") +
       ggthemes::theme_base() +
       ggplot2::theme(legend.position="bottom") +
-      ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90, vjust=0.5, hjust=0.95)) +
-    #  ggplot2::ylim(min.violin, max.violin) +
-      ggplot2::geom_text(
-        data    = text.label,
-        mapping =  ggplot2::aes(x = -Inf, y = -Inf, label = scenario_var),
-        hjust   = -0.5,
-        vjust   = -10
-      )
+      ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90, vjust=0.5, hjust=0.95))
 
 
-    ggplot2::ggsave(paste0(this.multiplier, "_,", thisname,"_",i,"_boxplot_survival_basin_scale_.png"), plot = box.plot.scale.basin, device = "png", width = 40, height = 35, units = "cm", dpi = 600)
 
-    return(box.plot.scale.basin)
-  }
+    # text.label <- plot.data %>%
+    #   # dplyr::filter(salmon_effect==this.multiplier) %>%
+    #   dplyr::distinct(scenario_name, scenario_var) %>%
+    #   dplyr::mutate(longname = "Pink Salmon SY", basin = "Puget Sound")
+    #
+    # ggplot2::geom_text(
+    #   data    = text.label,
+    #   mapping =  ggplot2::aes(x = -Inf, y = -Inf, label = scenario_var),
+    #   hjust   = -0.5,
+    #   vjust   = -12
+    # )
 
+    box.plot.scale.basin
+
+    ggplot2::ggsave(paste0(thisname,"_",i,"_boxplot_survival_basin_scale_.png"), plot = box.plot.scale.basin, device = "png", width = 40, height = 35, units = "cm", dpi = 600)
 
 
 
