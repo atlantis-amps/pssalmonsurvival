@@ -166,12 +166,12 @@ Plot survival as time series
 data("ensemblenumbersagescenarios")
 data("salmongroups")
 data("indsalmoneffect")
-
+data("salmoneffect")
 
 survival.rates <- readr::read_csv(here::here("modelfiles","survival_rates.csv"))
 
 
-plot_ensemble_survival_scenarios_timeseries(ensemblenumbersagescenarios, salmongroups, scenario.effect)
+plot_ensemble_survival_scenarios_timeseries(ensemblenumbersagescenarios, salmongroups, salmoneffect)
 
 ```
 
@@ -218,7 +218,7 @@ data("salmoneffect")
 
 #plotmodels <- c(1,6) # eliminated model versions 1 & 6
 
-plot_ensemble_cum_survival_scenarios(ensemblenumberscum, salmongroups, base.cum.survival, salmonbybasin, scenario.effect)
+plot_ensemble_cum_survival_scenarios(ensemblenumberscum, salmongroups, base.cum.survival, salmonbybasin, salmoneffect)
 
 ```
 
