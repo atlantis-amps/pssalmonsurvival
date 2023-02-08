@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# pssalmonsurvival 0.0.0.9002
+
+- Added figure on predator biomass and updated individual driver response.
+
+
 # pssalmonsurvival 0.0.0.9001
 
 - Same as previous version.
