@@ -19,8 +19,8 @@ plot_predation <- function(ensemblepredationcum, salmoneffect, salmonbybasin) {
     pred.sc <- ensemblepredationcum %>%
         dplyr::filter(time == 28) %>%
         dplyr::filter(scenario_var != 1) %>%
-        dplyr::mutate(scenario_var = if_else(scenario_var == "0_8", "-20%", "+20%")) %>%
-        dplyr::mutate(scenario_name = if_else(scenario_name == "bottom-top", "Bottom-up & Top-down", scenario_name)) %>%
+        dplyr::mutate(scenario_var = dplyr::if_else(scenario_var == "0_8", "-20%", "+20%")) %>%
+        dplyr::mutate(scenario_name = dplyr::if_else(scenario_name == "bottom-top", "Bottom-up & Top-down", scenario_name)) %>%
         dplyr::mutate(scenario_name = Hmisc::capitalize(scenario_name)) %>%
         dplyr::left_join(salmoneffect, by = c("scenario_name", "scenario_var")) %>%
         dplyr::group_by(code, longname, model_ver, scenario_name, salmon_effect) %>%
@@ -32,7 +32,7 @@ plot_predation <- function(ensemblepredationcum, salmoneffect, salmonbybasin) {
     pred.base <- ensemblepredationcum %>%
         dplyr::filter(time == 28) %>%
         dplyr::filter(scenario_var == 1) %>%
-        dplyr::mutate(scenario_name = if_else(scenario_name == "bottom-top", "Bottom-up & Top-down", scenario_name)) %>%
+        dplyr::mutate(scenario_name = dplyr::if_else(scenario_name == "bottom-top", "Bottom-up & Top-down", scenario_name)) %>%
         dplyr::mutate(scenario_name = Hmisc::capitalize(scenario_name)) %>%
         dplyr::group_by(code, longname, model_ver, scenario_name) %>%
         dplyr::summarise(base_mortality = sum(mortality)) %>%
@@ -41,7 +41,7 @@ plot_predation <- function(ensemblepredationcum, salmoneffect, salmonbybasin) {
 
 
     pred.plot.salmon <- pred.sc %>%
-        left_join(pred.base, by = c("code", "longname", "model_ver", "scenario_name", "name", "basin", "geo_order", "salmon_genus")) %>%
+      dplyr::left_join(pred.base, by = c("code", "longname", "model_ver", "scenario_name", "name", "basin", "geo_order", "salmon_genus")) %>%
         dplyr::mutate(prop_mort = pred_mortality/base_mortality) %>%
         dplyr::mutate(excess_mort = (prop_mort - 1) * 100) %>%
         dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Bottom-up", "Top-down", "Bottom-up & Top-down")) %>%
@@ -55,10 +55,16 @@ plot_predation <- function(ensemblepredationcum, salmoneffect, salmonbybasin) {
         `Hood Canal` = "#032F5C")
 
     pred.boxplot <- pred.plot.salmon %>%
-        ggplot2::ggplot(ggplot2::aes(y = excess_mort, x = longname, fill = basin)) + ggplot2::geom_boxplot() + ggplot2::geom_hline(yintercept = 1) + ggplot2::facet_wrap(scenario_name ~
-        salmon_effect, scales = "free_y", ncol = 2, nrow = 3) + ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") + ggplot2::labs(title = "Cumulative scenarios",
-        y = "% change in mortality relative to base scenario", x = "Functional group", face = "bold") + ggthemes::theme_base() + ggplot2::theme(legend.position = "bottom") +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
+      ggplot2::ggplot(ggplot2::aes(y = excess_mort, x = longname, fill = basin)) +
+      ggplot2::geom_boxplot() + ggplot2::geom_hline(yintercept = 1) +
+      ggplot2::facet_wrap(scenario_name ~
+                            salmon_effect, scales = "free_y", ncol = 2, nrow = 3) +
+      ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") +
+      ggplot2::labs(title = "Cumulative scenarios",
+                    y = "% change in predation mortality relative to base scenario", x = "Functional group", face = "bold") +
+      ggthemes::theme_base() +
+      ggplot2::theme(legend.position = "bottom") +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
 
     # pred.plot.salmon %>% dplyr::filter(scenario_name=='Top-down') %>% ggplot2::ggplot(ggplot2::aes(y = excess_mort, x = salmon_effect, fill = basin)) +
     # ggplot2::geom_boxplot(width = 0.1) + # ggplot2::geom_violin(width=1.4) + ggplot2::geom_hline(yintercept = 1) + ggplot2::facet_wrap( ~ longname, scales =

@@ -166,12 +166,12 @@ Plot survival as time series
 data("ensemblenumbersagescenarios")
 data("salmongroups")
 data("indsalmoneffect")
-data("salmoneffect")
+#data("salmoneffect")
 
 survival.rates <- readr::read_csv(here::here("modelfiles","survival_rates.csv"))
 
 
-plot_ensemble_survival_scenarios_timeseries(ensemblenumbersagescenarios, salmongroups, salmoneffect)
+plot_ensemble_survival_scenarios_timeseries(ensemblenumbersagescenarios, salmongroups, indsalmoneffect)
 
 ```
 
@@ -242,6 +242,14 @@ data("salmoneffect")
 data("salmonbybasin")
 
 plot_predation(ensemblepredationcum, salmoneffect, salmonbybasin)
+
+```
+
+plot biomass of higher trophic level guilds
+```{r}
+data("ensemblebiomasscum")
+data("predgroups")
+
 
 ```
 

@@ -55,15 +55,19 @@ plot_interaction_effect <- function(ensemble.survival, ensemble.cum.survival, sc
         dplyr::mutate(salmon_genus = forcats::fct_relevel(as.factor(salmon_genus), "Chinook", "Chum", "Coho", "Pink", "Sockeye"))
 
 
-
     col.fill <- c(`Puget Sound` = "#7EADAA", `Strait of Georgia` = "#2F5A54", Whidbey = "#F3A800", `Central Puget Sound` = "#DE7A00", `South Puget Sound` = "#0B77E8",
         `Hood Canal` = "#032F5C")
 
     box.plot.effect <- effect.size %>%
-        ggplot2::ggplot(ggplot2::aes(y = effect_size, x = longname, fill = basin)) + ggplot2::geom_boxplot() + ggplot2::geom_hline(yintercept = 0) + ggplot2::facet_wrap(scenario_category ~
-        salmon_effect, ncol = 2, nrow = 3, scales = "free_y") + ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") + ggplot2::labs(title = "Effect size",
-        y = "Effect size salmon survival", x = "Functional group", face = "bold") + ggthemes::theme_base() + ggplot2::theme(legend.position = "bottom") + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
-        vjust = 0.5, hjust = 0.95))
+        ggplot2::ggplot(ggplot2::aes(y = effect_size, x = longname, fill = basin)) +
+        gplot2::geom_boxplot() +
+        ggplot2::geom_hline(yintercept = 0) +
+        ggplot2::facet_wrap(scenario_category ~ salmon_effect, ncol = 2, nrow = 3, scales = "free_y") +
+        ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") +
+        ggplot2::labs(title = "Effect size", y = "Effect size salmon survival", x = "Functional group", face = "bold") +
+        ggthemes::theme_base() +
+        ggplot2::theme(legend.position = "bottom") +
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
 
 
     ggplot2::ggsave("boxplot_effect_size.png", plot = box.plot.effect, device = "png", width = 30, height = 40, units = "cm", dpi = 600)

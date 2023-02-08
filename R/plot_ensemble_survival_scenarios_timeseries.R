@@ -11,7 +11,7 @@
 
 
 
-plot_ensemble_survival_scenarios_timeseries <- function(ensemblenumbersagescenarios, salmongroups, salmoneffect) {
+plot_ensemble_survival_scenarios_timeseries <- function(ensemblenumbersagescenarios, salmongroups, indsalmoneffect) {
 
     salmon.max.nums <- ensemblenumbersagescenarios %>%
         dplyr::group_by(model_ver, Code, age, year_no, scenario_name, scenario_var) %>%
@@ -56,7 +56,7 @@ plot_ensemble_survival_scenarios_timeseries <- function(ensemblenumbersagescenar
         dplyr::filter(year_no <= ret_year) %>%
         dplyr::group_by(scenario_name, scenario_var, Long.Name, Year) %>%
         dplyr::summarise(max_model = max(survival), min_model = min(survival), mean_model = mean(survival)) %>%
-        dplyr::left_join(salmoneffect, by = c("scenario_name", "scenario_var"))
+        dplyr::left_join(indsalmoneffect, by = c("scenario_name", "scenario_var"))
 
     # readr::write_csv(salmon.return.nums,'scenarios_survival_timeseries.csv')
 
@@ -72,12 +72,13 @@ plot_ensemble_survival_scenarios_timeseries <- function(ensemblenumbersagescenar
     top.down.sc <- c("Pinniped predation", "Porpoise predation", "Seabird predation", "Spiny dogfish predation")
     scenario.list <- list(`Bottom up hypotheses` = bottom.up.sc, `Top down hypotheses` = top.down.sc)
 
-    for (eachscenario in 1:length(scenario.list)) {
+    for (eachhypothesis in 1:length(scenario.list)) {
 
-        thislist <- scenario.list[eachscenario]
+        thislist <- scenario.list[eachhypothesis]
 
         thesescenarios <- thislist %>%
             unlist()
+
         thisname <- names(thislist)
 
         plot.data <- salmon.return.nums %>%
@@ -99,17 +100,16 @@ plot_ensemble_survival_scenarios_timeseries <- function(ensemblenumbersagescenar
 
         print(n_pages)
 
-        sc.multipliers <- c("Negative impacts on salmon", "Positive impacts on salmon")
-        salmon.impacts <- c("Negative impacts on salmon", "Positive impacts on salmon")
+       salmon.impacts <- c("Negative impacts on salmon", "Positive impacts on salmon")
 
 
-        for (eachscenariovar in 1:length(sc.multipliers)) {
+        for (eachscenariovar in 1:length(salmon.impacts)) {
 
             sl.impact <- salmon.impacts[eachscenariovar]
-            this.multiplier <- sc.multipliers[eachscenariovar]
+
 
             scenario.plot.data <- plot.data %>%
-                dplyr::filter(salmon_effect == this.multiplier) %>%
+                dplyr::filter(salmon_effect == sl.impact) %>%
                 dplyr::mutate(Year = as.factor(Year)) %>%
                 droplevels()
 
@@ -121,10 +121,12 @@ plot_ensemble_survival_scenarios_timeseries <- function(ensemblenumbersagescenar
             for (i in seq_len(n_pages)) {
 
                 survival.plot.bar.time <- scenario.plot.data %>%
-                  ggplot2::ggplot(ggplot2::aes(x = Year, y = survival, color = scenario_name)) + ggplot2::geom_boxplot(outlier.size = 0.5, outlier.alpha = 0.6, alpha = 0.6) +
+                  ggplot2::ggplot(ggplot2::aes(x = Year, y = survival, color = scenario_name)) +
+                  ggplot2::geom_boxplot(outlier.size = 0.5, outlier.alpha = 0.6, alpha = 0.6) +
                   # ggplot2::ylim(0,1) + ggnewscale::new_scale_color() + ggplot2::geom_line(ggplot2::aes(group= scenario_name, colour=scenario_name)) +
-                ggthemes::theme_few() + ggplot2::scale_colour_manual(values = col.pal, name = "Scenario") + ggforce::facet_wrap_paginate(. ~ Long.Name, ncol = 1,
-                  nrow = 4, page = i, shrink = FALSE, labeller = "label_value", scales = "free_y") + ggplot2::labs(y = "Survival", subtitle = sl.impact) + ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)) +
+                  ggthemes::theme_few() + ggplot2::scale_colour_manual(values = col.pal, name = "Scenario") +
+                  ggforce::facet_wrap_paginate(. ~ Long.Name, ncol = 1, nrow = 4, page = i, shrink = FALSE, labeller = "label_value", scales = "free_y") +
+                  ggplot2::labs(y = "Survival", subtitle = sl.impact) + ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)) +
                   ggplot2::theme(legend.position = "bottom")
 
                 # plot.list.range[[i]] <- survival.plot.bar.time

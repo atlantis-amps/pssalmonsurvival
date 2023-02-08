@@ -34,6 +34,9 @@
     <loc>/reference/ensemblebiomasscum.html</loc>
   </url>
   <url>
+    <loc>/reference/ensemblemortperpredcum.html</loc>
+  </url>
+  <url>
     <loc>/reference/ensemblenumbersage.html</loc>
   </url>
   <url>
@@ -41,6 +44,9 @@
   </url>
   <url>
     <loc>/reference/ensemblenumberscum.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ensemblepredationcum.html</loc>
   </url>
   <url>
     <loc>/reference/extract_base_cum_survival.html</loc>
@@ -52,7 +58,13 @@
     <loc>/reference/get_shapefile.html</loc>
   </url>
   <url>
+    <loc>/reference/groupguilds.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/indsalmoneffect.html</loc>
   </url>
   <url>
     <loc>/reference/make_forcing.html</loc>
@@ -88,6 +100,9 @@
     <loc>/reference/plot_interaction_effect.html</loc>
   </url>
   <url>
+    <loc>/reference/plot_predation.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_salmon_abundance.html</loc>
   </url>
   <url>
@@ -95,6 +110,9 @@
   </url>
   <url>
     <loc>/reference/salmonbybasin.html</loc>
+  </url>
+  <url>
+    <loc>/reference/salmoneffect.html</loc>
   </url>
   <url>
     <loc>/reference/scenariocategories.html</loc>

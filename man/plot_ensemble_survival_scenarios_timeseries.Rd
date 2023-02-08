@@ -7,7 +7,7 @@
 plot_ensemble_survival_scenarios_timeseries(
   ensemblenumbersagescenarios,
   salmongroups,
-  salmoneffect
+  indsalmoneffect
 )
 }
 \arguments{
