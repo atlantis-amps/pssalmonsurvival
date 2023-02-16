@@ -1,5 +1,5 @@
-#' @title DATASET_TITLE
-#' @description DATASET_DESCRIPTION
+#' @title ensemblebiomasscum
+#' @description Biomass in cumulative scenarios
 #' @format A data frame with 536352 rows and 8 variables:
 #' \describe{
 #'   \item{\code{Code}}{character functional group code}

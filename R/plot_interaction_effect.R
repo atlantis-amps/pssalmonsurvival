@@ -60,7 +60,7 @@ plot_interaction_effect <- function(ensemble.survival, ensemble.cum.survival, sc
 
     box.plot.effect <- effect.size %>%
         ggplot2::ggplot(ggplot2::aes(y = effect_size, x = longname, fill = basin)) +
-        gplot2::geom_boxplot() +
+        ggplot2::geom_boxplot() +
         ggplot2::geom_hline(yintercept = 0) +
         ggplot2::facet_wrap(scenario_category ~ salmon_effect, ncol = 2, nrow = 3, scales = "free_y") +
         ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") +

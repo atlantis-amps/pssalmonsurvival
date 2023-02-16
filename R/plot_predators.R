@@ -12,15 +12,14 @@
 plot_predators <- function(ensemblebiomasscum, predgroups){
 
   salmon.preds <- predgroups %>%
-    pull(Code)
+    dplyr::pull(Code)
 
   biomass.preds <- ensemblebiomasscum %>%
     dplyr::filter(Code %in% salmon.preds) %>%
     dplyr::left_join(predgroups, by = "Code") %>%
     dplyr::filter(Year > 29) %>%
     dplyr::group_by(Code, name, longname, guild, model_ver, scenario_name, scenario_var) %>%
-    dplyr::summarise(max_biomass = max(biomass)) %>%
-    ungroup
+    dplyr::summarise(max_biomass = max(biomass), .groups = "drop")
 
   base.biomass.preds <- biomass.preds %>%
     dplyr::filter(scenario_var=="1") %>%
@@ -31,17 +30,22 @@ plot_predators <- function(ensemblebiomasscum, predgroups){
     dplyr::filter(scenario_var!="1") %>%
     dplyr::left_join(base.biomass.preds, by=c("Code","name","longname","guild","model_ver","scenario_name")) %>%
     dplyr::mutate(rel_biomass = max_biomass / base_biomass) %>%
+    dplyr::mutate(scenario_var = dplyr::if_else(scenario_var == "1_2", "Negative impacts on salmon", "Positive impacts on salmon")) %>%
+    dplyr::mutate(scenario_name = dplyr::if_else(scenario_name == "bottom top", "Bottom-up & Top-down",
+                                                 dplyr::if_else(scenario_name=="top down","Top-down",
+                                                                dplyr::if_else(scenario_name=="bottom up","Bottom-up",scenario_name)))) %>%
     dplyr::mutate(scenario_name = as.factor(scenario_name)) %>%
-    dplyr::mutate(scenario_var = dplyr::if_else(scenario_var == "1_2", "Negative impacts on salmon", "Positive impacts on salmon"))
+    dplyr::mutate(scenario_name = forcats::fct_relevel(scenario_name, "Bottom-up", "Top-down", "Bottom-up & Top-down"))
+
 
   col.fill <- c(`Positive impacts on salmon` = "#D8B70A", `Negative impacts on salmon` = "#02401B")
 
 
-  rel.biomass.preds %>%
+  biomass.violin.pred <- rel.biomass.preds %>%
     dplyr::filter(guild!="Demersal fish") %>%
     droplevels() %>%
     ggplot2::ggplot(ggplot2::aes(y = rel_biomass, x = scenario_name, fill = scenario_var)) +
-    ggplot2::geom_boxplot() +
+    ggplot2::geom_violin() +
     ggplot2::facet_wrap(. ~ guild) + #, scales = "free_y"
     ggplot2::scale_fill_manual(values = col.fill, name = "Impact on salmon") +
     ggplot2::geom_hline(yintercept = 1) +
@@ -51,16 +55,6 @@ plot_predators <- function(ensemblebiomasscum, predgroups){
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
 
 
-  pred.boxplot <- rel.biomass.preds %>%
-    dplyr::filter(!rel_biomass > 1000) %>%
-    ggplot2::ggplot(ggplot2::aes(y = rel_biomass, x = guild, fill = scenario_var)) +
-    ggplot2::geom_boxplot() +
-    ggplot2::facet_wrap(.~ scenario_name, scales = "free_y", ncol = 2, nrow = 3) +
-    ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") +
-    ggplot2::labs(title = "Cumulative scenarios",
-                  y = "% change in predation mortality relative to base scenario", x = "Functional group", face = "bold") +
-    ggthemes::theme_base() +
-    ggplot2::theme(legend.position = "bottom") +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
+  ggplot2::ggsave("predator_biomass_effect_.png", plot = biomass.violin.pred, device = "png", width= 9.56, height = 10.68, dpi = 600)
 
 }

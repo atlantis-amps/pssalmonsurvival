@@ -3,7 +3,7 @@
 \docType{data}
 \name{ensemblebiomasscum}
 \alias{ensemblebiomasscum}
-\title{DATASET_TITLE}
+\title{ensemblebiomasscum}
 \format{
 A data frame with 536352 rows and 8 variables:
 \describe{
@@ -21,7 +21,7 @@ A data frame with 536352 rows and 8 variables:
 ensemblebiomasscum
 }
 \description{
-DATASET_DESCRIPTION
+Biomass in cumulative scenarios
 }
 \details{
 DETAILS

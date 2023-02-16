@@ -250,6 +250,8 @@ plot biomass of higher trophic level guilds
 data("ensemblebiomasscum")
 data("predgroups")
 
+plot_predators(ensemblebiomasscum, predgroups)
+
 
 ```
 

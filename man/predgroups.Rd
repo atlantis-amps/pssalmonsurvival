@@ -3,7 +3,7 @@
 \docType{data}
 \name{predgroups}
 \alias{predgroups}
-\title{DATASET_TITLE}
+\title{predgroups}
 \format{
 A data frame with 23 rows and 6 variables:
 \describe{
@@ -19,9 +19,9 @@ A data frame with 23 rows and 6 variables:
 predgroups
 }
 \description{
-DATASET_DESCRIPTION
+List of higher trophic level predators
 }
 \details{
-DETAILS
+List taken from functional group file, includes only demersal fish, elasmobranchs, sea birds, marine mammals
 }
 \keyword{datasets}

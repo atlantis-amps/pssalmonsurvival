@@ -103,10 +103,19 @@
     <loc>/reference/plot_predation.html</loc>
   </url>
   <url>
+    <loc>/reference/plot_predators.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_salmon_abundance.html</loc>
   </url>
   <url>
     <loc>/reference/ppreymatrix.html</loc>
+  </url>
+  <url>
+    <loc>/reference/predgroups.html</loc>
+  </url>
+  <url>
+    <loc>/reference/prednumbers.html</loc>
   </url>
   <url>
     <loc>/reference/salmonbybasin.html</loc>

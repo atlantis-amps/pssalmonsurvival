@@ -10,7 +10,7 @@
 
 
 
-plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmongroups, plotmodels, base.survival, salmonbybasin, salmoneffect) {
+plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmongroups, plotmodels, base.survival, salmonbybasin, indsalmoneffect) {
 
     salmon.max.nums <- ensemblenumbersagescenarios %>%
         dplyr::group_by(scenario_name, scenario_var, model_ver, Code, age, year_no) %>%
@@ -88,7 +88,7 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
         dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Hatchery Chinook competition", "Hatchery competition", "Wild pink & chum salmon competition",
             "Gelatinous zooplankton abundance", "Herring abundance", "Pinniped predation", "Porpoise predation", "Seabird predation", "Spiny dogfish predation")) %>%
         dplyr::left_join(salmon.basin, by = c("Code")) %>%
-        dplyr::left_join(salmoneffect, by = c("scenario_name", "scenario_var"))
+        dplyr::left_join(indsalmoneffect, by = c("scenario_name", "scenario_var"))
 
     readr::write_csv(salmon.lollipop.data, here::here("modelfiles", "ensemble_survival.csv"))
 
@@ -108,9 +108,7 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
             unlist()
         thisname <- names(thislist)
 
-        col.fill <- c(`-20%` = "#ffbe0b", `+20%` = "#0a9396")
-
-        salmon.order <- salmon.lollipop.data %>%
+       salmon.order <- salmon.lollipop.data %>%
             dplyr::distinct(longname, basin, geo_order, salmon_genus) %>%
             dplyr::arrange(salmon_genus, geo_order) %>%
             dplyr::pull(longname)
@@ -122,8 +120,6 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
                 "Hood Canal")) %>%
             dplyr::mutate(longname = forcats::fct_relevel(as.factor(longname), salmon.order)) %>%
             dplyr::mutate(salmon_genus = forcats::fct_relevel(as.factor(salmon_genus), "Chinook", "Chum", "Coho", "Pink", "Sockeye"))
-
-
 
         # Calculate the number of pages with 12 panels per page
 
@@ -144,64 +140,91 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
             min() %>%
             floor(.)
 
+        col.fill <- c(`-20%` = "#ffbe0b", `+20%` = "#0a9396")
+
         for (i in seq_len(pages.num)) {
 
             print("creating range plot")
 
-            range.plot <- plot.data %>%
-                ggplot2::ggplot() + ggplot2::geom_segment(ggplot2::aes(x = min_model, xend = max_model, y = scenario_name, yend = scenario_name, color = scenario_var),
-                size = 5, alpha = 0.1) + #  ggplot2::scale_color_manual(values = col.fill, name = 'Change in key group abundance') +  ggplot2::geom_point(ggplot2::aes(y = scenario_name, x = rel_survival, fill = model_ver, color = model_ver, shape = scenario_var)) + size
+          range.plot <- plot.data %>%
+            ggplot2::ggplot() + ggplot2::geom_segment(ggplot2::aes(x = min_model, xend = max_model, y = scenario_name, yend = scenario_name, color = scenario_var),
+                                                      size = 5, alpha = 0.1) + #  ggplot2::scale_color_manual(values = col.fill, name = 'Change in key group abundance') +  ggplot2::geom_point(ggplot2::aes(y = scenario_name, x = rel_survival, fill = model_ver, color = model_ver, shape = scenario_var)) + size
             ggplot2::geom_jitter(ggplot2::aes(y = scenario_name, x = rel_survival, shape = scenario_var, fill = model_ver), width = 0.25, height = 0.25, size = 1.5) +
-                ggplot2::scale_shape_manual(values = c(21, 24), name = "Change in key group abundance") + ggplot2::scale_fill_manual(values = col.fill, guide = "none") +
-                ggplot2::scale_color_manual(values = col.fill, guide = "none") + #    ggsci::scale_fill_d3('category20', name = 'Model version') + ggplot2::facet_wrap(ggplot2::vars(long_name), scales = 'free_y') + ggplot2::scale_color_manual(values
+            ggplot2::scale_shape_manual(values = c(21, 24), name = "Change in key group abundance") +
+            ggplot2::scale_fill_manual(values = col.fill, guide = "none") +
+            ggplot2::scale_color_manual(values = col.fill, guide = "none") + #    ggsci::scale_fill_d3('category20', name = 'Model version') + ggplot2::facet_wrap(ggplot2::vars(long_name), scales = 'free_y') + ggplot2::scale_color_manual(values
             ggforce::facet_wrap_paginate(. ~ longname, ncol = 3, nrow = 3, page = i, shrink = FALSE, labeller = "label_value") + ggplot2::coord_flip() + ggplot2::geom_vline(xintercept = 0) +
-                ggplot2::xlab("% change in survival (scenario-base)") + ggplot2::ylab("Scenario") + ggplot2::labs(title = thisname) + ggthemes::theme_base() + ggplot2::theme(legend.position = "bottom") +
-                ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5)) + ggplot2::guides(fill = "none") + ggplot2::xlim(min.violin, max.violin)
+            ggplot2::xlab("% change in survival (scenario-base)") +
+            ggplot2::ylab("Scenario") +
+            ggplot2::labs(title = thisname) +
+            ggthemes::theme_base() +
+            ggplot2::theme(legend.position = "bottom") +
+            ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5)) +
+            ggplot2::guides(fill = "none") +
+            ggplot2::xlim(min.violin, max.violin)
 
 
 
-            ggplot2::ggsave(paste0(thisname, "_", i, "_survival.png"), plot = range.plot, device = "png", width = 40, height = 35, units = "cm", dpi = 400)
+            ggplot2::ggsave(paste0(thisname, "_", i, "_survival.png"), plot = range.plot, device = "png", width= 7.65, height = 8.56, dpi = 600)
 
             print("creating violin plot")
 
             violin.plot <- plot.data %>%
-                ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = scenario_name, fill = scenario_var)) + ggplot2::geom_violin(trim = FALSE, position = ggplot2::position_dodge(),
-                draw_quantiles = c(0.5)) + ggforce::facet_wrap_paginate(. ~ longname, ncol = 3, nrow = 3, page = i, shrink = FALSE, labeller = "label_value", scales = "free_y") +
-                ggplot2::geom_boxplot(ggplot2::aes(fill = scenario_var), width = 0.1, color = "black", position = ggplot2::position_dodge(width = 0.9)) + ggplot2::scale_fill_manual(values = col.fill,
-                name = "Change in key group abundance") + ggplot2::ylab("% change in survival (scenario-base)") + ggplot2::xlab("Scenario") + ggplot2::labs(title = thisname) +
-                ggplot2::geom_hline(yintercept = 0) + ggthemes::theme_base() + ggplot2::theme(legend.position = "bottom") + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
-                vjust = 0.5)) + ggplot2::ylim(min.violin, max.violin)
+                ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = scenario_name, fill = scenario_var)) +
+                ggplot2::geom_violin(trim = FALSE, position = ggplot2::position_dodge(),
+                draw_quantiles = c(0.5)) +
+                ggforce::facet_wrap_paginate(. ~ longname, ncol = 3, nrow = 3, page = i, shrink = FALSE, labeller = "label_value", scales = "free_y") +
+                ggplot2::geom_boxplot(ggplot2::aes(fill = scenario_var), width = 0.1, color = "black", position = ggplot2::position_dodge(width = 0.9)) +
+                ggplot2::scale_fill_manual(values = col.fill, name = "Change in key group abundance") +
+                ggplot2::ylab("% change in survival (scenario-base)") + ggplot2::xlab("Scenario") +
+                ggplot2::labs(title = thisname) +
+                ggplot2::geom_hline(yintercept = 0) +
+                ggthemes::theme_base() +
+                ggplot2::theme(legend.position = "bottom") + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5)) +
+                ggplot2::ylim(min.violin, max.violin)
 
 
-            ggplot2::ggsave(paste0(thisname, "_", i, "_violin_survival.png"), plot = violin.plot, device = "png", width = 40, height = 35, units = "cm", dpi = 400)
+            ggplot2::ggsave(paste0(thisname, "_", i, "_violin_survival.png"), plot = violin.plot, device = "png", width= 7.65, height = 8.56, dpi = 600)
 
             print("creating violin plot scale")
 
             violin.plot.scale <- plot.data %>%
-                ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = scenario_name, fill = scenario_var)) + ggplot2::geom_violin(trim = FALSE, position = ggplot2::position_dodge(),
-                draw_quantiles = c(0.5)) + ggplot2::geom_hline(yintercept = 0) + ggforce::facet_wrap_paginate(. ~ longname, ncol = 3, nrow = 3, page = i, shrink = FALSE,
-                labeller = "label_value", scales = "free_y") + ggplot2::geom_boxplot(ggplot2::aes(fill = scenario_var), width = 0.1, color = "black", position = ggplot2::position_dodge(width = 0.9)) +
-                ggplot2::scale_fill_manual(values = col.fill, name = "Change in key group abundance") + ggplot2::ylab("Proportional change in survival") + ggplot2::xlab("Scenario") +
-                ggplot2::labs(title = thisname) + ggthemes::theme_base() + ggplot2::theme(legend.position = "bottom") + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
-                vjust = 0.5))  #+
+              ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = scenario_name, fill = scenario_var)) +
+              ggplot2::geom_violin(trim = FALSE, position = ggplot2::position_dodge(),
+                                   draw_quantiles = c(0.5)) +
+              ggplot2::geom_hline(yintercept = 0) +
+              ggforce::facet_wrap_paginate(. ~ longname, ncol = 3, nrow = 3, page = i, shrink = FALSE,
+                                           labeller = "label_value", scales = "free_y") +
+              ggplot2::geom_boxplot(ggplot2::aes(fill = scenario_var), width = 0.1, color = "black", position = ggplot2::position_dodge(width = 0.9)) +
+              ggplot2::scale_fill_manual(values = col.fill, name = "Change in key group abundance") +
+              ggplot2::ylab("Proportional change in survival") +
+              ggplot2::xlab("Scenario") +
+              ggplot2::labs(title = thisname) +
+              ggthemes::theme_base() +
+              ggplot2::theme(legend.position = "bottom") +
+              ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
+                                                                 vjust = 0.5))  #+
             # ylim(min.violin, max.violin)
 
 
-            ggplot2::ggsave(paste0(thisname, "_", i, "_violin_survival_scale.png"), plot = violin.plot.scale, device = "png", width = 40, height = 35, units = "cm",
-                dpi = 400)
+            ggplot2::ggsave(paste0(thisname, "_", i, "_violin_survival_scale.png"), plot = violin.plot.scale, device = "png", width= 7.65, height = 8.56, dpi = 600)
 
             print("creating box plot scale")
 
             box.plot.scale <- plot.data %>%
-                ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = scenario_name, fill = scenario_var)) + ggplot2::geom_boxplot() + ggplot2::geom_hline(yintercept = 0) +
-                ggforce::facet_wrap_paginate(. ~ longname, ncol = 3, nrow = 3, page = i, shrink = FALSE, labeller = "label_value", scales = "free_y") + ggplot2::scale_fill_manual(values = col.fill,
-                name = "Change in key group abundance") + ggplot2::labs(title = thisname, y = "% change in survival (scenario-base)", x = "Scenario", face = "bold") +
-                ggthemes::theme_base() + ggplot2::theme(legend.position = "bottom") + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5,
-                hjust = 0.95)) + ggplot2::ylim(min.violin, max.violin)
+              ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = scenario_name, fill = scenario_var)) +
+              ggplot2::geom_boxplot() + ggplot2::geom_hline(yintercept = 0) +
+              ggforce::facet_wrap_paginate(. ~ longname, ncol = 3, nrow = 3, page = i, shrink = FALSE, labeller = "label_value", scales = "free_y") + ggplot2::scale_fill_manual(values = col.fill,
+                                                                                                                                                                                 name = "Change in key group abundance") +
+              ggplot2::labs(title = thisname, y = "% change in survival (scenario-base)", x = "Scenario", face = "bold") +
+              ggthemes::theme_base() +
+              ggplot2::theme(legend.position = "bottom") +
+              ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5,
+                                                                 hjust = 0.95)) +
+              ggplot2::ylim(min.violin, max.violin)
 
 
-            ggplot2::ggsave(paste0(thisname, "_", i, "_boxplot_survival_scale.png"), plot = box.plot.scale, device = "png", width = 40, height = 35, units = "cm",
-                dpi = 600)
+            ggplot2::ggsave(paste0(thisname, "_", i, "_boxplot_survival_scale.png"), plot = box.plot.scale, device = "png", width= 7.65, height = 8.56, dpi = 600)
 
         }
 
@@ -209,40 +232,66 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
 
         print("creating plots for scenario effects on salmon")
 
-        # for(eachscenariovar in 1:length(salmon.impacts)) {
+        salmon.impacts <- indsalmoneffect %>%
+          dplyr::distinct(salmon_effect) %>%
+          dplyr::pull(salmon_effect)
+
+        for(eachimpact in salmon.impacts) {
 
 
+        these.rows <- ceiling(length(thesescenarios)/2)
 
-        col.fill <- c(`Puget Sound` = "#7EADAA", `Strait of Georgia` = "#2F5A54", Whidbey = "#F3A800", `Central Puget Sound` = "#DE7A00", `South Puget Sound` = "#0B77E8",
-            `Hood Canal` = "#032F5C")
+        basin.fill <- c(`Puget Sound` = "#7EADAA", `Strait of Georgia` = "#2F5A54", Whidbey = "#F3A800", `Central Puget Sound` = "#DE7A00", `South Puget Sound` = "#0B77E8",
+                        `Hood Canal` = "#032F5C")
+
+        box.plot.basin <- plot.data %>%
+          dplyr::filter(salmon_effect==eachimpact) %>%
+          ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = longname, fill = basin)) +
+          ggplot2::geom_boxplot() +
+          ggplot2::geom_hline(yintercept = 0) +
+          ggplot2::facet_wrap(. ~ scenario_name, ncol = 2, nrow = these.rows, scales = "free_y") +
+          ggplot2::scale_fill_manual(values = basin.fill, name = "Basin") +
+          ggplot2::labs(title = thisname, subtitle = eachimpact, y = "% change in survival (scenario-base)", x = "Functional group", face = "bold") +
+          ggthemes::theme_base() +
+          ggplot2::theme(legend.position = "bottom") +
+          ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
+
+        # text.label <- plot.data %>% # dplyr::filter(salmon_effect==this.multiplier) %>% dplyr::distinct(scenario_name, scenario_var) %>%
+        # dplyr::mutate(longname = 'Pink Salmon SY', basin = 'Puget Sound') ggplot2::geom_text( data = text.label, mapping = ggplot2::aes(x = -Inf, y = -Inf,
+        # label = scenario_var), hjust = -0.5, vjust = -12 )
+
+        short.name <- eachimpact %>%
+          stringr::str_split(" ") %>%
+          unlist %>% .[1]
+
+        ggplot2::ggsave(paste0(thisname,"_",short.name, "_boxplot_survival_basin_.png"), plot = box.plot.basin, device = "png", width= 9.56, height = 10.68, dpi = 600)
+
+}
+
         # col.fill <- c('#ffbe0b','#ed5181', '#3fd2c7', '#00458b', '#f7a482', '#83bb90', '#f1dd88', '#81aa2c', '#f293b1')
+
+        effect.fill <- c(`Positive impacts on salmon` = "#D8B70A", `Negative impacts on salmon` = "#02401B")
 
         these.rows <- ceiling(length(thesescenarios)/2)
 
 
-
-        col.fill <- c(`Positive impacts on salmon` = "#D8B70A", `Negative impacts on salmon` = "#02401B")
-
-        box.plot.scale.basin <- plot.data %>%
-            # dplyr::filter(salmon_effect==this.multiplier) %>%
-        ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = longname, fill = salmon_effect)) + ggplot2::geom_boxplot() + ggplot2::geom_hline(yintercept = 0) + ggplot2::facet_wrap(. ~
-            scenario_name, ncol = 2, nrow = these.rows, scales = "free_y") + ggplot2::scale_fill_manual(values = col.fill, name = "Salmon effect") + ggplot2::labs(title = thisname,
-            y = "% change in survival (scenario-base)", x = "Functional group", face = "bold") + ggthemes::theme_base() + ggplot2::theme(legend.position = "bottom") +
-            ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
-
+        box.plot.effect <- plot.data %>%
+          ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = longname, fill = salmon_effect)) +
+          ggplot2::geom_boxplot() +
+          ggplot2::geom_hline(yintercept = 0) +
+          ggplot2::facet_wrap(. ~ scenario_name, ncol = 2, nrow = these.rows, scales = "free_y") +
+          ggplot2::scale_fill_manual(values = effect.fill, name = "Salmon effect") +
+          ggplot2::labs(title = thisname, y = "% change in survival (scenario-base)", x = "Functional group", face = "bold") +
+          ggthemes::theme_base() +
+          ggplot2::theme(legend.position = "bottom") +
+          ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
 
 
         # text.label <- plot.data %>% # dplyr::filter(salmon_effect==this.multiplier) %>% dplyr::distinct(scenario_name, scenario_var) %>%
         # dplyr::mutate(longname = 'Pink Salmon SY', basin = 'Puget Sound') ggplot2::geom_text( data = text.label, mapping = ggplot2::aes(x = -Inf, y = -Inf,
         # label = scenario_var), hjust = -0.5, vjust = -12 )
 
-        box.plot.scale.basin
-
-        ggplot2::ggsave(paste0(thisname, "_", i, "_boxplot_survival_basin_scale_.png"), plot = box.plot.scale.basin, device = "png", width = 40, height = 35, units = "cm",
-            dpi = 600)
-
-
-
+          ggplot2::ggsave(paste0(thisname, "_boxplot_survival_effect_.png"), plot = box.plot.effect, device = "png", width= 9.56, height = 10.68, dpi = 600)
 
     }
 }

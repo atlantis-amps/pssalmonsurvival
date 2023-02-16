@@ -1,5 +1,5 @@
-#' @title DATASET_TITLE
-#' @description DATASET_DESCRIPTION
+#' @title predgroups
+#' @description List of higher trophic level predators
 #' @format A data frame with 23 rows and 6 variables:
 #' \describe{
 #'   \item{\code{Code}}{character species code}
@@ -9,5 +9,5 @@
 #'   \item{\code{long_name}}{character species long name}
 #'   \item{\code{NumCohorts}}{integer number of cohorts}
 #'}
-#' @details DETAILS
+#' @details List taken from functional group file, includes only demersal fish, elasmobranchs, sea birds, marine mammals
 "predgroups"
