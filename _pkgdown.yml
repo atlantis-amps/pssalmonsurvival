@@ -5,10 +5,10 @@ navbar:
     left:
     - home
     - manuscript
-    - articles
+    - vignette
     - data
     - slides
-    - reference
+    - functions
     right: github
   components:
     home:
@@ -19,8 +19,10 @@ navbar:
       menu:
       - text: Manuscript PDF
         href: manuscript/manuscript.pdf
-    articles:
-      text: Supplementary
+      - text: Supplementary Info PDF
+        href: manuscript/supplement.pdf
+    vignette:
+      text: Code
       menu:
       - text: Vignette
         href: articles/salmon_survival.html
@@ -29,12 +31,7 @@ navbar:
       menu:
       - text: R Markdown slides
         href: slides/slides.html
-    posters:
-      text: Salish Sea Marine Survival Project
-      menu:
-      - text: Research findings
-        href: https://marinesurvivalproject.com/research-findings/
-    reference:
+     functions:
       text: Functions & data
       href: reference/index.html
     github:
@@ -45,11 +42,11 @@ navbar:
 home:
   strip_header: true
   links:
-    - text: A link to X
-      href: some link
+    - text: Salish Sea Marine Survival Project
+      href: https://marinesurvivalproject.com/research-findings/
   Authors:
     - text: Hem Nalini Morzaria-Luna
-
+      href: https://hmorzaria.github.io/hemnalinimorzarialuna.quarto.io/
 template:
   bootstrap: 5
   bootswatch: united
