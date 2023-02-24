@@ -24,7 +24,7 @@ plot_salmon_abundance <- function(salmon.abundance) {
         ggplot2::guides(color = ggplot2::guide_legend("Salmon group"), linetype = FALSE)
 
 
-    ggplot2::ggsave("reconstructed_salmon.png", salmon.plot, width = 8, height = 6, device = "png")
+    ggplot2::ggsave("reconstructed_salmon.png", salmon.plot, device = "png", width = 12.75, height = 9.78, scale = 1, dpi= 600)
 
     return(salmon.plot)
 

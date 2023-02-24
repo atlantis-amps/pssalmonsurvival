@@ -165,7 +165,7 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
 
 
 
-            ggplot2::ggsave(paste0(thisname, "_", i, "_survival.png"), plot = range.plot, device = "png", width= 7.65, height = 8.56, dpi = 600)
+            ggplot2::ggsave(paste0(thisname, "_", i, "_survival.png"), plot = range.plot, device = "png", width= 14.75, height = 13.58, scale = 1, dpi = 600)
 
             print("creating violin plot")
 
@@ -184,7 +184,7 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
                 ggplot2::ylim(min.violin, max.violin)
 
 
-            ggplot2::ggsave(paste0(thisname, "_", i, "_violin_survival.png"), plot = violin.plot, device = "png", width= 7.65, height = 8.56, dpi = 600)
+            ggplot2::ggsave(paste0(thisname, "_", i, "_violin_survival.png"), plot = violin.plot, device = "png", width= 11.55, height = 13.58, scale = 1, dpi = 600)
 
             print("creating violin plot scale")
 
@@ -207,7 +207,7 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
             # ylim(min.violin, max.violin)
 
 
-            ggplot2::ggsave(paste0(thisname, "_", i, "_violin_survival_scale.png"), plot = violin.plot.scale, device = "png", width= 7.65, height = 8.56, dpi = 600)
+            ggplot2::ggsave(paste0(thisname, "_", i, "_violin_survival_scale.png"), plot = violin.plot.scale, device = "png", width= 11.55, height = 13.58, scale = 1, dpi = 600)
 
             print("creating box plot scale")
 
@@ -224,7 +224,7 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
               ggplot2::ylim(min.violin, max.violin)
 
 
-            ggplot2::ggsave(paste0(thisname, "_", i, "_boxplot_survival_scale.png"), plot = box.plot.scale, device = "png", width= 7.65, height = 8.56, dpi = 600)
+            ggplot2::ggsave(paste0(thisname, "_", i, "_boxplot_survival_scale.png"), plot = box.plot.scale, device = "png", width= 11.55, height = 13.58, scale = 1, dpi = 600)
 
         }
 
@@ -236,7 +236,8 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
           dplyr::distinct(salmon_effect) %>%
           dplyr::pull(salmon_effect)
 
-        for(eachimpact in salmon.impacts) {
+        for(thisimpact in salmon.impacts) {
+
 
 
         these.rows <- ceiling(length(thesescenarios)/2)
@@ -245,13 +246,13 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
                         `Hood Canal` = "#032F5C")
 
         box.plot.basin <- plot.data %>%
-          dplyr::filter(salmon_effect==eachimpact) %>%
+          dplyr::filter(salmon_effect==thisimpact) %>%
           ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = longname, fill = basin)) +
           ggplot2::geom_boxplot() +
           ggplot2::geom_hline(yintercept = 0) +
           ggplot2::facet_wrap(. ~ scenario_name, ncol = 2, nrow = these.rows, scales = "free_y") +
           ggplot2::scale_fill_manual(values = basin.fill, name = "Basin") +
-          ggplot2::labs(title = thisname, subtitle = eachimpact, y = "% change in survival (scenario-base)", x = "Functional group", face = "bold") +
+          ggplot2::labs(title = thisname, subtitle = thisimpact, y = "% change in survival (scenario-base)", x = "Functional group", face = "bold") +
           ggthemes::theme_base() +
           ggplot2::theme(legend.position = "bottom") +
           ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
@@ -260,11 +261,11 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
         # dplyr::mutate(longname = 'Pink Salmon SY', basin = 'Puget Sound') ggplot2::geom_text( data = text.label, mapping = ggplot2::aes(x = -Inf, y = -Inf,
         # label = scenario_var), hjust = -0.5, vjust = -12 )
 
-        short.name <- eachimpact %>%
+        short.name <- thisimpact %>%
           stringr::str_split(" ") %>%
           unlist %>% .[1]
 
-        ggplot2::ggsave(paste0(thisname,"_",short.name, "_boxplot_survival_basin_.png"), plot = box.plot.basin, device = "png", width= 9.56, height = 10.68, dpi = 600)
+        ggplot2::ggsave(paste0(thisname,"_",short.name, "_boxplot_survival_basin_.png"), plot = box.plot.basin, device = "png", width= 9.45, height = 11.62, scale = 1, dpi = 600)
 
 }
 
@@ -291,9 +292,12 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
         # dplyr::mutate(longname = 'Pink Salmon SY', basin = 'Puget Sound') ggplot2::geom_text( data = text.label, mapping = ggplot2::aes(x = -Inf, y = -Inf,
         # label = scenario_var), hjust = -0.5, vjust = -12 )
 
-          ggplot2::ggsave(paste0(thisname, "_boxplot_survival_effect_.png"), plot = box.plot.effect, device = "png", width= 9.56, height = 10.68, dpi = 600)
+          ggplot2::ggsave(paste0(thisname, "_boxplot_survival_effect_.png"), plot = box.plot.effect, device = "png", width= 9.45, height = 11.62, scale = 1, dpi = 600)
 
     }
-}
+
+    return(box.plot.effect)
+
+    }
 
 

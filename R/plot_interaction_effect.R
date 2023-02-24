@@ -70,7 +70,7 @@ plot_interaction_effect <- function(ensemble.survival, ensemble.cum.survival, sc
         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
 
 
-    ggplot2::ggsave("boxplot_effect_size.png", plot = box.plot.effect, device = "png", width = 30, height = 40, units = "cm", dpi = 600)
+    ggplot2::ggsave("boxplot_effect_size.png", plot = box.plot.effect, device = "png", width= 11.38, height = 14.21, scale = 1, dpi = 600)
 
     return(box.plot.effect)
 }

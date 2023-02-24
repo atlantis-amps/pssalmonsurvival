@@ -10,7 +10,7 @@
 
 
 
-plot_ensemble_cum_survival_scenarios <- function(ensemblenumberscum, salmongroups, base.cum.survival, salmonbybasin, scenario.effect) {
+plot_ensemble_cum_survival_scenarios <- function(ensemblenumberscum, salmongroups, base.cum.survival, salmonbybasin, salmoneffect) {
 
     salmon.max.nums <- ensemblenumberscum %>%
         dplyr::group_by(scenario_name, scenario_var, model_ver, Code, age, year_no) %>%
@@ -76,7 +76,7 @@ plot_ensemble_cum_survival_scenarios <- function(ensemblenumberscum, salmongroup
             "Chum Hood Canal SY", dplyr::if_else(longname == "Strait of Georgia salmonids", "St. of Georgia salmonids", longname))) %>%
         dplyr::mutate(scenario_name = Hmisc::capitalize(scenario_name)) %>%
         dplyr::left_join(salmon.basin, by = c("Code")) %>%
-        dplyr::left_join(scenario.effect, by = c("scenario_name", "scenario_var"))
+        dplyr::left_join(salmoneffect, by = c("scenario_name", "scenario_var"))
 
     readr::write_csv(salmon.lollipop.data, here::here("modelfiles", "ensemble_cum_survival.csv"))
 
@@ -117,12 +117,19 @@ plot_ensemble_cum_survival_scenarios <- function(ensemblenumberscum, salmongroup
         `Hood Canal` = "#032F5C")
 
     box.plot.scale.basin <- plot.data %>%
-        ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = longname, fill = basin)) + ggplot2::geom_boxplot() + ggplot2::geom_hline(yintercept = 0) + ggplot2::facet_wrap(scenario_name ~
-        salmon_effect, scales = "free_y", ncol = 2, nrow = 3) + ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") + ggplot2::labs(title = "Cumulative scenario",
-        y = "% change in survival (scenario-base)", x = "Functional group", face = "bold") + ggthemes::theme_base() + ggplot2::theme(legend.position = "bottom") +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95)) + ggplot2::ylim(min.violin, max.violin)
+      ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = longname, fill = basin)) +
+      ggplot2::geom_boxplot() +
+      ggplot2::geom_hline(yintercept = 0) +
+      ggplot2::facet_wrap(scenario_name ~ salmon_effect, scales = "free_y", ncol = 2, nrow = 3) +
+      ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") +
+      ggplot2::labs(title = "Cumulative scenarios",
+                    y = "% change in survival (scenario-base)", x = "Functional group", face = "bold") +
+      ggthemes::theme_base() +
+      ggplot2::theme(legend.position = "bottom") +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95)) +
+      ggplot2::ylim(min.violin, max.violin)
 
-    ggplot2::ggsave("boxplot_cum_survival_basin_scale.png", plot = box.plot.scale.basin, device = "png", width = 30, height = 40, units = "cm", dpi = 600)
+    ggplot2::ggsave("boxplot_cum_survival_basin_scale.png", plot = box.plot.scale.basin, device = "png", width= 11.38, height = 14.21, scale = 1, dpi = 600)
 
     return(box.plot.scale.basin)
 

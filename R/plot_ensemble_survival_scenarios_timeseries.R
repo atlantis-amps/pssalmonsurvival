@@ -118,6 +118,8 @@ plot_ensemble_survival_scenarios_timeseries <- function(ensemblenumbersagescenar
                 `Wild pink & chum salmon competition` = "#51750E", `Pinniped predation` = "#9E64AA", `Porpoise predation` = "#8B4997", `Seabird predation` = "#89308C",
                 `Spiny dogfish predation` = "#67256C")
 
+            plot.list.range <- list()
+
             for (i in seq_len(n_pages)) {
 
                 survival.plot.bar.time <- scenario.plot.data %>%
@@ -129,11 +131,11 @@ plot_ensemble_survival_scenarios_timeseries <- function(ensemblenumbersagescenar
                   ggplot2::labs(y = "Survival", subtitle = sl.impact) + ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)) +
                   ggplot2::theme(legend.position = "bottom")
 
-                # plot.list.range[[i]] <- survival.plot.bar.time
+                plot.list.range[[i]] <- survival.plot.bar.time
 
                 thisplotname <- paste0("salmon_survival_barplot_time_", eachscenariovar, "_p", i, ".png")
 
-                ggplot2::ggsave(thisplotname, plot = survival.plot.bar.time, device = "png", width = 24, height = 22, units = "cm")
+                ggplot2::ggsave(thisplotname, plot = survival.plot.bar.time, device = "png", width= 14.43, height = 12.25, scale = 1, dpi = 600)
 
             }
 
@@ -142,5 +144,5 @@ plot_ensemble_survival_scenarios_timeseries <- function(ensemblenumbersagescenar
 
 
     }
-    return(scenario.plot.data)
+    return(plot.list.range)
 }

@@ -44,7 +44,8 @@ Imports:
     ecotraj,
     ggnewscale,
     paletteer,
-    wesanderson
+    wesanderson,
+    report
 Remotes:
     github::ropensci/rnaturalearthhires
     devtools::EmilHvitfeldt/paletteer

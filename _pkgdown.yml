@@ -6,7 +6,6 @@ navbar:
     - home
     - manuscript
     - vignette
-    - data
     - slides
     - functions
     right: github
@@ -31,7 +30,7 @@ navbar:
       menu:
       - text: R Markdown slides
         href: slides/slides.html
-     functions:
+    functions:
       text: Functions & data
       href: reference/index.html
     github:

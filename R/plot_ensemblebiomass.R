@@ -43,7 +43,7 @@ plot_ensemblebiomass <- function(ensemblebiomass) {
 
         thisplotname <- paste(thisvariabletype, i, "model_comparison_plot.png", sep = "_")
 
-        ggplot2::ggsave(thisplotname, plot = biomass.plot, device = "png", width = 21, height = 29, units = "cm")
+        ggplot2::ggsave(thisplotname, plot = biomass.plot, device = "png", width = 10.86, height = 9.81, scale = 1, dpi= 600)
     }
 
     return(plot.list)

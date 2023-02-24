@@ -53,7 +53,7 @@ make_map <- function(file.name) {
 
 
 
-    ggplot2::ggsave(here::here(file.name), model.map, width = 12, height = 14, units = "cm", dpi = 400)
+    ggplot2::ggsave(here::here(file.name), model.map, device = "png", width = 8.22, height = 11.31, scale = 1, dpi = 600)
 
     # return map
     return(model.map)

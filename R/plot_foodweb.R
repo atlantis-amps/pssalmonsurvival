@@ -50,7 +50,7 @@ plot_foodweb <- function(ppreymatrix, plot.name) {
     net.graph <- GGally::ggnet2(net.prey, color = pred.factors, color.legend = "Guild", size = 6, edge.alpha = 0.5) + ggsci::scale_color_simpsons(name = "Guild")
 
 
-    ggplot2::ggsave(plot.name, plot = net.graph, device = "png", width = 10, height = 6)
+    ggplot2::ggsave(plot.name, plot = net.graph, device = "png", width = 12.75, height = 9.78, scale = 1, dpi= 600)
 
 
     return(net.graph)

@@ -81,11 +81,11 @@ plot_ensemble_survival <- function(ensemblenumbersage, salmongroups) {
         ggthemes::theme_few() + ggplot2::scale_colour_manual(values = col.pal, name = "Scenario") + ggforce::facet_wrap_paginate(. ~ Long.Name, ncol = 1, nrow = 4,
             page = i, shrink = FALSE, labeller = "label_value") + ggplot2::labs(y = "Survival") + ggplot2::theme(legend.position = "bottom")
 
+        plot.list[[i]] <- survival.plot
 
         thisplotname <- paste0("salmon_survival_plot_", i, ".png")
 
-        # ggplot2::ggsave(thisplotname,plot = survival.plot, device = 'png', width = 21, height = 24, dpi = 300, units = 'cm')
-        ggplot2::ggsave(thisplotname, plot = survival.plot, device = "png", width = 30, height = 22, dpi = 700, units = "cm")
+        ggplot2::ggsave(thisplotname, plot = survival.plot, device = "png", width = 12.55, height = 9.81, scale = 1, dpi= 600)
 
     }
 

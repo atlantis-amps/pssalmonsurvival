@@ -55,6 +55,8 @@ plot_predators <- function(ensemblebiomasscum, predgroups){
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
 
 
-  ggplot2::ggsave("predator_biomass_effect_.png", plot = biomass.violin.pred, device = "png", width= 9.56, height = 10.68, dpi = 600)
+  ggplot2::ggsave("predator_biomass_effect_.png", plot = biomass.violin.pred, device = "png", width= 14.36, height = 10.88, scale = 1, dpi = 600)
+
+  return(biomass.violin.pred)
 
 }
