@@ -29,6 +29,7 @@ plot_predation <- function(ensemblepredationcum, salmoneffect, salmonbybasin) {
         dplyr::left_join(salmon.basin, by = c("code"))
 
 
+
     pred.base <- ensemblepredationcum %>%
         dplyr::filter(time == 28) %>%
         dplyr::filter(scenario_var == 1) %>%
@@ -46,7 +47,19 @@ plot_predation <- function(ensemblepredationcum, salmoneffect, salmonbybasin) {
         dplyr::mutate(excess_mort = (prop_mort - 1) * 100) %>%
         dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Bottom-up", "Top-down", "Bottom-up & Top-down")) %>%
         dplyr::mutate(basin = forcats::fct_relevel(as.factor(basin), "Puget Sound", "Strait of Georgia", "Whidbey", "Central Puget Sound", "South Puget Sound", "Hood Canal")) %>%
+        dplyr::mutate(longname = gsub("Subyrlng","SY", longname)) %>%
+        dplyr::mutate(longname = gsub("Yrlng","Y", longname)) %>%
+        dplyr::mutate(longname = dplyr::if_else(longname == "Strait of Georgia salmonids", "St. of Georgia salmonids",
+                                                dplyr::if_else(longname == "Chum Hood Canal summer run SY", "Chum Hood Canal SY", longname))) %>%
         dplyr::mutate(salmon_genus = forcats::fct_relevel(as.factor(salmon_genus), "Chinook", "Chum", "Coho", "Pink", "Sockeye"))
+
+
+    salmon.order <- pred.plot.salmon %>%
+      # dplyr::filter(salmon_genus != 'Chum')
+      dplyr::distinct(longname, basin, geo_order, salmon_genus) %>%
+      dplyr::arrange(salmon_genus, geo_order) %>%
+      dplyr::pull(longname)
+
 
     # HEATMAP, not used because it can't incorporate variation in the model ensemble pred.plot.salmon %>% ggplot(aes(salmon_effect, longname)) +
     # geom_tile(aes(fill = log(excess_mort))) + scale_fill_gradient(low = 'lightyellow', high = 'firebrick4') + facet_wrap(.~scenario_name)
@@ -55,6 +68,7 @@ plot_predation <- function(ensemblepredationcum, salmoneffect, salmonbybasin) {
         `Hood Canal` = "#032F5C")
 
     pred.boxplot <- pred.plot.salmon %>%
+      dplyr::mutate(longname = forcats::fct_relevel(as.factor(longname), salmon.order)) %>%
       ggplot2::ggplot(ggplot2::aes(y = excess_mort, x = longname, fill = basin)) +
       ggplot2::geom_boxplot() + ggplot2::geom_hline(yintercept = 1) +
       ggplot2::facet_wrap(scenario_name ~

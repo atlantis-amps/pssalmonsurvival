@@ -98,10 +98,10 @@
     
     
 <p>Package for the article Effect of multiple pressures on early marine survival of juvenile salmon in Puget Sound</p>
-<p>Hem Nalini Morzaria-Luna, I.C. Kaplan, C.J. Harvey, M. Schmidt, E.A. Fulton, R. Girardin, and P. MacCready</p>
+<p>Hem Nalini Morzaria-Luna”,” I.C. Kaplan, C.J. Harvey, M. Schmidt, E.A. Fulton, R. Girardin, and P. MacCready</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rnaturalearthhires"</span>, repos <span class="op">=</span> <span class="st">"http://packages.ropensci.org"</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Installing package into '/tmp/RtmpZD9QM0/temp_libpath4f3cfdf993'</span>
+<pre><code><span class="co">## Installing package into '/tmp/RtmphxFbvr/temp_libpath4c42d016c98'</span>
 <span class="co">## (as 'lib' is unspecified)</span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">pssalmonsurvival</span><span class="op">)</span></code></pre></div>
@@ -360,6 +360,209 @@
 
 <span class="fu"><a href="../reference/plot_predators.html">plot_predators</a></span><span class="op">(</span><span class="va">ensemblebiomasscum</span>, <span class="va">predgroups</span><span class="op">)</span></code></pre></div>
 <p><img src="salmon_survival_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p>Cite R and packages</p>
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">package.citations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"broom"</span>,<span class="st">"ggplot2"</span>,<span class="st">"ggthemes"</span>,<span class="st">"ggspatial"</span>,<span class="st">"ggsci"</span>,<span class="st">"rgdal"</span>,<span class="st">"rnaturalearth"</span>,<span class="st">"sf"</span>,<span class="st">"sp"</span>,<span class="st">"magrittr"</span>,<span class="st">"ggforce"</span>,<span class="st">"dplyr"</span>,<span class="st">"here"</span>,<span class="st">"ncdf4"</span>,<span class="st">"readr"</span>,
+  <span class="st">"stringr"</span>,<span class="st">"RNetCDF"</span>,<span class="st">"scales"</span>,<span class="st">"GGally"</span>,<span class="st">"network"</span>,<span class="st">"sna"</span>,<span class="st">"RColorBrewer"</span>,<span class="st">"grDevices"</span>,<span class="st">"colorRamps"</span>,<span class="st">"colorspace"</span>,<span class="st">"tidyr"</span>,<span class="st">"Hmisc"</span>,<span class="st">"forcats"</span>,
+  <span class="st">"ecotraj"</span>,<span class="st">"ggnewscale"</span>,<span class="st">"paletteer"</span>,<span class="st">"wesanderson"</span>,<span class="st">"purrr"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">citation</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span>style <span class="op">=</span> <span class="st">"text"</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [[1]]</span>
+<span class="co">## Robinson D, Hayes A, Couch S (2022). _broom: Convert Statistical</span>
+<span class="co">## Objects into Tidy Tibbles_. R package version 0.7.12, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=broom&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[2]]</span>
+<span class="co">## Wickham H (2016). _ggplot2: Elegant Graphics for Data Analysis_.</span>
+<span class="co">## Springer-Verlag New York. ISBN 978-3-319-24277-4, &lt;URL:</span>
+<span class="co">## https://ggplot2.tidyverse.org&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[3]]</span>
+<span class="co">## Arnold J (2021). _ggthemes: Extra Themes, Scales and Geoms for</span>
+<span class="co">## 'ggplot2'_. R package version 4.2.4, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=ggthemes&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[4]]</span>
+<span class="co">## Dunnington D (2021). _ggspatial: Spatial Data Framework for ggplot2_. R</span>
+<span class="co">## package version 1.1.5, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=ggspatial&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[5]]</span>
+<span class="co">## Xiao N (2018). _ggsci: Scientific Journal and Sci-Fi Themed Color</span>
+<span class="co">## Palettes for 'ggplot2'_. R package version 2.9, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=ggsci&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[6]]</span>
+<span class="co">## Bivand R, Keitt T, Rowlingson B (2021). _rgdal: Bindings for the</span>
+<span class="co">## 'Geospatial' Data Abstraction Library_. R package version 1.5-28, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=rgdal&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[7]]</span>
+<span class="co">## South A (2017). _rnaturalearth: World Map Data from Natural Earth_. R</span>
+<span class="co">## package version 0.1.0, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=rnaturalearth&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[8]]</span>
+<span class="co">## Pebesma E (2018). "Simple Features for R: Standardized Support for</span>
+<span class="co">## Spatial Vector Data." _The R Journal_, *10*(1), 439-446. doi:</span>
+<span class="co">## 10.32614/RJ-2018-009 (URL: https://doi.org/10.32614/RJ-2018-009), &lt;URL:</span>
+<span class="co">## https://doi.org/10.32614/RJ-2018-009&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[9]]</span>
+<span class="co">## Pebesma EJ, Bivand RS (2005). "Classes and methods for spatial data in</span>
+<span class="co">## R." _R News_, *5*(2), 9-13. &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/doc/Rnews/&gt;.</span>
+<span class="co">## </span>
+<span class="co">## Bivand RS, Pebesma E, Gomez-Rubio V (2013). _Applied spatial data</span>
+<span class="co">## analysis with R, Second edition_. Springer, NY. &lt;URL:</span>
+<span class="co">## https://asdar-book.org/&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[10]]</span>
+<span class="co">## Bache S, Wickham H (2022). _magrittr: A Forward-Pipe Operator for R_. R</span>
+<span class="co">## package version 2.0.3, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=magrittr&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[11]]</span>
+<span class="co">## Pedersen T (2021). _ggforce: Accelerating 'ggplot2'_. R package version</span>
+<span class="co">## 0.3.3, &lt;URL: https://CRAN.R-project.org/package=ggforce&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[12]]</span>
+<span class="co">## Wickham H, François R, Henry L, Müller K (2022). _dplyr: A Grammar of</span>
+<span class="co">## Data Manipulation_. R package version 1.0.8, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=dplyr&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[13]]</span>
+<span class="co">## Müller K (2020). _here: A Simpler Way to Find Your Files_. R package</span>
+<span class="co">## version 1.0.1, &lt;URL: https://CRAN.R-project.org/package=here&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[14]]</span>
+<span class="co">## Pierce D (2021). _ncdf4: Interface to Unidata netCDF (Version 4 or</span>
+<span class="co">## Earlier) Format Data Files_. R package version 1.19, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=ncdf4&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[15]]</span>
+<span class="co">## Wickham H, Hester J, Bryan J (2021). _readr: Read Rectangular Text</span>
+<span class="co">## Data_. R package version 2.1.1, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=readr&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[16]]</span>
+<span class="co">## Wickham H (2019). _stringr: Simple, Consistent Wrappers for Common</span>
+<span class="co">## String Operations_. R package version 1.4.0, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=stringr&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[17]]</span>
+<span class="co">## Michna P, Woods M (2021). _RNetCDF: Interface to 'NetCDF' Datasets_. R</span>
+<span class="co">## package version 2.5-2, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=RNetCDF&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[18]]</span>
+<span class="co">## Wickham H, Seidel D (2020). _scales: Scale Functions for</span>
+<span class="co">## Visualization_. R package version 1.1.1, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=scales&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[19]]</span>
+<span class="co">## Schloerke B, Cook D, Larmarange J, Briatte F, Marbach M, Thoen E,</span>
+<span class="co">## Elberg A, Crowley J (2021). _GGally: Extension to 'ggplot2'_. R package</span>
+<span class="co">## version 2.1.2, &lt;URL: https://CRAN.R-project.org/package=GGally&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[20]]</span>
+<span class="co">## Butts C (2015). _network: Classes for Relational Data_. The Statnet</span>
+<span class="co">## Project (&lt;URL: http://www.statnet.org&gt;). R package version 1.13.0.1,</span>
+<span class="co">## &lt;URL: https://CRAN.R-project.org/package=network&gt;.</span>
+<span class="co">## </span>
+<span class="co">## Butts C (2008). "network: a Package for Managing Relational Data in R."</span>
+<span class="co">## _Journal of Statistical Software_, *24*(2). &lt;URL:</span>
+<span class="co">## https://www.jstatsoft.org/v24/i02/paper&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[21]]</span>
+<span class="co">## Butts CT (2020). _sna: Tools for Social Network Analysis_. R package</span>
+<span class="co">## version 2.6, &lt;URL: https://CRAN.R-project.org/package=sna&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[22]]</span>
+<span class="co">## Neuwirth E (2014). _RColorBrewer: ColorBrewer Palettes_. R package</span>
+<span class="co">## version 1.1-2, &lt;URL: https://CRAN.R-project.org/package=RColorBrewer&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[23]]</span>
+<span class="co">## R Core Team (2021). _R: A Language and Environment for Statistical</span>
+<span class="co">## Computing_. R Foundation for Statistical Computing, Vienna, Austria.</span>
+<span class="co">## &lt;URL: https://www.R-project.org/&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[24]]</span>
+<span class="co">## Keitt T (2012). _colorRamps: Builds color tables_. R package version</span>
+<span class="co">## 2.3, &lt;URL: https://CRAN.R-project.org/package=colorRamps&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[25]]</span>
+<span class="co">## Zeileis A, Fisher JC, Hornik K, Ihaka R, McWhite CD, Murrell P,</span>
+<span class="co">## Stauffer R, Wilke CO (2020). "colorspace: A Toolbox for Manipulating</span>
+<span class="co">## and Assessing Colors and Palettes." _Journal of Statistical Software_,</span>
+<span class="co">## *96*(1), 1-49. doi: 10.18637/jss.v096.i01 (URL:</span>
+<span class="co">## https://doi.org/10.18637/jss.v096.i01).</span>
+<span class="co">## </span>
+<span class="co">## Zeileis A, Hornik K, Murrell P (2009). "Escaping RGBland: Selecting</span>
+<span class="co">## Colors for Statistical Graphics." _Computational Statistics \&amp; Data</span>
+<span class="co">## Analysis_, *53*(9), 3259-3270. doi: 10.1016/j.csda.2008.11.033 (URL:</span>
+<span class="co">## https://doi.org/10.1016/j.csda.2008.11.033).</span>
+<span class="co">## </span>
+<span class="co">## Stauffer R, Mayr GJ, Dabernig M, Zeileis A (2009). "Somewhere over the</span>
+<span class="co">## Rainbow: How to Make Effective Use of Colors in Meteorological</span>
+<span class="co">## Visualizations." _Bulletin of the American Meteorological Society_,</span>
+<span class="co">## *96*(2), 203-216. doi: 10.1175/BAMS-D-13-00155.1 (URL:</span>
+<span class="co">## https://doi.org/10.1175/BAMS-D-13-00155.1).</span>
+<span class="co">## </span>
+<span class="co">## [[26]]</span>
+<span class="co">## Wickham H, Girlich M (2022). _tidyr: Tidy Messy Data_. R package</span>
+<span class="co">## version 1.2.0, &lt;URL: https://CRAN.R-project.org/package=tidyr&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[27]]</span>
+<span class="co">## Harrell Jr F (2022). _Hmisc: Harrell Miscellaneous_. R package version</span>
+<span class="co">## 4.7-0, &lt;URL: https://CRAN.R-project.org/package=Hmisc&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[28]]</span>
+<span class="co">## Wickham H (2021). _forcats: Tools for Working with Categorical</span>
+<span class="co">## Variables (Factors)_. R package version 0.5.1, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=forcats&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[29]]</span>
+<span class="co">## De Cáceres M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin M, Hubbell</span>
+<span class="co">## RC&amp;S (2019). _Trajectory analysis in community ecology_, volume 89.</span>
+<span class="co">## doi: 10.1002/ecm.1350 (URL: https://doi.org/10.1002/ecm.1350).</span>
+<span class="co">## </span>
+<span class="co">## Sturbois A, De Cáceres M, Sánchez-Pinillos M, Schaal G, Gauthier O, Le</span>
+<span class="co">## Mao P, Ponsero A, Desroy. &amp;N (2021). _Extending community trajectory</span>
+<span class="co">## analysis : New metrics and representation_, volume 440. doi:</span>
+<span class="co">## 10.1016/j.ecolmodel.2020.109400 (URL:</span>
+<span class="co">## https://doi.org/10.1016/j.ecolmodel.2020.109400).</span>
+<span class="co">## </span>
+<span class="co">## [[30]]</span>
+<span class="co">## Campitelli E (2022). _ggnewscale: Multiple Fill and Colour Scales in</span>
+<span class="co">## 'ggplot2'_. R package version 0.4.7, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=ggnewscale&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[31]]</span>
+<span class="co">## Hvitfeldt E (2021). _paletteer: Comprehensive Collection of Color</span>
+<span class="co">## Palettes_. R package version 1.3.0, &lt;URL:</span>
+<span class="co">## https://github.com/EmilHvitfeldt/paletteer&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[32]]</span>
+<span class="co">## Ram K, Wickham H (2018). _wesanderson: A Wes Anderson Palette</span>
+<span class="co">## Generator_. R package version 0.3.6, &lt;URL:</span>
+<span class="co">## https://CRAN.R-project.org/package=wesanderson&gt;.</span>
+<span class="co">## </span>
+<span class="co">## [[33]]</span>
+<span class="co">## Henry L, Wickham H (2020). _purrr: Functional Programming Tools_. R</span>
+<span class="co">## package version 0.3.4, &lt;URL: https://CRAN.R-project.org/package=purrr&gt;.</span></code></pre>
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">report</span><span class="fu">::</span><span class="fu"><a href="https://easystats.github.io/report/reference/report.sessionInfo.html" class="external-link">cite_packages</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Warning in utils::citation(pkg_name): no date field in DESCRIPTION file of</span>
+<span class="co">## package 'pssalmonsurvival'</span></code></pre>
+<pre><code><span class="co">## Warning in utils::citation(pkg_name): could not determine year for</span>
+<span class="co">## 'pssalmonsurvival' from package DESCRIPTION file</span></code></pre>
+<pre><code><span class="co">##   - Morzaria-Luna H (????). _pssalmonsurvival: Sensitivity analysis of salmon survival in Puget Sound_. R package version 0.0.0.9004.</span>
+<span class="co">##   - R Core Team (2021). _R: A Language and Environment for Statistical Computing_. R Foundation for Statistical Computing, Vienna, Austria. &lt;URL: https://www.R-project.org/&gt;.</span></code></pre>
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">report</span><span class="fu">::</span><span class="fu"><a href="https://easystats.github.io/report/reference/report.sessionInfo.html" class="external-link">report_system</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Analyses were conducted using the R Statistical language (version 4.1.2; R Core</span>
+<span class="co">## Team, 2021) on Ubuntu 20.04.3 LTS</span></code></pre>
   </main>
 </div>
 

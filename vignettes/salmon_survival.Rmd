@@ -257,13 +257,13 @@ plot_predators(ensemblebiomasscum, predgroups)
 Cite R and packages
 ```{r citations, echo=TRUE}
 
-package.citations <- c("broom","ggplot2","ggthemes","ggspatial","ggsci","rgdal","rnaturalearth","sf","sp","magrittr","ggforce","dplyr","here","ncdf4","readr",
+devtools::session_info()
+
+c("broom","ggplot2","ggthemes","ggspatial","ggsci","rgdal","rnaturalearth","sf","sp","magrittr","ggforce","dplyr","here","ncdf4","readr",
   "stringr","RNetCDF","scales","GGally","network","sna","RColorBrewer","grDevices","colorRamps","colorspace","tidyr","Hmisc","forcats",
   "ecotraj","ggnewscale","paletteer","wesanderson","purrr") %>%
   purrr::map(citation) %>%
   print(style = "text")
 
-report::cite_packages()
-report::report_system()
 ```
 

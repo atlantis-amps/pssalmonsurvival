@@ -275,6 +275,15 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
 
         these.rows <- ceiling(length(thesescenarios)/2)
 
+        # if(thisname == "Bottom-up hypotheses"){
+        #
+        #   this.text <- "<span style = 'font-size:10pt'> Showed the strongest impact on salmon survival and resulted in counterintuitive trophic effects.</span>"
+        # }
+        #
+        # if(thisname == "Top-down hypotheses"){
+        #
+        #   this.text <- "<span style = 'font-size:10pt'> Had lower impacts on salmon survival than bottom-up drivers.</span>"
+        # }
 
         box.plot.effect <- plot.data %>%
           ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = longname, fill = salmon_effect)) +
@@ -282,10 +291,11 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
           ggplot2::geom_hline(yintercept = 0) +
           ggplot2::facet_wrap(. ~ scenario_name, ncol = 2, nrow = these.rows, scales = "free_y") +
           ggplot2::scale_fill_manual(values = effect.fill, name = "Salmon effect") +
-          ggplot2::labs(title = thisname, y = "% change in survival (scenario-base)", x = "Functional group", face = "bold") +
+          ggplot2::labs(title = thisname, y = "% change in survival (scenario-base)", x = "Functional group", face = "bold") + #subtitle = this.text,
           ggthemes::theme_base() +
           ggplot2::theme(legend.position = "bottom") +
           ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
+
 
 
         # text.label <- plot.data %>% # dplyr::filter(salmon_effect==this.multiplier) %>% dplyr::distinct(scenario_name, scenario_var) %>%
