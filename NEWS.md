@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# pssalmonsurvival 0.0.0.9005
+
+- Updated author affiliations.
+
+- Updated website to accurately describe content.
+
+
 # pssalmonsurvival 0.0.0.9004
 
 - Revised figure size and recreated survival by basin.
