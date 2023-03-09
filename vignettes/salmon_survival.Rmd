@@ -229,8 +229,10 @@ ensemble.survival <- readr::read_csv(here::here("modelfiles","ensemble_survival.
 ensemble.cum.survival <- readr::read_csv(here::here("modelfiles","ensemble_cum_survival.csv")) 
 
 data("scenariocategories")
+data("salmonbybasin")
+data("salmon.colors")
 
-plot_interaction_effect(ensemble.survival, ensemble.cum.survival, scenariocategories)
+plot_interaction_effect(ensemble.survival, ensemble.cum.survival, scenariocategories, salmonbybasin, salmon.colors)
 ```
 
 Plot predation in cumulative scenarios
@@ -239,8 +241,9 @@ Plot predation in cumulative scenarios
 data("ensemblepredationcum")
 data("salmoneffect")
 data("salmonbybasin")
+data("salmon.colors")
 
-plot_predation(ensemblepredationcum, salmoneffect, salmonbybasin)
+plot_predation(ensemblepredationcum, salmoneffect, salmonbybasin, salmon.colors)
 
 ```
 

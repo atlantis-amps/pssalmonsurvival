@@ -9,7 +9,7 @@
 #' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com November 2022
 
 
-plot_predation <- function(ensemblepredationcum, salmoneffect, salmonbybasin) {
+plot_predation <- function(ensemblepredationcum, salmoneffect, salmonbybasin, salmon.colors) {
 
     salmon.basin <- salmonbybasin %>%
         dplyr::rename(code = Code) %>%
@@ -43,8 +43,8 @@ plot_predation <- function(ensemblepredationcum, salmoneffect, salmonbybasin) {
 
     pred.plot.salmon <- pred.sc %>%
       dplyr::left_join(pred.base, by = c("code", "longname", "model_ver", "scenario_name", "name", "basin", "geo_order", "salmon_genus")) %>%
-        dplyr::mutate(prop_mort = pred_mortality/base_mortality) %>%
-        dplyr::mutate(excess_mort = (prop_mort - 1) * 100) %>%
+       dplyr::mutate(excess_mort = (pred_mortality/base_mortality - 1) * 100) %>%
+      #excess mortality is proportional change in mortality
         dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Bottom-up", "Top-down", "Bottom-up & Top-down")) %>%
         dplyr::mutate(basin = forcats::fct_relevel(as.factor(basin), "Puget Sound", "Strait of Georgia", "Whidbey", "Central Puget Sound", "South Puget Sound", "Hood Canal")) %>%
         dplyr::mutate(longname = gsub("Subyrlng","SY", longname)) %>%
@@ -54,18 +54,54 @@ plot_predation <- function(ensemblepredationcum, salmoneffect, salmonbybasin) {
         dplyr::mutate(salmon_genus = forcats::fct_relevel(as.factor(salmon_genus), "Chinook", "Chum", "Coho", "Pink", "Sockeye"))
 
 
-    salmon.order <- pred.plot.salmon %>%
+    salmon.order <- salmonbybasin %>%
       # dplyr::filter(salmon_genus != 'Chum')
-      dplyr::distinct(longname, basin, geo_order, salmon_genus) %>%
-      dplyr::arrange(salmon_genus, geo_order) %>%
+      dplyr::arrange(salmon_genus, geo_order, longname) %>%
       dplyr::pull(longname)
-
 
     # HEATMAP, not used because it can't incorporate variation in the model ensemble pred.plot.salmon %>% ggplot(aes(salmon_effect, longname)) +
     # geom_tile(aes(fill = log(excess_mort))) + scale_fill_gradient(low = 'lightyellow', high = 'firebrick4') + facet_wrap(.~scenario_name)
 
     col.fill <- c(`Puget Sound` = "#7EADAA", `Strait of Georgia` = "#2F5A54", Whidbey = "#F3A800", `Central Puget Sound` = "#DE7A00", `South Puget Sound` = "#0B77E8",
         `Hood Canal` = "#032F5C")
+
+    salmon.gen <- pred.plot.salmon %>%
+      dplyr::filter(excess_mort >= 100) %>%
+      dplyr::arrange(salmon_genus, longname) %>%
+      dplyr::select(scenario_name, salmon_effect, longname, excess_mort) %>%
+      dplyr::mutate(label = round(excess_mort,0))%>%
+      dplyr::group_by(scenario_name, salmon_effect, longname) %>%
+      dplyr::slice(which.max(label)) %>% # leaves only the maximum value
+      #dplyr::select(-prop_survival) %>%
+      #dplyr::bind_cols(prop.survival) %>%
+      dplyr::mutate(label = paste(as.character(label), longname), excess_mort = 95)
+
+
+    pred.boxplot <- pred.plot.salmon %>%
+      dplyr::filter(excess_mort<= 100) %>%
+      dplyr::mutate(longname = forcats::fct_relevel(as.factor(longname), salmon.order)) %>%
+      ggplot2::ggplot(ggplot2::aes(y = excess_mort, x = salmon_effect, fill = longname)) +
+      ggplot2::geom_point(ggplot2::aes(color=longname), position = ggplot2::position_jitterdodge(), alpha=0.5) +
+      ggplot2::geom_boxplot(outlier.shape = NA) +
+      ggplot2::geom_hline(yintercept = 0) +
+      ggplot2::facet_wrap(.~ scenario_name, ncol=1) +
+      ggplot2::scale_fill_manual(values = salmon.colors, name = "Salmon group") +
+      ggplot2::labs(title = "Cumulative scenarios",
+                    y = "Proportional change in predation mortality (scenario-base)", x = "Expected salmon effect", face = "bold") +
+      ggthemes::theme_base() +
+      ggplot2::theme(legend.position = "right") +
+      ggrepel::geom_text_repel(
+        data          = salmon.gen,
+        mapping       = ggplot2::aes(salmon_effect, excess_mort, label = label),
+        force = 0.9,
+        force_pull = 1,
+        size          = 3.5,
+        colour = "black"
+      )
+    #  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
+
+
+    ggplot2::ggsave("boxplot_predation_basin_scale.png", plot = pred.boxplot, device = "png", width = 30, height = 40, units = "cm", dpi = 600)
 
     pred.boxplot <- pred.plot.salmon %>%
       dplyr::mutate(longname = forcats::fct_relevel(as.factor(longname), salmon.order)) %>%
@@ -79,17 +115,6 @@ plot_predation <- function(ensemblepredationcum, salmoneffect, salmonbybasin) {
       ggthemes::theme_base() +
       ggplot2::theme(legend.position = "bottom") +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
-
-    # pred.plot.salmon %>% dplyr::filter(scenario_name=='Top-down') %>% ggplot2::ggplot(ggplot2::aes(y = excess_mort, x = salmon_effect, fill = basin)) +
-    # ggplot2::geom_boxplot(width = 0.1) + # ggplot2::geom_violin(width=1.4) + ggplot2::geom_hline(yintercept = 1) + ggplot2::facet_wrap( ~ longname, scales =
-    # 'free_y') + ggplot2::scale_fill_manual(values = col.fill, name = 'Basin of origin') + ggplot2::labs(title = 'Cumulative scenarios', y = '% change in
-    # mortality relative to base scenario', x = 'Functional group', face = 'bold') + ggthemes::theme_base() + ggplot2::theme(legend.position='bottom') +
-    # ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90, vjust=0.5, hjust=0.95)) pred.plot.salmon %>% dplyr::filter(scenario_name=='Bottom-up &
-    # Top-down') %>% dplyr::filter(salmon_effect=='Positive impacts on salmon') %>% ggplot2::ggplot(ggplot2::aes(x = excess_mort, fill = basin)) +
-    # ggplot2::geom_density(adjust = 1.5) + # ggplot2::geom_hline(yintercept = 1) + ggplot2::facet_wrap(~longname, scales = 'free_y') +
-    # ggplot2::scale_fill_manual(values = col.fill, name = 'Basin of origin') + ggplot2::labs(title = 'Cumulative scenarios', y = '% change in mortality
-    # relative to base scenario', x = 'Functional group', face = 'bold') + ggthemes::theme_base() + ggplot2::theme(legend.position='bottom') +
-    # ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90, vjust=0.5, hjust=0.95))
 
 
     ggplot2::ggsave("boxplot_predation_basin_scale.png", plot = pred.boxplot, device = "png", width = 30, height = 40, units = "cm", dpi = 600)

@@ -1,14 +1,5 @@
-#' @title plot interaction effect
-#' @param ensemblesurvival, ensemblecum survival
-#'
-#' @return plots of survival interaction effect
-#' @export
-#'
-#' @description Code to plot survival interaction effects
-#' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2022
 
-
-plot_interaction_effect <- function(ensemble.survival, ensemble.cum.survival, scenariocategories) {
+plot_interaction_effect <- function(ensemble.survival, ensemble.cum.survival, scenariocategories, salmnonbybasin, salmon.colors) {
 
     ind.survival <- ensemble.survival %>%
         dplyr::select(scenario_name, model_ver, longname, Code, basin, salmon_genus, geo_order, salmon_effect, rel_survival) %>%
@@ -38,10 +29,9 @@ plot_interaction_effect <- function(ensemble.survival, ensemble.cum.survival, sc
         dplyr::ungroup() %>%
         dplyr::bind_rows(ind.survival)
 
-    salmon.order <- ensemble.cum.survival %>%
+    salmon.order <- salmonbybasin %>%
         # dplyr::filter(salmon_genus != 'Chum')
-    dplyr::distinct(longname, basin, geo_order, salmon_genus) %>%
-        dplyr::arrange(salmon_genus, geo_order) %>%
+        dplyr::arrange(salmon_genus, geo_order, longname) %>%
         dplyr::pull(longname)
 
     effect.size <- ensemble.cum.survival %>%
@@ -58,19 +48,34 @@ plot_interaction_effect <- function(ensemble.survival, ensemble.cum.survival, sc
     col.fill <- c(`Puget Sound` = "#7EADAA", `Strait of Georgia` = "#2F5A54", Whidbey = "#F3A800", `Central Puget Sound` = "#DE7A00", `South Puget Sound` = "#0B77E8",
         `Hood Canal` = "#032F5C")
 
+
+    max.effect <- round_any(max(effect.size$effect_size), 10)
+    min.effect <- round_any(min(effect.size$effect_size), 10)
+
+    lim.effect <- max(max.effect, min.effect)
+
+
+
     box.plot.effect <- effect.size %>%
-        ggplot2::ggplot(ggplot2::aes(y = effect_size, x = longname, fill = basin)) +
-        ggplot2::geom_boxplot() +
+        ggplot2::ggplot(ggplot2::aes(y = effect_size, x = salmon_effect, fill = longname)) +
+        ggplot2::geom_point(ggplot2::aes(color=longname), position = ggplot2::position_jitterdodge(), alpha=0.5) +
+        ggplot2::geom_boxplot(outlier.shape = NA) +
         ggplot2::geom_hline(yintercept = 0) +
-        ggplot2::facet_wrap(scenario_category ~ salmon_effect, ncol = 2, nrow = 3, scales = "free_y") +
-        ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") +
-        ggplot2::labs(title = "Effect size", y = "Effect size salmon survival", x = "Functional group", face = "bold") +
+        ggplot2::geom_hline(yintercept = 5, linetype = "dashed") +
+        ggplot2::geom_hline(yintercept = -5, linetype = "dashed") +
+        ggplot2::facet_wrap(. ~ scenario_category) +
+        ggplot2::scale_fill_manual(values = salmon.colors, name = "Salmon groups") +
+        ggplot2::labs(title = "Effect size in cumulative salmon survival scenarios", y = "Effect size", x = "Expected salmon effect", face = "bold") +
         ggthemes::theme_base() +
         ggplot2::theme(legend.position = "bottom") +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
+       # ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95)) +
+        ggplot2::ylim(min.effect, max.effect) +
+         ggplot2::scale_color_manual(values = salmon.colors) +
+        ggplot2::guides(color="none") +
+      ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20))
 
 
-    ggplot2::ggsave("boxplot_effect_size.png", plot = box.plot.effect, device = "png", width= 11.38, height = 14.21, scale = 1, dpi = 600)
+    ggplot2::ggsave("boxplot_effect_size.png", plot = box.plot.effect, device = "png", width= 16.0, height = 9.20, scale = 1, dpi = 600)
 
     return(box.plot.effect)
 }

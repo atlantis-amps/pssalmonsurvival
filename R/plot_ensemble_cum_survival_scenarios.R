@@ -10,7 +10,7 @@
 
 
 
-plot_ensemble_cum_survival_scenarios <- function(ensemblenumberscum, salmongroups, base.cum.survival, salmonbybasin, salmoneffect) {
+plot_ensemble_cum_survival_scenarios <- function(ensemblenumberscum, salmongroups, base.cum.survival, salmonbybasin, salmoneffect, salmon.colors) {
 
     salmon.max.nums <- ensemblenumberscum %>%
         dplyr::group_by(scenario_name, scenario_var, model_ver, Code, age, year_no) %>%
@@ -54,7 +54,8 @@ plot_ensemble_cum_survival_scenarios <- function(ensemblenumberscum, salmongroup
         dplyr::select("scenario_name", "model_ver", "Code", "Long.Name", "survival") %>%
         dplyr::rename(base_survival = survival) %>%
         dplyr::left_join(salmon.return.nums.yr, by = c("scenario_name", "model_ver", "Code", "Long.Name")) %>%
-        dplyr::mutate(rel_survival = (survival - base_survival))
+        dplyr::mutate(rel_survival = (survival - base_survival)) %>%
+      dplyr::mutate(prop_survival = ((survival / base_survival)-1) *100) #make it proportional
 
     salmon.return.nums %>%
         dplyr::filter(year_no <= ret_year) %>%
@@ -103,31 +104,89 @@ plot_ensemble_cum_survival_scenarios <- function(ensemblenumberscum, salmongroup
         dplyr::mutate(salmon_effect = as.factor(salmon_effect))
 
 
-    max.violin <- plot.data %>%
-        dplyr::pull(rel_survival) %>%
-        max() %>%
-        ceiling(.)
-
-    min.violin <- plot.data %>%
-        dplyr::pull(rel_survival) %>%
-        min() %>%
-        floor(.)
-
-    col.fill <- c(`Puget Sound` = "#7EADAA", `Strait of Georgia` = "#2F5A54", Whidbey = "#F3A800", `Central Puget Sound` = "#DE7A00", `South Puget Sound` = "#0B77E8",
+    basin.fill <- c(`Puget Sound` = "#7EADAA", `Strait of Georgia` = "#2F5A54", Whidbey = "#F3A800", `Central Puget Sound` = "#DE7A00", `South Puget Sound` = "#0B77E8",
         `Hood Canal` = "#032F5C")
 
+
+    salmon.eff.basin <- plot.data %>%
+      dplyr::filter(prop_survival >= 100) %>%
+      dplyr::arrange(salmon_effect, longname) %>%
+      dplyr::select(scenario_name, salmon_effect, basin, prop_survival) %>%
+      dplyr::mutate(label = round(prop_survival,0))%>%
+      dplyr::group_by(scenario_name, salmon_effect, basin) %>%
+      dplyr::slice(which.max(label)) %>% # leaves only the maximum value
+      #dplyr::select(-prop_survival) %>%
+      #dplyr::bind_cols(prop.survival) %>%
+      #dplyr::left_join(salmon.codes, by = "longname") %>%
+      dplyr::mutate(basin_code = dplyr::if_else(basin == "South Puget Sound","SPS",
+                                         "HC")) %>%
+      dplyr::mutate(label = paste(as.character(label), basin_code), prop_survival = 95)
+
+
     box.plot.scale.basin <- plot.data %>%
-      ggplot2::ggplot(ggplot2::aes(y = rel_survival, x = longname, fill = basin)) +
+      dplyr::filter(prop_survival <= 100) %>%
+      ggplot2::ggplot(ggplot2::aes(y = prop_survival, x = salmon_effect, color = basin)) +
       ggplot2::geom_boxplot() +
       ggplot2::geom_hline(yintercept = 0) +
-      ggplot2::facet_wrap(scenario_name ~ salmon_effect, scales = "free_y", ncol = 2, nrow = 3) +
-      ggplot2::scale_fill_manual(values = col.fill, name = "Basin of origin") +
+      ggplot2::facet_wrap(. ~ scenario_name, scales = "free_y", ncol = 2, nrow = 3) +
       ggplot2::labs(title = "Cumulative scenarios",
-                    y = "% change in survival (scenario-base)", x = "Functional group", face = "bold") +
+                    y = "Proportional change in survival (scenario-base)", x = "Salmon effect", face = "bold") +
       ggthemes::theme_base() +
       ggplot2::theme(legend.position = "bottom") +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95)) +
-      ggplot2::ylim(min.violin, max.violin)
+    #  ggplot2::theme(axis.text.x = ggplot2::element_text(vjust = 0.95, hjust = 0.95)) +
+    #  ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20)) +
+      ggplot2::ylim(-100, 100) +
+      ggplot2::scale_color_manual(values = basin.fill, name = "Basin") +
+      #  ggplot2::geom_text(data = salmon.fg.text, label=salmon.fg.text$label, size = 3.5) +
+      ggrepel::geom_text_repel(
+        data          = salmon.eff.basin,
+        mapping       = ggplot2::aes(salmon_effect, prop_survival, label = label),
+        force = 0.7,
+        force_pull = 0.7,
+        size          = 3,
+        colour        = "black"
+      )
+
+    ggplot2::ggsave("boxplot_cum_survival_basin_scale.png", plot = box.plot.scale.basin, device = "png", width= 11.38, height = 14.21, scale = 1, dpi = 600)
+
+
+    salmon.eff.text <- plot.data %>%
+      dplyr::filter(prop_survival >= 100) %>%
+      dplyr::arrange(salmon_effect, longname) %>%
+      dplyr::select(scenario_name, salmon_effect, longname, prop_survival) %>%
+      dplyr::mutate(label = round(prop_survival,0))%>%
+      dplyr::group_by(scenario_name, salmon_effect, longname) %>%
+      dplyr::slice(which.max(label)) %>% # leaves only the maximum value
+      #dplyr::select(-prop_survival) %>%
+      #dplyr::bind_cols(prop.survival) %>%
+      dplyr::left_join(salmon.codes, by = "longname") %>%
+      dplyr::mutate(label = paste(as.character(label), Code), prop_survival = 95) %>%
+      dplyr::select(-Code)
+
+
+    box.plot.scale.group <- plot.data %>%
+      dplyr::filter(prop_survival <= 100) %>%
+      ggplot2::ggplot(ggplot2::aes(y = prop_survival, x = salmon_effect, color = longname)) +
+      ggplot2::geom_boxplot() +
+      ggplot2::geom_hline(yintercept = 0) +
+      ggplot2::facet_wrap(. ~ scenario_name, scales = "free_y", ncol = 2, nrow = 3) +
+      ggplot2::labs(title = "Cumulative scenarios",
+                    y = "Proportional change in survival (scenario-base)", x = "Salmon effect", face = "bold") +
+      ggthemes::theme_base() +
+      ggplot2::theme(legend.position = "bottom") +
+      #  ggplot2::theme(axis.text.x = ggplot2::element_text(vjust = 0.95, hjust = 0.95)) +
+      #  ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20)) +
+      ggplot2::ylim(100, -100) +
+      ggplot2::scale_color_manual(values = salmon.colors, name = "Salmon group") +
+      #  ggplot2::geom_text(data = salmon.fg.text, label=salmon.fg.text$label, size = 3.5) +
+      ggrepel::geom_text_repel(
+        data          = salmon.eff.text,
+        mapping       = ggplot2::aes(salmon_effect, prop_survival, label = label),
+        force = 0.7,
+        force_pull = 0.7,
+        size          = 3,
+        colour        = "black"
+      )
 
     ggplot2::ggsave("boxplot_cum_survival_basin_scale.png", plot = box.plot.scale.basin, device = "png", width= 11.38, height = 14.21, scale = 1, dpi = 600)
 
