@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# pssalmonsurvival 0.0.0.9006
+
+- Final figures for second review version.
+
+- Modified figures to clearly show patters between salmon groups.
+
+
 # pssalmonsurvival 0.0.0.9005
 
 - Updated author affiliations.
