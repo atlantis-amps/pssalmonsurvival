@@ -84,9 +84,9 @@ plot_ensemble_survival(ensemblenumbersage, salmongroups)
 
 ```
 
-Make forcings for model simulations, by scenario
+Turn eval=True to make forcings for model simulations, by scenario.
 
-```{r make scenario forcings, include=FALSE}
+```{r make scenario forcings, eval=FALSE, include=FALSE}
 
 #groups for each scenario
 sim.groups <- list(c("Pinniped", "California_sea_lion", "Harbor_seal"), 
@@ -150,11 +150,12 @@ dplyr::if_else(scenario_name=="seabirds predation","seabird predation", scenario
 data("ensemblenumbersagescenarios")
 data("salmongroups")
 data("salmonbybasin")
-data("indsalmoneffect")                                                                                                                                
+data("indsalmoneffect")
+
+
 #plotmodels <- c(1,6) # eliminated model versions 1 & 6
 
 plot_ensemble_survival_scenarios(ensemblenumbersagescenarios, salmongroups, plotmodels, base.survival, salmonbybasin, indsalmoneffect)
-
 
 
 ```
@@ -230,9 +231,9 @@ ensemble.cum.survival <- readr::read_csv(here::here("modelfiles","ensemble_cum_s
 
 data("scenariocategories")
 data("salmonbybasin")
-data("salmon.colors")
 
-plot_interaction_effect(ensemble.survival, ensemble.cum.survival, scenariocategories, salmonbybasin, salmon.colors)
+
+plot_interaction_effect(ensemble.survival, ensemble.cum.survival, scenariocategories, salmonbybasin)
 ```
 
 Plot predation in cumulative scenarios
@@ -241,9 +242,8 @@ Plot predation in cumulative scenarios
 data("ensemblepredationcum")
 data("salmoneffect")
 data("salmonbybasin")
-data("salmon.colors")
 
-plot_predation(ensemblepredationcum, salmoneffect, salmonbybasin, salmon.colors)
+plot_predation(ensemblepredationcum, salmoneffect, salmonbybasin)
 
 ```
 

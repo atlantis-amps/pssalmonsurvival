@@ -1,5 +1,18 @@
 
-plot_interaction_effect <- function(ensemble.survival, ensemble.cum.survival, scenariocategories, salmnonbybasin, salmon.colors) {
+#' Plot interaction effect
+#'
+#' @param ensemble.survival
+#' @param ensemble.cum.survival
+#' @param scenariocategories
+#' @param salmnonbybasin
+#' @param salmon.colors
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+plot_interaction_effect <- function(ensemble.survival, ensemble.cum.survival, scenariocategories, salmnonbybasin) {
 
     ind.survival <- ensemble.survival %>%
         dplyr::select(scenario_name, model_ver, longname, Code, basin, salmon_genus, geo_order, salmon_effect, rel_survival) %>%
@@ -10,12 +23,6 @@ plot_interaction_effect <- function(ensemble.survival, ensemble.cum.survival, sc
         dplyr::mutate(expec_cum = (ind_survival - 1) * 100) %>%
         dplyr::mutate(scenario_category = dplyr::if_else(scenario_category == "bottom-up", "Bottom-up", "Top-down")) %>%
         dplyr::ungroup()
-
-    # ensemble.survival %>% dplyr::select(scenario_name, model_ver, longname, Code, basin, salmon_genus, geo_order, salmon_effect, rel_survival) %>%
-    # dplyr::left_join(scenariocategories, by = c('scenario_name')) %>% dplyr::mutate(prop_survival = 1 + (rel_survival / 100)) %>%
-    # dplyr::filter(longname=='Chinook Duwamish SY' & salmon_effect == 'Positive impacts on salmon' & model_ver == 1) %>% dplyr::group_by(scenario_category,
-    # model_ver, longname, Code, basin, salmon_genus, geo_order, salmon_effect) %>% dplyr::summarise(ind_survival = prod(prop_survival)) %>%
-    # dplyr::mutate(expec_cum = (ind_survival -1)*100)
 
 
     ind.cum.survival <- ensemble.survival %>%
@@ -54,7 +61,8 @@ plot_interaction_effect <- function(ensemble.survival, ensemble.cum.survival, sc
 
     lim.effect <- max(max.effect, min.effect)
 
-
+#get salmon color palette
+    salmon.colors <- salmon_colors()
 
     box.plot.effect <- effect.size %>%
         ggplot2::ggplot(ggplot2::aes(y = effect_size, x = salmon_effect, fill = longname)) +
@@ -63,19 +71,19 @@ plot_interaction_effect <- function(ensemble.survival, ensemble.cum.survival, sc
         ggplot2::geom_hline(yintercept = 0) +
         ggplot2::geom_hline(yintercept = 5, linetype = "dashed") +
         ggplot2::geom_hline(yintercept = -5, linetype = "dashed") +
-        ggplot2::facet_wrap(. ~ scenario_category) +
+        ggplot2::facet_wrap(. ~ scenario_category, ncol=1) +
         ggplot2::scale_fill_manual(values = salmon.colors, name = "Salmon groups") +
-        ggplot2::labs(title = "Effect size in cumulative salmon survival scenarios", y = "Effect size", x = "Expected salmon effect", face = "bold") +
+        ggplot2::labs(title = "Effect size in cumulative salmon survival scenarios", y = "Effect size", x = "Expected salmon impact", face = "bold") +
         ggthemes::theme_base() +
-        ggplot2::theme(legend.position = "bottom") +
+        ggplot2::theme(legend.position = "right") +
        # ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95)) +
         ggplot2::ylim(min.effect, max.effect) +
          ggplot2::scale_color_manual(values = salmon.colors) +
-        ggplot2::guides(color="none") +
+        ggplot2::guides(color="none", fill=ggplot2::guide_legend(ncol =1)) +
       ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20))
 
 
-    ggplot2::ggsave("boxplot_effect_size.png", plot = box.plot.effect, device = "png", width= 16.0, height = 9.20, scale = 1, dpi = 600)
+    ggplot2::ggsave("boxplot_effect_size.png", plot = box.plot.effect, device = "png", width= 11.0, height = 9.50, scale = 1, dpi = 600)
 
     return(box.plot.effect)
 }

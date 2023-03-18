@@ -70,7 +70,7 @@ plot_ensemble_survival_scenarios_timeseries <- function(ensemblenumbersagescenar
 
     bottom.up.sc <- c("Hatchery Chinook competition", "Hatchery competition", "Wild pink & chum salmon competition", "Gelatinous zooplankton abundance", "Herring abundance")
     top.down.sc <- c("Pinniped predation", "Porpoise predation", "Seabird predation", "Spiny dogfish predation")
-    scenario.list <- list(`Bottom up hypotheses` = bottom.up.sc, `Top down hypotheses` = top.down.sc)
+    scenario.list <- list(`Bottom-up drivers` = bottom.up.sc, `Top-down drivers` = top.down.sc)
 
     for (eachhypothesis in 1:length(scenario.list)) {
 
@@ -100,7 +100,7 @@ plot_ensemble_survival_scenarios_timeseries <- function(ensemblenumbersagescenar
 
         print(n_pages)
 
-       salmon.impacts <- c("Negative impacts on salmon", "Positive impacts on salmon")
+       salmon.impacts <- c("Negative", "Positive")
 
 
         for (eachscenariovar in 1:length(salmon.impacts)) {

@@ -1,9 +1,11 @@
-#' Vector of custom colors
+#' Vector of custom salmon colors
+#'
+#' @param ...
+#'
+#' @return salmon.colors
+#' @export
 #'
 #' @examples
-#' salmon.colors[1]
-#'
-#' @export
 
 
   # chi.fill.all <- paletteer::paletteer_dynamic("cartography::blue.pal",20)
@@ -26,12 +28,21 @@
   # os.fill <- os.fill.all[c(2)]
 
 
-    salmon.colors <- c("Chinook Hatch SY" = "#DCF0F8FF","Chinook Hatch Y" = "#C4E0ECFF" ,"Chinook other SY"  = "#ADD0E1FF",
-                     "Chinook other Y" = "#96C0D6FF", "St. of Georgia salmonids" = "#8AB8D0FF", "Chinook Skagit SY" = "#7EB0CBFF",
-                     "Chinook Skagit Y"="#6EA6C3FF","Chinook Snohomish SY" = "#4F91B4FF","Chinook Duwamish SY" = "#307BA5FF",
-                     "Chinook Hood Canal SY" = "#236F9AFF","Chinook Nisqually SY"= "#1E6085FF", "Chinook Nisqually Y"= "#14405AFF",
-                     "Chum Fall SY"= "#FCE480FF", "Chum Hatch SY"= "#FD932EFF", "Chum Hood Canal SY"="#FE5C00FF",
-                     "Coho other Y" = "#BBDAADFF", "Coho Skagit Y" = "#468E3DFF", "Coho Hatch Y" = "#247524FF",
-                     "Coho Deep South Y" = "#16642AFF","Pink Salmon SY" ="#9A70ABFF", "Other salmonids"= "#D746BBFF")
+salmon_colors <- function(...){
+
+  col.names <- c("Chinook Hatch SY" = "#DCF0F8FF","Chinook Hatch Y" = "#C4E0ECFF" ,"Chinook other SY"  = "#ADD0E1FF",
+                                    "Chinook other Y" = "#96C0D6FF", "St. of Georgia salmonids" = "#8AB8D0FF", "Chinook Skagit SY" = "#7EB0CBFF",
+                                    "Chinook Skagit Y"="#6EA6C3FF","Chinook Snohomish SY" = "#4F91B4FF","Chinook Duwamish SY" = "#307BA5FF",
+                                    "Chinook Hood Canal SY" = "#236F9AFF","Chinook Nisqually SY"= "#1E6085FF", "Chinook Nisqually Y"= "#14405AFF",
+                                    "Chum Fall SY"= "#FCE480FF", "Chum Hatch SY"= "#FD932EFF", "Chum Hood Canal SY"="#FE5C00FF",
+                                    "Coho other Y" = "#BBDAADFF", "Coho Skagit Y" = "#468E3DFF", "Coho Hatch Y" = "#247524FF",
+                                    "Coho Deep South Y" = "#16642AFF","Pink Salmon SY" ="#9A70ABFF", "Other salmonids"= "#D746BBFF")
+
+  return(col.names)
+
+  }
+
+
+
 
 

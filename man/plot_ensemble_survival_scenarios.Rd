@@ -10,8 +10,7 @@ plot_ensemble_survival_scenarios(
   plotmodels,
   base.survival,
   salmonbybasin,
-  indsalmoneffect,
-  salmon.colors
+  indsalmoneffect
 )
 }
 \arguments{
