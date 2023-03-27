@@ -10,7 +10,7 @@ salmon_colors(...)
 \item{...}{}
 }
 \value{
-salmon.colors
+col.names
 }
 \description{
 Vector of custom salmon colors

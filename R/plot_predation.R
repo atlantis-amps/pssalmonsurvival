@@ -83,7 +83,7 @@ plot_predation <- function(ensemblepredationcum, salmoneffect, salmonbybasin) {
       ggplot2::facet_wrap(.~ scenario_name, ncol=1) +
       ggplot2::scale_fill_manual(values = salmon.colors, name = "Salmon group") +
       ggplot2::scale_color_manual(values = salmon.colors) +
-      ggplot2::labs(title = "Predation mortality in cumulative scenarios",
+      ggplot2::labs(title = "Salmon predation mortality in cumulative scenarios",
                     y = "Proportional change in predation mortality (scenario/base)", x = "Expected salmon impact", face = "bold") +
       ggthemes::theme_base() +
       ggplot2::theme(legend.position = "right") +

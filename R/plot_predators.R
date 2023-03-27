@@ -9,9 +9,13 @@
 #' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2023
 
 
-plot_predators <- function(ensemblebiomasscum, predgroups){
+plot_predators <- function(ensemblebiomasscum, predgroups, thiscutoff){
+
+  mammal.mod <- c("DOG","HSL","CSL","PIN","PHR", "SB", "SP")
+#groups which biomass was modified as part of the scenarios
 
   salmon.preds <- predgroups %>%
+    dplyr::filter(!Code %in% mammal.mod) %>%
     dplyr::pull(Code)
 
   biomass.preds <- ensemblebiomasscum %>%
@@ -41,11 +45,28 @@ plot_predators <- function(ensemblebiomasscum, predgroups){
   col.fill <- c(`Positive` = "#002db3", `Negative` = "#ffd11a")
 
   guild.fill.all <- paletteer::paletteer_d("dutchmasters::pearl_earring",11)
-  guild.fill <- guild.fill.all[c(1,6,3)]
+  guild.fill <- guild.fill.all[c(1,6,3,7)]
+
+
+  salmon.eff.text <- rel.biomass.preds %>%
+    dplyr::filter(rel_biomass >= thiscutoff) %>%
+   # dplyr::filter(guild!="Demersal fish") %>%
+    dplyr::select(scenario_var, scenario_name, guild, rel_biomass) %>%
+    dplyr::mutate(label = round(rel_biomass,0))%>%
+    dplyr::group_by(scenario_name, scenario_var, guild) %>%
+    dplyr::slice(which.max(label)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(guild_abv = dplyr::if_else(guild=="Demersal fish", "DemF",
+                                             dplyr::if_else(guild=="Marine mammal", "MarM", guild))) %>%
+    dplyr::mutate(label = paste(as.character(label), guild_abv), rel_biomass = 18) %>%
+    dplyr::select(-guild_abv) %>%
+    dplyr::arrange(scenario_name, scenario_var, guild)
+
 
   biomass.violin.pred <- rel.biomass.preds %>%
-    dplyr::filter(guild!="Demersal fish") %>%
-    droplevels() %>%
+    dplyr::filter(rel_biomass <= thiscutoff) %>%
+  #  dplyr::filter(guild!="Demersal fish") %>%
+  #  droplevels() %>%
     ggplot2::ggplot(ggplot2::aes(y = rel_biomass, x = scenario_var, fill = guild)) +
     ggplot2::geom_boxplot(outlier.shape = NA) +
     ggplot2::geom_point(ggplot2::aes(color=guild), position = ggplot2::position_jitterdodge(), alpha=0.5) +
@@ -55,10 +76,19 @@ plot_predators <- function(ensemblebiomasscum, predgroups){
     ggplot2::geom_hline(yintercept = 1) +
     ggplot2::labs(title = "Predator biomass in cumulative scenarios", y = "Proportional change in biomass (scenario/base)", x = "Expected impact on salmon", face = "bold") +
     ggthemes::theme_base() +
+    ggplot2::ylim(-20, 20) +
     ggplot2::theme(legend.position = "bottom") +
     #ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95)) +
     ggplot2::guides(color="none") +
-    ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20))
+    ggrepel::geom_text_repel(
+      data          = salmon.eff.text,
+      mapping       = ggplot2::aes(scenario_var, rel_biomass, label = label),
+      force = 0.9,
+      force_pull = 0.7,
+      size          = 3,
+      colour        = "black"
+    ) #+
+    #ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20))
 
   ggplot2::ggsave("predator_biomass_effect_.png", plot = biomass.violin.pred, device = "png", width= 9, height = 10, scale = 1, dpi = 600)
 

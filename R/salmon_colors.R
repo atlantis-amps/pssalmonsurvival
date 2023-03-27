@@ -2,7 +2,7 @@
 #'
 #' @param ...
 #'
-#' @return salmon.colors
+#' @return col.names
 #' @export
 #'
 #' @examples
