@@ -1,18 +1,15 @@
-#' @title A dataset of biomass of 30 yr ensemble simulations
-#' @description Biomass of 8 model variants, under mfc fishing
-#' @format A data.frame with . rows and . variables:
+#' @title Biomass in individual scenarios
+#' @description Biomass in individual salmon survival scenarios
+#' @format A data frame with 398268 rows and 8 variables:
 #' \describe{
-#'   \item{\code{Code}}{Functional group code; character.}
-#'   \item{\code{biomass}}{Biomass in metric tons; number.}
-#'   \item{\code{name}}{Functional group name; character.}
-#'   \item{\code{longname}}{Functional group long name; character.}
-#'   \item{\code{Year}}{Simulation year; number.}
-#'   \item{\code{model_ver}}{Model variant; integer.}
+#'   \item{\code{Code}}{character species code}
+#'   \item{\code{biomass}}{double biomass in mt}
+#'   \item{\code{name}}{character species name}
+#'   \item{\code{longname}}{character species long name}
+#'   \item{\code{Year}}{double year}
+#'   \item{\code{model_ver}}{integer model ensemble version}
+#'   \item{\code{scenario_name}}{character scenario name}
+#'   \item{\code{scenario_var}}{character senario variation}
 #'}
-#' @details This dataset in the output of simulations of each model variant.
-#' @docType data
-#' @usage data(ensemblebiomass)
-#' @references Simulation data.
-#' @format A data frame.
-#' @keywords datasets
+#' @details DETAILS
 "ensemblebiomass"

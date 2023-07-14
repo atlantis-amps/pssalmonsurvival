@@ -9,8 +9,6 @@
 #' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2002
 
 
-
-
 plot_ensemble_survival <- function(ensemblenumbersage, salmongroups) {
 
     salmon.max.nums <- ensemblenumbersage %>%
@@ -75,11 +73,15 @@ plot_ensemble_survival <- function(ensemblenumbersage, salmongroups) {
 
     for (i in seq_len(n_pages)) {
 
-        survival.plot <- salmon.plot.data %>%
-            ggplot2::ggplot(ggplot2::aes(x = Year, y = survival, color = scenario_name)) + ggplot2::geom_boxplot(outlier.size = 0.5, outlier.alpha = 0.6, alpha = 0.6) +
-            # ggplot2::ylim(0,1) + ggnewscale::new_scale_color() + ggplot2::geom_line(ggplot2::aes(group= scenario_name, colour=scenario_name)) +
-        ggthemes::theme_few() + ggplot2::scale_colour_manual(values = col.pal, name = "Scenario") + ggforce::facet_wrap_paginate(. ~ Long.Name, ncol = 1, nrow = 4,
-            page = i, shrink = FALSE, labeller = "label_value") + ggplot2::labs(y = "Survival") + ggplot2::theme(legend.position = "bottom")
+      survival.plot <- salmon.plot.data %>%
+        ggplot2::ggplot(ggplot2::aes(x = Year, y = survival, color = scenario_name)) +
+        ggplot2::geom_boxplot(outlier.size = 0.5, outlier.alpha = 0.6, alpha = 0.6) +
+        # ggplot2::ylim(0,1) + ggnewscale::new_scale_color() + ggplot2::geom_line(ggplot2::aes(group= scenario_name, colour=scenario_name)) +
+        ggthemes::theme_few() +
+        ggplot2::scale_colour_manual(values = col.pal, name = "Scenario") +
+        ggforce::facet_wrap_paginate(. ~ Long.Name, ncol = 1, nrow = 4,
+                                     page = i, shrink = FALSE, labeller = "label_value") +
+        ggplot2::labs(y = "Survival") + ggplot2::theme(legend.position = "bottom")
 
         plot.list[[i]] <- survival.plot
 

@@ -4,10 +4,10 @@
 \alias{plot_predators}
 \title{plot biomass salmon predators}
 \usage{
-plot_predators(ensemblebiomasscum, predgroups)
+plot_predators(ensemblebiomass, predgroups, thiscutoff)
 }
 \arguments{
-\item{ensemblebiomasscum}{biomass cumulative scenarios}
+\item{ensemblebiomass}{biomass individual scenarios}
 
 \item{predgroups}{Salmon predator groups in guilds}
 }
@@ -15,8 +15,8 @@ plot_predators(ensemblebiomasscum, predgroups)
 biomass plots of salmon predators
 }
 \description{
-Code to plot biomass of salmon predators in cumulative scenarios
+Code to plot biomass of salmon predators in individual scenarios
 }
 \author{
-Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2023
+Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com June 2023
 }

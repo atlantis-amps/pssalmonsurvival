@@ -49,6 +49,7 @@ Imports:
 Remotes:
     github::ropensci/rnaturalearthhires
     devtools::EmilHvitfeldt/paletteer
+    github::Atlantis-Ecosystem-Model/ReactiveAtlantis
 Suggests: 
     rmarkdown,
     knitr,

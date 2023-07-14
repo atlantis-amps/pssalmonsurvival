@@ -247,12 +247,60 @@ plot_predation(ensemblepredationcum, salmoneffect, salmonbybasin)
 
 ```
 
-plot biomass of higher trophic level guilds
+
+plot biomass of higher trophic level guilds in individual scenarios
+
+```{r}
+
+#only run once
+#data("ppreymatrix")
+#data("functionalgroups")
+
+#get salmon predators from food web matrix
+#get_salmonpredators(ppreymatrix, functionalgroups)
+
+data("ensemblebiomass")
+data("predgroups")
+
+plot_predators(ensemblebiomass, predgroups, thiscutoff = 20)
+
+
+```
+
+
+plot biomass of higher trophic level guilds in cumulative scenarios
 ```{r}
 data("ensemblebiomasscum")
 data("predgroups")
 
-plot_predators(ensemblebiomasscum, predgroups, thiscutoff = 20)
+plot_predatorscum(ensemblebiomasscum, predgroups, thiscutoff = 20)
+
+
+```
+
+Explore predation using dietcheck for individual scenarios
+
+```{r}
+
+data("scenariocategories")
+data("salmonbybasin")
+data("dietcheck")
+
+plot_dietcheck(dietcheck, scenariocategories, salmonbybasin)
+
+```
+
+
+
+Explore predation using dietcheck for cumulative scenarios
+
+```{r}
+
+data("salmoneffect")
+data("salmonbybasin")
+data("dietcheckcum")
+
+plot_dietcheckcum(dietcheckcum, salmoneffect, salmonbybasin)
 
 
 ```

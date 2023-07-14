@@ -123,13 +123,27 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
     dplyr::mutate(scenario_driver = forcats::fct_relevel(as.factor(scenario_driver), "Bottom-up drivers", "Top-down drivers"))
 
 
+aggregated.survival <- salmon.lollipop.data %>%
+  dplyr::group_by(basin, scenario_name, salmon_effect, salmon_genus) %>%
+  dplyr::summarise(tot_base_juv = sum(juv_nums.x), tot_base_ret= sum(return_nums.x) , tot_sc_juv = sum(juv_nums.y), tot_sc_ret=sum(return_nums.y)) %>%
+  dplyr::mutate(tot_base_survival = (tot_base_ret/tot_base_juv) * 100) %>%
+  dplyr::mutate(tot_sc_survival = (tot_sc_ret/tot_sc_juv) * 100) %>%
+  dplyr::mutate(tot_sc_survival = dplyr::if_else(tot_sc_survival > 100, 100, tot_sc_survival)) %>%
+  dplyr::mutate(tot_base_survival = dplyr::if_else(tot_base_survival > 100, 100, tot_base_survival)) %>%
+  dplyr::mutate(rel_survival = (tot_sc_survival - tot_base_survival)) %>%
+  dplyr::mutate(prop_survival = ((tot_sc_survival / tot_base_survival)-1) *100) %>% #make it proportional
+  dplyr::mutate(salmon_genus = forcats::fct_relevel(as.factor(salmon_genus), "Chinook", "Chum", "Coho", "Pink", "Sockeye")) %>%
+  dplyr::mutate(scenario_driver = dplyr::if_else(scenario_name %in% bottom.up.sc, "Bottom-up drivers", "Top-down drivers")) %>%
+  dplyr::mutate(scenario_driver = forcats::fct_relevel(as.factor(scenario_driver), "Bottom-up drivers", "Top-down drivers")) %>%
+  dplyr::mutate(basin = forcats::fct_relevel(as.factor(basin), "Puget Sound", "Strait of Georgia", "Whidbey", "Central Puget Sound", "South Puget Sound",
+                                             "Hood Canal"))
 
 
  basin.fill <- c(`Puget Sound` = "#7EADAA", `Strait of Georgia` = "#2F5A54", Whidbey = "#F3A800", `Central Puget Sound` = "#DE7A00", `South Puget Sound` = "#0B77E8",
                  `Hood Canal` = "#032F5C")
 
 
- salmon.eff.basin <- salmon.plot.data %>%
+ salmon.eff.basin <- aggregated.survival %>%
    dplyr::filter(prop_survival >= 100) %>%
    dplyr::arrange(salmon_effect, salmon_genus) %>%
    dplyr::select(salmon_genus, scenario_driver, scenario_name, salmon_effect, basin, prop_survival) %>%
@@ -141,34 +155,33 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
    #dplyr::left_join(salmon.codes, by = "longname") %>%
    dplyr::mutate(basin_code = dplyr::if_else(basin == "South Puget Sound","SPS",
                                              "HC")) %>%
-   dplyr::mutate(label = paste(as.character(label), basin_code), prop_survival = 95) #%>%
-  # dplyr::mutate(label = "*", prop_survival = 95)
+   dplyr::mutate(label = paste(as.character(label), basin_code), prop_survival = 95)
 
  genus.fill.all <- paletteer::paletteer_d("ggthemes::stata_economist",12)
- genus.fill <- genus.fill.all[c(5,10,8,6,9)]
+ genus.fill <- genus.fill.all[c(5,10,8,6,9,11)]
 
 
- box.plot.scale.basin <- salmon.plot.data %>%
+ box.plot.scale.basin <- aggregated.survival %>%
    dplyr::filter(prop_survival <= 100) %>%
-   ggplot2::ggplot(ggplot2::aes(y = prop_survival, x = salmon_genus, fill = basin)) +
+   ggplot2::ggplot(ggplot2::aes(y = prop_survival, x = basin, fill = salmon_genus)) +
    ggplot2::geom_boxplot(outlier.shape = NA) +
-   ggplot2::geom_point(ggplot2::aes(color=basin), position = ggplot2::position_jitterdodge(), alpha=0.5) +
+   ggplot2::geom_point(ggplot2::aes(color=salmon_genus), position = ggplot2::position_jitterdodge(), alpha=0.5) +
    ggplot2::geom_hline(yintercept = 0) +
   # ggplot2::facet_wrap(salmon_effect ~ scenario_driver, scales = "free_y") +
    ggplot2::facet_grid(ggplot2::vars(salmon_effect), ggplot2::vars(scenario_driver)) +
    ggplot2::labs(title = "Salmon survival in bottom-up and top-down scenarios",
-                 y = "Proportional change in survival (scenario/base)", x = "Salmon group", face = "bold") +
+                 y = "Proportional change in survival (scenario/base)", x = "Basin", face = "bold") +
    ggthemes::theme_base() +
    ggplot2::theme(legend.position = "bottom") +
    #  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.95, hjust = 0.95)) +
    ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
    ggplot2::ylim(-100, 100) +
-   ggplot2::scale_fill_manual(values = basin.fill, name = "Basin") +
-   ggplot2::scale_color_manual(values = basin.fill) +
+   ggplot2::scale_fill_manual(values = genus.fill, name = "") +
+   ggplot2::scale_color_manual(values = genus.fill) +
    #  ggplot2::geom_text(data = salmon.fg.text, label=salmon.fg.text$label, size = 3.5) +
    ggrepel::geom_text_repel(
      data          = salmon.eff.basin,
-     mapping       = ggplot2::aes(salmon_genus, prop_survival, label = label),
+     mapping       = ggplot2::aes(basin, prop_survival, label = label),
      force = 0.7,
      force_pull = 0.7,
      size          = 4,
@@ -180,7 +193,7 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
 
  box.plot.scale.basin.title <- gridExtra::grid.arrange(box.plot.scale.basin, right='Expected salmon impact')
 
- ggplot2::ggsave("boxplot_survival_aggregated.png", plot = box.plot.scale.basin.title, device = "png", width= 11.38, height = 14.21, scale = 1, dpi = 600)
+ ggplot2::ggsave("boxplot_survival_aggregated.png", plot = box.plot.scale.basin.title, device = "png", width= 12, height = 10.17, scale = 1, dpi = 600)
 
 
 
@@ -232,6 +245,16 @@ plot_ensemble_survival_scenarios <- function(ensemblenumbersagescenarios, salmon
       dplyr::left_join(salmon.codes, by = "longname") %>%
       dplyr::mutate(label = paste(as.character(label), Code), prop_survival = 95) %>%
       dplyr::select(-Code)
+
+    #eliminate forced groups from plots
+    #
+    plot.data.wild <- plot.data %>%
+      dplyr::filter(scenario_name=="Wild pink & chum salmon competition") %>%
+      dplyr::filter(!Code %in% c("CMF","PIS"))
+
+    plot.data.wild <- plot.data %>%
+      dplyr::filter(scenario_name=="Wild pink & chum salmon competition") %>%
+      dplyr::filter(!Code %in% c("CMF","PIS"))
 
     box.plot.effect <- plot.data %>%
       dplyr::filter(prop_survival <= thiscuttoff) %>%

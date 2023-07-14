@@ -1,45 +1,56 @@
 #' @title plot biomass salmon predators
-#' @param ensemblebiomasscum biomass cumulative scenarios
+#' @param ensemblebiomass biomass individual scenarios
 #' @param predgroups Salmon predator groups in guilds
 #'
 #' @return biomass plots of salmon predators
 #' @export
 #'
-#' @description Code to plot biomass of salmon predators in cumulative scenarios
-#' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com February 2023
+#' @description Code to plot biomass of salmon predators in individual scenarios
+#' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com June 2023
 
 
-plot_predators <- function(ensemblebiomasscum, predgroups, thiscutoff){
-
-  mammal.mod <- c("DOG","HSL","CSL","PIN","PHR", "SB", "SP")
-#groups which biomass was modified as part of the scenarios
+plot_predators <- function(ensemblebiomass, predgroups, thiscutoff){
 
   salmon.preds <- predgroups %>%
-    dplyr::filter(!Code %in% mammal.mod) %>%
-    dplyr::pull(Code)
+   dplyr::pull(Code)
 
-  biomass.preds <- ensemblebiomasscum %>%
+  mammal.pred <- c("HSL","CSL","PIN")
+  #groups which biomass was modified as part of the scenarios
+
+  biomass.preds <- ensemblebiomass %>%
     dplyr::filter(Code %in% salmon.preds) %>%
-    dplyr::left_join(predgroups, by = "Code") %>%
-    dplyr::filter(Year > 29) %>%
-    dplyr::group_by(Code, name, longname, guild, model_ver, scenario_name, scenario_var) %>%
-    dplyr::summarise(max_biomass = max(biomass), .groups = "drop")
+    dplyr::left_join(predgroups, by = c("Code","name")) %>%
+    dplyr::filter(Year > 25)
 
-  base.biomass.preds <- biomass.preds %>%
+  biomass.preds.mm <-  biomass.preds %>%
+    dplyr::filter(dplyr::case_when(scenario_name == "mammal predation" ~ !Code %in% mammal.pred))
+
+  biomass.preds.dog <-  biomass.preds %>%
+    dplyr::filter(dplyr::case_when(scenario_name == "spiny dogfish predation" ~ Code != "DOG"))
+
+  biomass.preds.bird <-  biomass.preds %>%
+    dplyr::filter(dplyr::case_when(scenario_name == "seabirds predation" ~ !Code %in% c("SP","SB")))
+
+  biomass.preds.por <-  biomass.preds %>%
+    dplyr::filter(dplyr::case_when(scenario_name == "porpoise predation" ~ Code != "PHR"))
+
+  biomass.preds.sc <- biomass.preds %>%
+    dplyr::filter(!scenario_name %in% c("mammal predation", "spiny dogfish predation", "seabirds predation", "porpoise predation")) %>%
+    dplyr::bind_rows(biomass.preds.por, biomass.preds.bird, biomass.preds.dog, biomass.preds.mm) %>%
+    dplyr::group_by(Code, name, longname, guild, model_ver, scenario_name, scenario_var) %>%
+    dplyr::summarise(max_biomass = mean(biomass), .groups = "drop")
+
+  base.biomass.preds <- biomass.preds.sc %>%
     dplyr::filter(scenario_var=="1") %>%
     dplyr::rename(base_biomass=max_biomass) %>%
     dplyr::select(-scenario_var)
 
-  rel.biomass.preds <- biomass.preds %>%
+  rel.biomass.preds <- biomass.preds.sc %>%
     dplyr::filter(scenario_var!="1") %>%
     dplyr::left_join(base.biomass.preds, by=c("Code","name","longname","guild","model_ver","scenario_name")) %>%
     dplyr::mutate(rel_biomass = ((max_biomass / base_biomass)-1)*100) %>%
     dplyr::mutate(scenario_var = dplyr::if_else(scenario_var == "1_2", "Negative", "Positive")) %>%
-    dplyr::mutate(scenario_name = dplyr::if_else(scenario_name == "bottom top", "Bottom-up & Top-down",
-                                                 dplyr::if_else(scenario_name=="top down","Top-down",
-                                                                dplyr::if_else(scenario_name=="bottom up","Bottom-up",scenario_name)))) %>%
-    dplyr::mutate(scenario_name = as.factor(scenario_name)) %>%
-    dplyr::mutate(scenario_name = forcats::fct_relevel(scenario_name, "Bottom-up", "Top-down", "Bottom-up & Top-down"))
+    dplyr::mutate(rel_biomass = if_else(is.nan(rel_biomass), 0, rel_biomass))
 
 
   col.fill <- c(`Positive` = "#002db3", `Negative` = "#ffd11a")
@@ -57,7 +68,8 @@ plot_predators <- function(ensemblebiomasscum, predgroups, thiscutoff){
     dplyr::slice(which.max(label)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(guild_abv = dplyr::if_else(guild=="Demersal fish", "DemF",
-                                             dplyr::if_else(guild=="Marine mammal", "MarM", guild))) %>%
+                                             dplyr::if_else(guild=="Marine mammal", "MarM",
+                                                            dplyr::if_else(guild=="Elasmobranch", "Elasmo",guild)))) %>%
     dplyr::mutate(label = paste(as.character(label), guild_abv), rel_biomass = 18) %>%
     dplyr::select(-guild_abv) %>%
     dplyr::arrange(scenario_name, scenario_var, guild)
@@ -70,7 +82,7 @@ plot_predators <- function(ensemblebiomasscum, predgroups, thiscutoff){
     ggplot2::ggplot(ggplot2::aes(y = rel_biomass, x = scenario_var, fill = guild)) +
     ggplot2::geom_boxplot(outlier.shape = NA) +
     ggplot2::geom_point(ggplot2::aes(color=guild), position = ggplot2::position_jitterdodge(), alpha=0.5) +
-    ggplot2::facet_wrap(. ~ scenario_name, ncol = 1) + #, scales = "free_y"
+    ggplot2::facet_wrap(. ~ scenario_name, ncol = 2) + #, scales = "free_y"
     ggplot2::scale_fill_manual(values = guild.fill, name = "Species guild") +
     ggplot2::scale_color_manual(values = guild.fill) +
     ggplot2::geom_hline(yintercept = 1) +
