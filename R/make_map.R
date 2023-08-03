@@ -42,14 +42,22 @@ make_map <- function(file.name) {
     max.lat <- 49.2412
 
     # map world and overlay model polygons
-    model.map <- ggplot2::ggplot(data = coastline.shape) + ggplot2::geom_sf() + ggplot2::geom_sf(data = model.shape, ggplot2::aes(fill = BOTZ), alpha = 0.8) + ggplot2::geom_sf(data = cities.shape) +
-        ggplot2::geom_text(data = cities.shape, ggplot2::aes(x = LONG, y = LAT, label = Name), size = 3, col = "black", fontface = "plain", nudge_y = -0.04, nudge_x = 0.023) +
-        ggplot2::scale_fill_continuous(trans = "sqrt", name = "Depth") +  ggplot2::scale_fill_continuous(trans = "sqrt", name = "Depth") +
-    # ggplot2::scale_fill_viridis_c(trans = 'sqrt', alpha = .4, name = 'Depth') +
-    ggplot2::coord_sf(xlim = c(min.long, max.long), ylim = c(min.lat, max.lat), expand = FALSE) + ggspatial::annotation_north_arrow(location = "bl", which_north = "true",
-        pad_x = ggplot2::unit(0.1, "in"), pad_y = ggplot2::unit(0.1, "in"), style = ggspatial::north_arrow_fancy_orienteering()) + ggspatial::annotation_scale(location = "tr",
-        width_hint = 0.2) + ggplot2::xlab("Lon") + ggplot2::ylab("Lat") + ggplot2::theme_bw() + ggplot2::theme(axis.text = ggplot2::element_text(size = 9), axis.title = ggplot2::element_text(size = 11),
-        axis.text.y = ggplot2::element_text(angle = 90))
+    model.map <- ggplot2::ggplot(data = coastline.shape) +
+      ggplot2::geom_sf() +
+      ggplot2::geom_sf(data = model.shape, ggplot2::aes(fill = BOTZ), alpha = 0.8) +
+      ggplot2::geom_sf(data = cities.shape) +
+      ggplot2::geom_text(data = cities.shape, ggplot2::aes(x = LONG, y = LAT, label = Name), size = 5, col = "black", fontface = "plain", nudge_y = -0.04, nudge_x = 0.023) +
+      ggplot2::scale_fill_continuous(trans = "sqrt", name = "Depth") +
+      ggplot2::scale_fill_continuous(trans = "sqrt", name = "Depth") +
+      # ggplot2::scale_fill_viridis_c(trans = 'sqrt', alpha = .4, name = 'Depth') +
+      ggplot2::coord_sf(xlim = c(min.long, max.long), ylim = c(min.lat, max.lat), expand = FALSE) +
+      ggspatial::annotation_north_arrow(location = "bl", which_north = "true", pad_x = ggplot2::unit(0.1, "in"), pad_y = ggplot2::unit(0.1, "in"), style = ggspatial::north_arrow_fancy_orienteering()) +
+      ggspatial::annotation_scale(location = "tr", width_hint = 0.2, height = unit(0.40, "cm"), text_cex = 1.2) +
+      ggplot2::xlab("Lon") +
+      ggplot2::ylab("Lat") +
+      ggplot2::theme_bw() +
+      theme(legend.position = c(0.1, 0.2)) + #use to place the legend inside the plot
+      ggplot2::theme(axis.text = ggplot2::element_text(size = 13), axis.title = ggplot2::element_text(size = 11), axis.text.y = ggplot2::element_text(angle = 90))
 
 
 

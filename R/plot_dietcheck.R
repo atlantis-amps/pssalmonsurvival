@@ -9,11 +9,10 @@
 #'
 #' @author Hem Nalini Morzaria-Luna, hmorzarialuna_gmail.com May 2023
 #' @examples
-plot_dietcheck <- function(dietcheck, indsalmoneffect, groupguilds) {
+plot_dietcheck <- function(dietcheck, indsalmoneffect, predgroups, thiscutoff) {
 
- pred.guilds <- groupguilds %>%
-   dplyr::rename(Predator=code)
-
+  pred.guilds <- predgroups %>%
+    dplyr::rename(longname=Predator, Predator= Code)
 
   dietcheck.names <- dietcheck %>%
     dplyr::mutate(scenario_var = as.character(scenario_var)) %>%
@@ -32,9 +31,10 @@ plot_dietcheck <- function(dietcheck, indsalmoneffect, groupguilds) {
     dplyr::left_join(indsalmoneffect, by = c("scenario_name","scenario_var")) %>%
     dplyr::left_join(pred.guilds, by = c("Predator")) %>%
     dplyr::mutate(year = Time/365) %>%
-    dplyr::mutate(year >= 25) %>%
-    dplyr::group_by(guild, scenario_name, salmon_effect) %>%
-    dplyr::summarise(av_mort = mean(tot_mort))
+    dplyr::filter(year >= 25) %>%
+    dplyr::group_by(longname, guild, scenario_name, scenario_var, model_ver, salmon_effect) %>%
+    dplyr::summarise(av_mort = mean(tot_mort)) %>%
+    dplyr::ungroup()
 
 
   pred.sc <- dietcheck.names %>%
@@ -42,29 +42,17 @@ plot_dietcheck <- function(dietcheck, indsalmoneffect, groupguilds) {
 
   pred.base <- dietcheck.names %>%
     dplyr::filter(scenario_var == "base") %>%
-    dplyr::rename(ini_tot_mort = tot_mort) %>%
-    dplyr::select(-scenario_var)
-
+    dplyr::rename(ini_tot_mort = av_mort) %>%
+    dplyr::select(-salmon_effect)
 
   pred.plot.salmon <- pred.sc %>%
-    dplyr::left_join(pred.base, by = c("year","Time","Predator","model_ver","scenario_name","scenario_category","index","name","long_name", "group_type","guild")) %>%
-    dplyr::mutate(excess_mort = (tot_mort/ini_tot_mort - 1) * 100) %>%
-    dplyr::filter(year > 25) %>%
+    dplyr::left_join(pred.base, by = c("longname","guild","scenario_name", "model_ver")) %>%
+    dplyr::mutate(excess_mort = (av_mort/ini_tot_mort - 1) * 100) %>%
     #excess mortality is proportional change in mortality
     #dplyr::mutate(scenario_name = forcats::fct_relevel(as.factor(scenario_name), "Bottom-up", "Top-down", "Bottom-up & Top-down")) %>%
-    dplyr::mutate(excess_mort=dplyr::if_else(is.nan(excess_mort),0,excess_mort))
-
-  pred.guild.base <- pred.plot.salmon %>%
-    dplyr::group_by(year, scenario_name, salmon_effect, model_ver, guild) %>%
-    dplyr::summarise(guild_tot_mort_base = sum(ini_tot_mort))
-
-  pred.guild <- pred.plot.salmon %>%
-    dplyr::group_by(year, scenario_name, salmon_effect, model_ver, guild) %>%
-    dplyr::summarise(guild_tot_mort = sum(tot_mort)) %>%
-    dplyr::left_join(pred.guild.base, by = c("year","scenario_name","salmon_effect","model_ver","guild")) %>%
-    dplyr::mutate(excess_mort = (guild_tot_mort/guild_tot_mort_base - 1) * 100) %>%
-    dplyr::mutate(excess_mort=dplyr::if_else(is.nan(excess_mort),0,
-                                             dplyr::if_else(is.infinite(excess_mort),0,excess_mort)))
+    dplyr::mutate(excess_mort=dplyr::if_else(is.nan(excess_mort),0,excess_mort)) %>%
+    dplyr::filter(excess_mort!=0) %>%
+    dplyr::mutate(scenario_type = dplyr::if_else(grepl("predation", scenario_name), "Top-down", "Bottom-up"))
 
 
   # HEATMAP, not used because it can't incorporate variation in the model ensemble pred.plot.salmon %>% ggplot(aes(salmon_effect, longname)) +
@@ -83,37 +71,55 @@ plot_dietcheck <- function(dietcheck, indsalmoneffect, groupguilds) {
   #   dplyr::mutate(label = paste(as.character(label), code), excess_mort = 95) %>%
   #   dplyr::select(-code)
 
-  salmon.colors <- salmon_colors()
+  salmon.eff.text <- pred.plot.salmon %>%
+    dplyr::filter(excess_mort >= thiscutoff) %>%
+    dplyr::filter(guild!="Salmon") %>%
+    # dplyr::filter(guild!="Demersal fish") %>%
+    dplyr::select(scenario_type, scenario_name, guild, salmon_effect, excess_mort) %>%
+    dplyr::mutate(label = round(excess_mort,0))%>%
+    dplyr::group_by(scenario_name, salmon_effect, scenario_type, guild) %>%
+    dplyr::slice(which.max(label)) %>%
+    dplyr::mutate(label = formatC(label, format='e', digits=1)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(guild_abv = dplyr::if_else(guild=="Demersal fish", "DemF",
+                                             dplyr::if_else(guild=="Marine mammals", "MarM",
+                                                            dplyr::if_else(guild=="Elasmobranchs", "Elasmo",
+                                                                           dplyr::if_else(guild=="Small planktivorous fish","Sm. plank",guild))))) %>%
+    dplyr::mutate(label = paste(as.character(label), guild_abv), excess_mort = (thiscutoff-2)) %>%
+    dplyr::select(-guild_abv) %>%
+    dplyr::arrange(salmon_effect, scenario_name, scenario_type, guild)
 
-  pred.boxplot <- pred.guild %>%
-    dplyr::mutate(year = as.factor(year)) %>%
-    dplyr::filter(!guild %in% c("Invertebrates","Zooplankton")) %>%
-    ggplot2::ggplot(ggplot2::aes(y = excess_mort, x = year, color = salmon_effect)) +
+  guild.fill.all <- paletteer::paletteer_d("dutchmasters::pearl_earring")
+  guild.fill <- c("Seabirds"=guild.fill.all[c(3)], "Marine mammals" = guild.fill.all[c(6)], "Elasmobranchs"=guild.fill.all[c(2)], "Demersal fish"=guild.fill.all[c(1)],"Small planktivorous fish"=guild.fill.all[c(7)])
+
+
+  pred.boxplot <- pred.plot.salmon %>%
+    dplyr::filter(guild!="Salmon") %>%
+    ggplot2::ggplot(ggplot2::aes(y = excess_mort, x = salmon_effect, fill = guild)) +
     ggplot2::geom_boxplot(outlier.size = 0.5, outlier.alpha = 0.6, alpha = 0.6) +
     #ggplot2::geom_point(ggplot2::aes(color=guild), position = ggplot2::position_jitterdodge(), alpha=0.5) +
     #ggplot2::geom_boxplot(outlier.shape = NA) +
     ggplot2::geom_hline(yintercept = 0) +
-    ggplot2::facet_wrap(scenario_name ~ guild, ncol=2, scales = "free_y") +
-  #  ggplot2::scale_fill_manual(values = salmon.colors, name = "Guild") +
-  #  ggplot2::scale_color_manual(values = salmon.colors) +
-    ggplot2::labs(title = "Salmon predation mortality in cumulative scenarios",
-                  y = "Proportional change in predation mortality (scenario/base)", x = "Year", face = "bold") +
-    ggthemes::theme_base() +
-    ggplot2::theme(legend.position = "right") #+
-    #  ggplot2::geom_text(data=salmon.gen, ggplot2::aes(salmon_effect, excess_mort, label = label))
-  #   ggrepel::geom_text_repel(
-  #     data          = salmon.gen,
-  #     mapping       = ggplot2::aes(salmon_effect, excess_mort, label = label),
-  #     force = 0.9,
-  #     force_pull = 0.9,
-  #     size          = 3.5,
-  #     colour = "black"
-  #   ) +
-  #   ggplot2::guides(color="none", fill=ggplot2::guide_legend(ncol =1))
-  # #  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
-  #
+    ggplot2::facet_wrap(scenario_type ~ scenario_name, ncol=2, scales = "free_y") +
+    ggplot2::scale_fill_manual(values = guild.fill, name = "Species guild") +
+    ggplot2::scale_color_manual(values = guild.fill) +
+    ggplot2::labs(title = "Salmon consumption by predators in survival scenarios",
+                  y = "Proportional change in salmon consumption (scenario/base)", x = "Expected impact on salmon", face = "bold") +
+    ggthemes::theme_base()  +
+    ggplot2::ylim(-thiscutoff, thiscutoff) +
+    ggplot2::theme(legend.position = "bottom") +
+  #  ggplot2::guides(color="none") +
+    ggrepel::geom_text_repel(
+      data          = salmon.eff.text,
+      mapping       = ggplot2::aes(salmon_effect, excess_mort, label = label),
+      force = 0.9,
+      force_pull = 0.7,
+      size          = 3,
+      colour        = "black"
+    )
 
-  ggplot2::ggsave("timeseries_dietcheck.png", plot = pred.boxplot, device = "png", width= 11.5, height = 12.00, scale = 1, dpi = 600)
+
+  ggplot2::ggsave("individualsc_dietcheck.png", plot = pred.boxplot, device = "png", width= 13, height = 16.50, scale = 1, dpi = 600)
 
   #figure predation by basin
 

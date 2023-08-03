@@ -4,14 +4,14 @@
 \alias{plot_dietcheck}
 \title{Plot Dietcheck time series}
 \usage{
-plot_dietcheck(dietcheck, indsalmoneffect, groupguilds)
+plot_dietcheck(dietcheck, indsalmoneffect, predgroups, thiscutoff)
 }
 \arguments{
 \item{dietcheck}{total predation by predators on salmon groups for individual scenarios}
 
-\item{groupguilds}{functional groups by guild}
-
 \item{salmoneffect}{predicted scenario effects on salmon}
+
+\item{groupguilds}{functional groups by guild}
 }
 \value{
 pred.boxplot

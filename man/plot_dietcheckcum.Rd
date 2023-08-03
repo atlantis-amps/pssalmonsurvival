@@ -4,7 +4,7 @@
 \alias{plot_dietcheckcum}
 \title{Plot Dietcheckcum time series}
 \usage{
-plot_dietcheckcum(dietcheckcum, salmoneffect, groupguilds)
+plot_dietcheckcum(dietcheckcum, salmoneffect, predgroups, thiscutoff)
 }
 \arguments{
 \item{dietcheckcum}{total predation by predators on salmon groups for cumulative scenarios}
