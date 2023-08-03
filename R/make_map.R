@@ -52,11 +52,11 @@ make_map <- function(file.name) {
       # ggplot2::scale_fill_viridis_c(trans = 'sqrt', alpha = .4, name = 'Depth') +
       ggplot2::coord_sf(xlim = c(min.long, max.long), ylim = c(min.lat, max.lat), expand = FALSE) +
       ggspatial::annotation_north_arrow(location = "bl", which_north = "true", pad_x = ggplot2::unit(0.1, "in"), pad_y = ggplot2::unit(0.1, "in"), style = ggspatial::north_arrow_fancy_orienteering()) +
-      ggspatial::annotation_scale(location = "tr", width_hint = 0.2, height = unit(0.40, "cm"), text_cex = 1.2) +
+      ggspatial::annotation_scale(location = "tr", width_hint = 0.2, height = ggplot2::unit(0.40, "cm"), text_cex = 1.2) +
       ggplot2::xlab("Lon") +
       ggplot2::ylab("Lat") +
       ggplot2::theme_bw() +
-      theme(legend.position = c(0.1, 0.2)) + #use to place the legend inside the plot
+      ggplot2::theme(legend.position = c(0.1, 0.2)) + #use to place the legend inside the plot
       ggplot2::theme(axis.text = ggplot2::element_text(size = 13), axis.title = ggplot2::element_text(size = 11), axis.text.y = ggplot2::element_text(angle = 90))
 
 

@@ -121,49 +121,60 @@ plot_dietcheck <- function(dietcheck, indsalmoneffect, predgroups, thiscutoff) {
 
   ggplot2::ggsave("individualsc_dietcheck.png", plot = pred.boxplot, device = "png", width= 13, height = 16.50, scale = 1, dpi = 600)
 
-  #figure predation by basin
 
-  # salmon.basin <- pred.plot.salmon %>%
-  #   dplyr::filter(excess_mort >= 100) %>%
-  #   dplyr::arrange(salmon_genus, longname) %>%
-  #   dplyr::select(basin, scenario_name, salmon_effect, excess_mort) %>%
-  #   dplyr::mutate(label = round(excess_mort,0))%>%
-  #   dplyr::group_by(basin, scenario_name, salmon_effect) %>%
-  #   dplyr::slice(which.max(label)) %>% # leaves only the maximum value
-  #   dplyr::mutate(label = paste(basin, as.character(label)), excess_mort = 95)
-  #
-  # basin.fill <- c(`Puget Sound` = "#7EADAA", `Strait of Georgia` = "#2F5A54", Whidbey = "#F3A800", `Central Puget Sound` = "#DE7A00", `South Puget Sound` = "#0B77E8",
-  #                 `Hood Canal` = "#032F5C")
-  #
-  # pred.basin.boxplot <- pred.plot.salmon %>%
-  #   dplyr::filter(excess_mort<= 100) %>%
-  #   dplyr::mutate(longname = forcats::fct_relevel(as.factor(longname), salmon.order)) %>%
-  #   ggplot2::ggplot(ggplot2::aes(y = excess_mort, x = salmon_effect, fill = basin)) +
-  #   ggplot2::geom_point(ggplot2::aes(color=basin), position = ggplot2::position_jitterdodge(), alpha=0.5) +
-  #   ggplot2::geom_boxplot(outlier.shape = NA) +
-  #   ggplot2::geom_hline(yintercept = 0) +
-  #   ggplot2::facet_wrap(.~ scenario_name, ncol=1) +
-  #   ggplot2::scale_fill_manual(values = basin.fill, name = "Basin") +
-  #   ggplot2::scale_color_manual(values = basin.fill) +
-  #   ggplot2::labs(title = "Predation mortality in cumulative scenarios",
-  #                 y = "Proportional change in predation mortality (scenario-base)", x = "Expected salmon impact", face = "bold") +
-  #   ggthemes::theme_base() +
-  #   ggplot2::theme(legend.position = "right") +
-  #   ggrepel::geom_text_repel(
-  #     data          = salmon.basin,
-  #     mapping       = ggplot2::aes(salmon_effect, excess_mort, label = label),
-  #     force = 0.7,
-  #     force_pull = 1.2,
-  #     size          = 3.5,
-  #     colour = "black"
-  #   ) +
-  #   ggplot2::guides(color="none", fill=ggplot2::guide_legend(ncol =1))+
-  #   ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20))
-  # #  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 0.95))
-  #
-  #
-  #
-  # ggplot2::ggsave("boxplot_predation_basin_scale.png", plot = pred.basin.boxplot, device = "png", width= 11.5, height = 12.00, scale = 1, dpi = 600)
+
+  mammal.fill.all <- paletteer::paletteer_d("dutchmasters::view_of_Delft")
+  mammal.fill <- c("California sea lions"=mammal.fill.all[c(2)], "Harbor seals" = mammal.fill.all[c(1)], "Resident Orca"=mammal.fill.all[c(6)], "Steller sea lions"=mammal.fill.all[c(10)])
+
+
+  thiscutoff <- 10
+
+  salmon.eff.text <- pred.plot.salmon %>%
+    dplyr::filter(excess_mort >= thiscutoff) %>%
+    dplyr::filter(guild=="Marine mammals") %>%
+    # dplyr::filter(guild!="Demersal fish") %>%
+    dplyr::select(scenario_type, scenario_name, longname, salmon_effect, excess_mort) %>%
+    dplyr::mutate(label = round(excess_mort,0))%>%
+    dplyr::group_by(scenario_name, salmon_effect, scenario_type, longname) %>%
+    dplyr::slice(which.max(label)) %>%
+    dplyr::mutate(label = formatC(label, format='e', digits=1)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(ln_abv = dplyr::if_else(longname=="California sea lions", "Cal. sea lions", longname)) %>%
+    dplyr::mutate(label = paste(as.character(label), ln_abv), excess_mort = (thiscutoff-2)) %>%
+    dplyr::arrange(salmon_effect, scenario_name, scenario_type, label)
+
+  guild.fill.all <- paletteer::paletteer_d("dutchmasters::pearl_earring")
+  guild.fill <- c("Seabirds"=guild.fill.all[c(3)], "Marine mammals" = guild.fill.all[c(6)], "Elasmobranchs"=guild.fill.all[c(2)], "Demersal fish"=guild.fill.all[c(1)],"Small planktivorous fish"=guild.fill.all[c(7)])
+
+
+  pred.boxplot <- pred.plot.salmon %>%
+    dplyr::filter(guild=="Marine mammals") %>%
+    ggplot2::ggplot(ggplot2::aes(y = excess_mort, x = salmon_effect, fill = longname)) +
+    ggplot2::geom_boxplot(outlier.size = 0.5, outlier.alpha = 0.6, alpha = 0.6) +
+    #ggplot2::geom_point(ggplot2::aes(color=guild), position = ggplot2::position_jitterdodge(), alpha=0.5) +
+    #ggplot2::geom_boxplot(outlier.shape = NA) +
+    ggplot2::geom_hline(yintercept = 0) +
+    ggplot2::facet_wrap(scenario_type ~ scenario_name, ncol=2, scales = "free_y") +
+    ggplot2::scale_fill_manual(values = mammal.fill, name = "Group") +
+    ggplot2::scale_color_manual(values = mammal.fill) +
+    ggplot2::labs(title = "Salmon consumption by marine mammals in survival scenarios",
+                  y = "Proportional change in salmon consumption (scenario/base)", x = "Expected impact on salmon", face = "bold") +
+    ggthemes::theme_base()  +
+    ggplot2::ylim(-thiscutoff, thiscutoff) +
+    ggplot2::theme(legend.position = "bottom") +
+    ggrepel::geom_text_repel(
+      data          = salmon.eff.text,
+      mapping       = ggplot2::aes(salmon_effect, excess_mort, label = label),
+      force = 0.9,
+      force_pull = 0.7,
+      size          = 3,
+      colour        = "black"
+    )
+
+
+
+  ggplot2::ggsave("individual_dietcheck_marinemamm.png", plot = pred.boxplot, device = "png", width= 11, height = 13.5, scale = 1, dpi = 600)
+
 
   return(pred.boxplot)
 

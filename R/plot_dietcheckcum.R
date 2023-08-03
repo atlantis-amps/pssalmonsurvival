@@ -93,6 +93,39 @@ plot_dietcheckcum <- function(dietcheckcum, salmoneffect, predgroups, thiscutoff
 
   ggplot2::ggsave("cumsc_dietcheck.png", plot = pred.boxplot, device = "png", width= 12, height = 11, scale = 1, dpi = 600)
 
+
+  mammal.fill.all <- paletteer::paletteer_d("dutchmasters::view_of_Delft")
+  mammal.fill <- c("California sea lions"=mammal.fill.all[c(2)], "Harbor seals" = mammal.fill.all[c(1)], "Resident Orca"=mammal.fill.all[c(6)], "Steller sea lions"=mammal.fill.all[c(10)])
+
+
+  thiscutoff <- pred.plot.salmon %>%
+      dplyr::filter(guild=="Marine mammals") %>%
+    dplyr::pull(excess_mort) %>%
+    range() %>%
+    abs() %>%
+    max() %>%
+    round(.,0)
+
+  pred.boxplot <- pred.plot.salmon %>%
+    dplyr::filter(guild=="Marine mammals") %>%
+    ggplot2::ggplot(ggplot2::aes(y = excess_mort, x = salmon_effect, fill = longname)) +
+    ggplot2::geom_boxplot(outlier.size = 0.5, outlier.alpha = 0.6, alpha = 0.6) +
+    #ggplot2::geom_point(ggplot2::aes(color=guild), position = ggplot2::position_jitterdodge(), alpha=0.5) +
+    #ggplot2::geom_boxplot(outlier.shape = NA) +
+    ggplot2::geom_hline(yintercept = 0) +
+    ggplot2::facet_wrap(. ~ scenario_name, ncol=1, scales = "free_y") +
+    ggplot2::scale_fill_manual(values = mammal.fill, name = "Group") +
+    ggplot2::scale_color_manual(values = mammal.fill) +
+    ggplot2::labs(title = "Salmon consumption by marine mammals in cumulative scenarios",
+                  y = "Proportional change in salmon consumption (scenario/base)", x = "Expected impact on salmon", face = "bold") +
+    ggthemes::theme_base()  +
+    ggplot2::ylim(-thiscutoff, thiscutoff) +
+    ggplot2::theme(legend.position = "bottom")
+
+
+  ggplot2::ggsave("cumsc_dietcheck_marinemamm.png", plot = pred.boxplot, device = "png", width= 12, height = 11, scale = 1, dpi = 600)
+
+
   return(pred.boxplot)
 
 
