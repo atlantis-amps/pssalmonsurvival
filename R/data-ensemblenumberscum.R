@@ -1,5 +1,5 @@
-#' @title DATASET_TITLE
-#' @description DATASET_DESCRIPTION
+#' @title Numbers-at-age cumulative scenarios
+#' @description Numbers-at-age in cumulative scenarios
 #' @format A data frame with 705600 rows and 14 variables:
 #' \describe{
 #'   \item{\code{nums}}{double numbers}

@@ -1,5 +1,5 @@
-#' @title DATASET_TITLE
-#' @description DATASET_DESCRIPTION
+#' @title Group guilds
+#' @description Functional groups categorized by guild
 #' @format A data frame with 73 rows and 6 variables:
 #' \describe{
 #'   \item{\code{code}}{character Functional group code}

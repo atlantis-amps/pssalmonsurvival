@@ -1,5 +1,5 @@
-#' @title DATASET_TITLE
-#' @description DATASET_DESCRIPTION
+#' @title Prey matrix
+#' @description AMPS prey matrix
 #' @format A data frame with 73 rows and 74 variables:
 #' \describe{
 #'   \item{\code{Predator}}{character, predation linkages}

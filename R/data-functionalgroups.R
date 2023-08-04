@@ -1,5 +1,5 @@
-#' @title DATASET_TITLE
-#' @description DATASET_DESCRIPTION
+#' @title AMPS functional groups
+#' @description Functional group file used in the Atlantis model for Puget Sound
 #' @format A data frame with 74 rows and 30 variables:
 #' \describe{
 #'   \item{\code{Code}}{character functional group code name}
