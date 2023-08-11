@@ -3,7 +3,7 @@
 \docType{data}
 \name{ppreymatrix}
 \alias{ppreymatrix}
-\title{DATASET_TITLE}
+\title{Prey matrix}
 \format{
 A data frame with 73 rows and 74 variables:
 \describe{
@@ -87,7 +87,7 @@ A data frame with 73 rows and 74 variables:
 ppreymatrix
 }
 \description{
-DATASET_DESCRIPTION
+AMPS prey matrix
 }
 \details{
 DETAILS

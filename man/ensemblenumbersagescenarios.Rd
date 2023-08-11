@@ -3,7 +3,7 @@
 \docType{data}
 \name{ensemblenumbersagescenarios}
 \alias{ensemblenumbersagescenarios}
-\title{DATASET_TITLE}
+\title{Numbers at age individual scenarios}
 \format{
 A data frame with 2102100 rows and 14 variables:
 \describe{
@@ -27,7 +27,7 @@ A data frame with 2102100 rows and 14 variables:
 ensemblenumbersagescenarios
 }
 \description{
-DATASET_DESCRIPTION
+Numbers at age for individual scenarios
 }
 \details{
 DETAILS

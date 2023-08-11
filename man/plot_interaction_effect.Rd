@@ -8,7 +8,8 @@ plot_interaction_effect(
   ensemble.survival,
   ensemble.cum.survival,
   scenariocategories,
-  salmnonbybasin
+  salmnonbybasin,
+  thiscutoff
 )
 }
 \arguments{

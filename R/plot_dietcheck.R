@@ -95,6 +95,7 @@ plot_dietcheck <- function(dietcheck, indsalmoneffect, predgroups, thiscutoff) {
 
   pred.boxplot <- pred.plot.salmon %>%
     dplyr::filter(guild!="Salmon") %>%
+    dplyr::mutate(guild = forcats::fct_relevel(as.factor(guild), "Demersal fish","Small planktivorous fish","Elasmobranchs","Marine mammals","Seabirds")) %>%
     ggplot2::ggplot(ggplot2::aes(y = excess_mort, x = salmon_effect, fill = guild)) +
     ggplot2::geom_boxplot(outlier.size = 0.5, outlier.alpha = 0.6, alpha = 0.6) +
     #ggplot2::geom_point(ggplot2::aes(color=guild), position = ggplot2::position_jitterdodge(), alpha=0.5) +
@@ -132,6 +133,7 @@ plot_dietcheck <- function(dietcheck, indsalmoneffect, predgroups, thiscutoff) {
   salmon.eff.text <- pred.plot.salmon %>%
     dplyr::filter(excess_mort >= thiscutoff) %>%
     dplyr::filter(guild=="Marine mammals") %>%
+    droplevels() %>%
     # dplyr::filter(guild!="Demersal fish") %>%
     dplyr::select(scenario_type, scenario_name, longname, salmon_effect, excess_mort) %>%
     dplyr::mutate(label = round(excess_mort,0))%>%
@@ -149,6 +151,7 @@ plot_dietcheck <- function(dietcheck, indsalmoneffect, predgroups, thiscutoff) {
 
   pred.boxplot <- pred.plot.salmon %>%
     dplyr::filter(guild=="Marine mammals") %>%
+    droplevels() %>%
     ggplot2::ggplot(ggplot2::aes(y = excess_mort, x = salmon_effect, fill = longname)) +
     ggplot2::geom_boxplot(outlier.size = 0.5, outlier.alpha = 0.6, alpha = 0.6) +
     #ggplot2::geom_point(ggplot2::aes(color=guild), position = ggplot2::position_jitterdodge(), alpha=0.5) +

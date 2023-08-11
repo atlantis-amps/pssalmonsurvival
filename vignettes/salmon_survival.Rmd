@@ -233,7 +233,7 @@ data("scenariocategories")
 data("salmonbybasin")
 
 
-plot_interaction_effect(ensemble.survival, ensemble.cum.survival, scenariocategories, salmonbybasin)
+plot_interaction_effect(ensemble.survival, ensemble.cum.survival, scenariocategories, salmonbybasin, thiscutoff = 125)
 ```
 
 Plot biomass of higher trophic level guilds in individual scenarios

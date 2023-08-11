@@ -212,8 +212,7 @@ aggregated.survival <- salmon.lollipop.data %>%
       droplevels() %>%
       dplyr::mutate(basin = forcats::fct_relevel(as.factor(basin), "Puget Sound", "Strait of Georgia", "Whidbey", "Central Puget Sound", "South Puget Sound",
                                                  "Hood Canal")) %>%
-      dplyr::mutate(salmon_genus = forcats::fct_relevel(as.factor(salmon_genus), "Chinook", "Chum", "Coho", "Pink", "Sockeye")) %>%
-      dplyr::mutate(longname = forcats::fct_relevel(as.factor(longname), salmon.order))
+      dplyr::mutate(salmon_genus = forcats::fct_relevel(as.factor(salmon_genus), "Chinook", "Chum", "Coho", "Pink", "Sockeye"))
 
     salmon.fg.fill <- salmon_colors()
 
@@ -227,6 +226,30 @@ aggregated.survival <- salmon.lollipop.data %>%
       thistitle <- "Salmon survival in bottom-up driver scenarios"
     }
 
+
+
+    if(thisname == "Bottom-up drivers") {
+    #eliminate forced groups from plots
+    #
+    plot.data.wild.sal <- plot.data %>%
+      dplyr::filter(scenario_name=="Wild pink & chum salmon competition") %>%
+      dplyr::filter(!Code %in% c("CMF","PIS"))
+
+    plot.data.hat <- plot.data %>%
+      dplyr::filter(scenario_name=="Hatchery competition") %>%
+      dplyr::filter(!Code %in% c("CHY","CHS","COH", "CMS"))
+
+    plot.data.hat.chi <- plot.data %>%
+      dplyr::filter(scenario_name=="Hatchery Chinook competition") %>%
+      dplyr::filter(!Code %in% c("CHY","CHS"))
+
+    plot.data <- plot.data %>%
+      dplyr::filter(!scenario_name %in% c("Wild pink & chum salmon competition" , "Hatchery Chinook competition" , "Hatchery competition")) %>%
+      dplyr::bind_rows(plot.data.wild.sal, plot.data.hat, plot.data.hat.chi)
+    }
+
+    #plot.data %>% dplyr::distinct(salmon_effect, scenario_name, model_ver) %>% View()
+
     salmon.eff.text <- plot.data %>%
       dplyr::filter(prop_survival >= thiscuttoff) %>%
       dplyr::arrange(salmon_effect, longname) %>%
@@ -239,16 +262,6 @@ aggregated.survival <- salmon.lollipop.data %>%
       dplyr::left_join(salmon.codes, by = "longname") %>%
       dplyr::mutate(label = paste(as.character(label), Code), prop_survival = 95) %>%
       dplyr::select(-Code)
-
-    #eliminate forced groups from plots
-    #
-    plot.data.wild <- plot.data %>%
-      dplyr::filter(scenario_name=="Wild pink & chum salmon competition") %>%
-      dplyr::filter(!Code %in% c("CMF","PIS"))
-
-    plot.data.wild <- plot.data %>%
-      dplyr::filter(scenario_name=="Wild pink & chum salmon competition") %>%
-      dplyr::filter(!Code %in% c("CMF","PIS"))
 
     box.plot.effect <- plot.data %>%
       dplyr::filter(prop_survival <= thiscuttoff) %>%

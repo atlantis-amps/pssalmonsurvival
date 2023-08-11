@@ -3,7 +3,7 @@
 \docType{data}
 \name{groupguilds}
 \alias{groupguilds}
-\title{DATASET_TITLE}
+\title{Group guilds}
 \format{
 A data frame with 73 rows and 6 variables:
 \describe{
@@ -19,7 +19,7 @@ A data frame with 73 rows and 6 variables:
 groupguilds
 }
 \description{
-DATASET_DESCRIPTION
+Functional groups categorized by guild
 }
 \details{
 DETAILS

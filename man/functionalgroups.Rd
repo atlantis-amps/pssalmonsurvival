@@ -3,7 +3,7 @@
 \docType{data}
 \name{functionalgroups}
 \alias{functionalgroups}
-\title{DATASET_TITLE}
+\title{AMPS functional groups}
 \format{
 A data frame with 74 rows and 30 variables:
 \describe{
@@ -43,7 +43,7 @@ A data frame with 74 rows and 30 variables:
 functionalgroups
 }
 \description{
-DATASET_DESCRIPTION
+Functional group file used in the Atlantis model for Puget Sound
 }
 \details{
 DETAILS

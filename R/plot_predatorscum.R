@@ -48,6 +48,15 @@ plot_predatorscum <- function(ensemblebiomasscum, predgroups, thiscutoff){
     dplyr::rename(base_biomass=max_biomass) %>%
     dplyr::select(-scenario_var)
 
+
+  col.fill <- c(`Positive` = "#002db3", `Negative` = "#ffd11a")
+
+  guild.fill.all <- paletteer::paletteer_d("dutchmasters::pearl_earring")
+  guild.fill <- c("Demersal fish"=guild.fill.all[c(1)], "Small planktivorous fish"=guild.fill.all[c(7)], "Elasmobranchs"=guild.fill.all[c(2)], "Marine mammals" = guild.fill.all[c(6)], "Seabirds"=guild.fill.all[c(3)])
+
+  guild.order <- guild.fill %>% names()
+
+
   rel.biomass.preds <- biomass.preds.sc %>%
     dplyr::filter(scenario_var!="1") %>%
     dplyr::left_join(base.biomass.preds, by=c("Code","name","longname","guild","model_ver","scenario_name")) %>%
@@ -59,12 +68,6 @@ plot_predatorscum <- function(ensemblebiomasscum, predgroups, thiscutoff){
                                                                 dplyr::if_else(scenario_name=="bottom up","Bottom-up",scenario_name)))) %>%
     dplyr::mutate(scenario_name = as.factor(scenario_name)) %>%
     dplyr::mutate(scenario_name = forcats::fct_relevel(scenario_name, "Bottom-up", "Top-down", "Bottom-up & Top-down"))
-
-
-  col.fill <- c(`Positive` = "#002db3", `Negative` = "#ffd11a")
-
-  guild.fill.all <- paletteer::paletteer_d("dutchmasters::pearl_earring",11)
-  guild.fill <- c("Seabirds"=guild.fill.all[c(3)], "Marine mammals" = guild.fill.all[c(6)], "Elasmobranchs"=guild.fill.all[c(2)], "Demersal fish"=guild.fill.all[c(1)],"Small planktivorous fish"=guild.fill.all[c(7)])
 
 
   salmon.eff.text <- rel.biomass.preds %>%
@@ -85,6 +88,7 @@ plot_predatorscum <- function(ensemblebiomasscum, predgroups, thiscutoff){
 
 
   biomass.violin.pred <- rel.biomass.preds %>%
+    dplyr::mutate(guild = forcats::fct_relevel(as.factor(guild), "Demersal fish","Small planktivorous fish","Elasmobranchs","Marine mammals","Seabirds")) %>%
     dplyr::filter(rel_biomass <= thiscutoff) %>%
     #  dplyr::filter(guild!="Demersal fish") %>%
     #  droplevels() %>%

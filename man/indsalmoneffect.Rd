@@ -3,7 +3,7 @@
 \docType{data}
 \name{indsalmoneffect}
 \alias{indsalmoneffect}
-\title{DATASET_TITLE}
+\title{Expected salmon effects individual scenarios}
 \format{
 A data frame with 18 rows and 3 variables:
 \describe{

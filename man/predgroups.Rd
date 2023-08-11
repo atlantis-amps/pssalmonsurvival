@@ -3,23 +3,23 @@
 \docType{data}
 \name{predgroups}
 \alias{predgroups}
-\title{DATASET_TITLE}
+\title{Consumer groups}
 \format{
 A data frame with 34 rows and 6 variables:
 \describe{
-\item{\code{Predator}}{character COLUMN_DESCRIPTION}
-\item{\code{Code}}{character COLUMN_DESCRIPTION}
-\item{\code{name}}{character COLUMN_DESCRIPTION}
-\item{\code{GroupType}}{character COLUMN_DESCRIPTION}
-\item{\code{isExternal}}{integer COLUMN_DESCRIPTION}
-\item{\code{guild}}{character COLUMN_DESCRIPTION}
+\item{\code{Predator}}{character Consumer name}
+\item{\code{Code}}{character Consumer species code}
+\item{\code{name}}{character Consumer name}
+\item{\code{GroupType}}{characterGroup type}
+\item{\code{isExternal}}{integer Does group have external reproduction}
+\item{\code{guild}}{character Species guild}
 }
 }
 \usage{
 predgroups
 }
 \description{
-DATASET_DESCRIPTION
+Consumer groups in the AMPS
 }
 \details{
 DETAILS

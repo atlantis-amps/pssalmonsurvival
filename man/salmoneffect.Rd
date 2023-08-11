@@ -3,20 +3,20 @@
 \docType{data}
 \name{salmoneffect}
 \alias{salmoneffect}
-\title{DATASET_TITLE}
+\title{Expected salmon effect}
 \format{
 A data frame with 6 rows and 3 variables:
 \describe{
-\item{\code{scenario_name}}{character COLUMN_DESCRIPTION}
-\item{\code{scenario_var}}{character COLUMN_DESCRIPTION}
-\item{\code{salmon_effect}}{character COLUMN_DESCRIPTION}
+\item{\code{scenario_name}}{character Scenario name}
+\item{\code{scenario_var}}{character Salmon effect scenario}
+\item{\code{salmon_effect}}{character Expected salmon effect}
 }
 }
 \usage{
 salmoneffect
 }
 \description{
-DATASET_DESCRIPTION
+Expected salmon effects from scenarios
 }
 \details{
 DETAILS
